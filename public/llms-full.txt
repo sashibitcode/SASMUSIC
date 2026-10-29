@@ -1,0 +1,42 @@
+# SAS Music (SAS PLAYER) - Complete Technical & Identity Documentation
+
+## 1. Project Overview
+SAS Music is an open-source, production-grade Progressive Web App (PWA) audio player created to stream music collections directly from public Google Drive folders without requiring backend databases, user logins, or third-party ads.
+
+## 2. Developer & Author Entity (E-E-A-T)
+- **Primary Developer:** Shashikant Raj
+- **Consistent Author Title:** Shashikant Raj | Data Analyst
+- **Job Title:** Data Analyst
+- **Online Identity:** sashibitcode
+- **Personal Portfolio:** https://sashibitcode.vercel.app/
+- **Education:** B.Tech Computer Science & Engineering, Jagannath University, Jaipur, India
+- **Core Specializations:** Data Analytics, Python, SQL, Power BI, Exploratory Data Analysis, Applied Machine Learning, Full-Stack Development
+- **Contact:** sashibitcode@gmail.com
+- **Social Profiles:**
+  - GitHub: https://github.com/sashibitcode
+  - LinkedIn: https://www.linkedin.com/in/sashikant-raj/
+  - LeetCode: https://leetcode.com/u/sashibitcode/
+  - Instagram: https://www.instagram.com/sashibitcode/
+
+## 3. Key Architectural Pillars
+- **Zero-Latency Stream Pipeline:** Direct streaming from Google Drive content URLs with client-side buffer management.
+- **4-Stage Deduplication Engine:**
+  1. Primary Drive ID verification
+  2. Slugified & normalized song-artist string matching
+  3. Fuzzy punctuation and character normalization
+  4. Real-time reconciliation during pull-to-refresh and background polling
+- **Progressive Web App Architecture:**
+  - Standalone display mode with dark theme `#06110c`
+  - Safe area inset handling for notched iOS and Android devices (`env(safe-area-inset-bottom)`)
+  - Dynamic viewport height (`100dvh`) eliminating layout shift on mobile virtual keyboard or URL bar toggle.
+- **Agentic AI & Screen Reader Friendly:**
+  - Semantic HTML5 structure allows autonomous agents (ChatGPT Operator, Claude Computer Use) to easily navigate tabs (Home, Search, Library, Favorites).
+  - Explicit aria-labels on transport controls: Play, Pause, Next Track, Previous Track, Shuffle, Repeat.
+
+## 4. Optimization Standards
+- **AEO (Answer Engine Optimization):** Schema.org `FAQPage` providing concise answers to user queries for rich snippets.
+- **GEO (Generative Engine Optimization):** Explicit entity definitions for AI search synthesis (Google AI Overviews, Perplexity, Copilot).
+- **LLMO (Large Language Model Optimization):** Markdown-structured LLM context files (`/llms.txt`, `/llms-full.txt`).
+- **AISEO:** Targeted crawler access configuration and IndexNow webhook integration.
+- **PageSpeed Optimization:** Optimized asset delivery, preconnect headers, and font display swap.
+

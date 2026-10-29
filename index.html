@@ -2,29 +2,191 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
-    <!-- PWA Primary Meta Tags -->
-    <title>SAS Music</title>
-    <meta name="title" content="SAS Music" />
-    <meta name="description" content="Production-ready, ad-free Progressive Web App." />
+    <!-- Primary Title & Identity Metadata -->
+    <title>SAS Music | Ad-Free PWA Music Player | Shashikant Raj</title>
+    <meta name="title" content="SAS Music | Ad-Free PWA Music Player | Shashikant Raj" />
+    <meta name="description" content="Production-ready, 100% ad-free Progressive Web App (PWA) music streaming player built with React, Vite, and Google Drive API by Shashikant Raj (sashibitcode). Featuring 4-tier deduplication, offline caching, and mobile bottom sheet gestures." />
+    <meta name="keywords" content="SAS Music, SAS PLAYER, Shashikant Raj, sashibitcode, Data Analyst, PWA Music Player, Ad-Free Music, Google Drive Music Streamer, React Music Player, Progressive Web App, Free Music Streaming" />
+    
+    <!-- Author & E-E-A-T Identity Metadata -->
+    <meta name="author" content="Shashikant Raj" />
+    <meta name="creator" content="Shashikant Raj" />
+    <meta name="publisher" content="Shashikant Raj" />
+    <meta name="author-title" content="Shashikant Raj | Data Analyst" />
+    <meta name="job-title" content="Data Analyst" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://sashibitcode-music.vercel.app/" />
+
+    <!-- Webmaster Verification for Search Engines -->
+    <meta name="google-site-verification" content="H1VaM4zOcJ9KYa-x-C4MMOhkovetODClD6duII0LNc0" />
+    <meta name="msvalidate.01" content="BING_WEBMASTER_VERIFICATION_TOKEN" />
+
+    <!-- AI & LLM Discoverability Links (LLMO / GEO) -->
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context" />
+    <link rel="alternate" type="text/plain" href="/llms-full.txt" title="Full LLM Context" />
+
+    <!-- Icons & Favicons -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- PWA Mobile Theme & App Tags -->
     <meta name="theme-color" content="#06110c" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="SAS Music" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="application-name" content="SAS Music" />
+    <meta name="mobile-web-app-capable" content="yes" />
 
-    <!-- Google Fonts Inter -->
+    <!-- Open Graph / Facebook / WhatsApp (Social & GEO Sharing) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SAS Music" />
+    <meta property="og:url" content="https://sashibitcode-music.vercel.app/" />
+    <meta property="og:title" content="SAS Music | Ad-Free PWA Music Player | Shashikant Raj" />
+    <meta property="og:description" content="Stream your favorite music ad-free with native bottom sheet controls, 4-layer duplicate prevention, and zero subscriptions." />
+    <meta property="og:image" content="https://sashibitcode-music.vercel.app/sas-music-logo.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="SAS Music Player Logo" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="profile:first_name" content="Shashikant" />
+    <meta property="profile:last_name" content="Raj" />
+    <meta property="profile:username" content="sashibitcode" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@sashibitcode" />
+    <meta name="twitter:creator" content="@sashibitcode" />
+    <meta name="twitter:title" content="SAS Music | Ad-Free PWA Music Player" />
+    <meta name="twitter:description" content="Production-ready, ad-free Progressive Web App music streaming player powered by Google Drive API. Created by Shashikant Raj." />
+    <meta name="twitter:image" content="https://sashibitcode-music.vercel.app/sas-music-logo.png" />
+    <meta name="twitter:image:alt" content="SAS Music Player Logo" />
+
+    <!-- PageSpeed Insights: Preconnect & Preload Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="image" href="/favicon.svg" fetchpriority="high" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- JSON-LD Structured Data Graph (AEO, GEO, E-E-A-T, SEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://sashibitcode.vercel.app/#person",
+          "name": "Shashikant Raj",
+          "alternateName": ["sashibitcode", "Shashi"],
+          "jobTitle": "Data Analyst",
+          "description": "Data Analyst and Computer Science student at Jagannath University, Jaipur specializing in Python, SQL, Power BI, Exploratory Data Analysis, and Applied ML.",
+          "url": "https://sashibitcode.vercel.app/",
+          "image": "https://sashibitcode.vercel.app/shashikant-cutout.webp",
+          "email": "mailto:sashibitcode@gmail.com",
+          "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "Jagannath University, Jaipur",
+            "url": "https://www.jagannathuniversity.org/"
+          },
+          "sameAs": [
+            "https://github.com/sashibitcode",
+            "https://www.linkedin.com/in/sashikant-raj/",
+            "https://leetcode.com/u/sashibitcode/",
+            "https://www.instagram.com/sashibitcode/"
+          ],
+          "knowsAbout": [
+            "Data Analytics",
+            "Python",
+            "SQL",
+            "Power BI",
+            "React",
+            "Progressive Web Apps",
+            "Audio Streaming Systems"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://sashibitcode-music.vercel.app/#website",
+          "url": "https://sashibitcode-music.vercel.app/",
+          "name": "SAS Music",
+          "description": "Production-ready, ad-free Progressive Web App music streaming platform.",
+          "inLanguage": "en-US",
+          "publisher": {
+            "@id": "https://sashibitcode.vercel.app/#person"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://sashibitcode-music.vercel.app/#app",
+          "name": "SAS Music",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Web, iOS, Android, Windows, macOS",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "description": "Ad-free Progressive Web App music streaming player powered by Google Drive API, equipped with 4-tier deduplication, offline caching, and gesture-driven full player bottom sheet.",
+          "url": "https://sashibitcode-music.vercel.app/",
+          "author": {
+            "@id": "https://sashibitcode.vercel.app/#person"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://sashibitcode-music.vercel.app/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is SAS Music?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SAS Music is a high-performance, ad-free Progressive Web App (PWA) audio player engineered to stream music libraries directly from Google Drive without subscriptions, logins, or audio advertisements."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who developed SAS Music?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SAS Music was developed by Shashikant Raj (brand handle: sashibitcode), a Data Analyst and Computer Science undergraduate at Jagannath University, Jaipur."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is SAS Music completely free and ad-free?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, SAS Music is 100% free and open-source with zero ads, zero tracking, and no commercial monetization."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does SAS Music prevent duplicate songs?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SAS Music features a 4-layer zero-duplicate engine that cross-references Google Drive file IDs, normalized file titles, punctuation stripping, and state reconciliation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can SAS Music be installed as an app on Android and iOS?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, SAS Music is an installable PWA that can be added to your home screen on Android and iOS devices, featuring native touch gestures and offline shell caching."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body class="bg-[#06110c] text-slate-100 antialiased selection:bg-[#A31C1B] selection:text-white h-[100dvh] w-full overflow-hidden select-none">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-

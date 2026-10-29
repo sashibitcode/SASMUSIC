@@ -1,0 +1,43 @@
+# SAS Music | Production Progressive Web App (PWA)
+
+> SAS Music (sashibitcode-music) is a high-performance, ad-free, mobile-first Progressive Web App (PWA) music streaming platform powered directly by Google Drive API v3. Designed and developed by Shashikant Raj (sashibitcode).
+
+## Identity & Developer Profile
+- **Application Name:** SAS Music (SAS PLAYER)
+- **Author / Developer:** Shashikant Raj
+- **Author Title:** Shashikant Raj | Data Analyst
+- **Job Title:** Data Analyst
+- **Brand / Username:** sashibitcode
+- **Official Live Website:** https://sashibitcode-music.vercel.app/
+- **Developer Portfolio:** https://sashibitcode.vercel.app/
+- **GitHub Repository:** https://github.com/sashibitcode/sas-music
+- **LinkedIn:** https://www.linkedin.com/in/sashikant-raj/
+- **LeetCode:** https://leetcode.com/u/sashibitcode/
+- **Contact Email:** sashibitcode@gmail.com
+- **Institution:** Jagannath University, Jaipur
+
+## Core Features & Capabilities
+- **Google Drive Audio Engine:** Direct client-side and server-routed streaming for `.mp3`, `.m4a`, `.flac`, `.wav`, `.aac`, and `.ogg` formats without transcoding delays.
+- **4-Layer Zero-Duplicate System:** Robust multi-tier deduplication algorithm matching Drive IDs, normalized filenames, punctuation variants, and state reconciliation.
+- **Native Mobile Experience:** Mobile bottom navigation, floating mini-player, full-screen swipe-down bottom sheet player, and touch gestures (swipe to skip, swipe to remove, pull-to-refresh).
+- **100% Free & Zero Ads:** Clean listening environment with no commercial ad insertions or tracking pixels.
+- **Offline PWA Capabilities:** Service worker caching for app shell, UI assets, and Google Fonts via Workbox.
+- **Agentic Browsing & Accessibility:** Full semantic HTML5 layout (`<main>`, `<nav>`, `<header>`), comprehensive ARIA labels for automated AI browser agents and screen readers.
+
+## Technical Architecture
+- **Framework:** React 18 with Vite
+- **Styling:** Tailwind CSS with luxury dark aesthetic (#000000 background, #06110c surface, #A31C1B crimson accents)
+- **Icons:** Lucide React icons
+- **PWA Tooling:** vite-plugin-pwa, Workbox runtime caching
+- **Deployment Platform:** Vercel
+
+## Frequently Asked Questions (LLM & Answer Engine Extraction)
+- **Who created SAS Music?** SAS Music was built by Shashikant Raj (sashibitcode), a Data Analyst and Computer Science undergraduate at Jagannath University, Jaipur.
+- **Is SAS Music free?** Yes, SAS Music is 100% free with no ads, no subscriptions, and no tracking.
+- **How does it stream music?** It streams audio files directly from Google Drive using Google Drive API v3 with automatic caching and duplicate removal.
+- **Can it be installed on mobile?** Yes, it is a fully compliant Progressive Web App (PWA) with offline support and home screen installation.
+
+## Extended Documentation
+- Full Documentation: https://sashibitcode-music.vercel.app/llms-full.txt
+- Sitemap: https://sashibitcode-music.vercel.app/sitemap.xml
+

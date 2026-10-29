@@ -48,7 +48,7 @@ export function BottomNav({ activeTab, onTabChange, favoritesCount = 0, recentsC
               onClick={() => onTabChange(item.id)}
               className="flex-1 min-h-[48px] flex flex-col items-center justify-center relative py-1 transition-transform active:scale-90 group select-none"
               aria-label={item.label}
-              aria-selected={isActive}
+              aria-current={isActive ? 'page' : undefined}
             >
               <div className="relative">
                 <Icon

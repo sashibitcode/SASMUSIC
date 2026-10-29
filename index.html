@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     
     <!-- Primary Title & Identity Metadata -->
     <title>SAS Music | Ad-Free PWA Music Player | Shashikant Raj</title>
@@ -65,11 +65,14 @@
     <meta name="twitter:image" content="https://sashibitcode-music.vercel.app/sas-music-logo.png" />
     <meta name="twitter:image:alt" content="SAS Music Player Logo" />
 
-    <!-- PageSpeed Insights: Preconnect & Preload Optimization -->
+    <!-- PageSpeed Insights: Preconnect & Non-Render-Blocking Font Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="image" href="/favicon.svg" fetchpriority="high" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+    </noscript>
 
     <!-- JSON-LD Structured Data Graph (AEO, GEO, E-E-A-T, SEO) -->
     <script type="application/ld+json">

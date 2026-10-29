@@ -19,6 +19,7 @@ export function SearchBar({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search songs, artists, folders..."
+          aria-label="Search songs, artists, and playlists"
           className="w-full pl-10 pr-11 h-10 sm:h-11 min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm rounded-xl glass-panel text-white placeholder-slate-500 focus:outline-none focus:border-[#A31C1B] focus:ring-2 focus:ring-[#A31C1B]/30 transition-all shadow-inner"
         />
         {searchQuery && (
@@ -40,6 +41,7 @@ export function SearchBar({
           <select
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
+            aria-label="Sort songs"
             className="bg-transparent text-white font-medium focus:outline-none cursor-pointer text-xs"
           >
             <option value="newest" className="bg-[#171717] text-white">Newest Added</option>

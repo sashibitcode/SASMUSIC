@@ -255,6 +255,7 @@ export function CategoryPills({
             </p>
             <button
               onClick={() => setOpenDropdown(null)}
+              aria-label="Close playlists dropdown"
               className="text-slate-400 hover:text-white p-1"
             >
               <X className="w-3.5 h-3.5" />
@@ -298,6 +299,7 @@ export function CategoryPills({
             </p>
             <button
               onClick={() => setOpenDropdown(null)}
+              aria-label="Close playlists dropdown"
               className="text-slate-400 hover:text-white p-1"
             >
               <X className="w-3.5 h-3.5" />
@@ -351,6 +353,7 @@ export function CategoryPills({
                 setOpenDropdown(null);
                 setArtistSearch('');
               }}
+              aria-label="Close singers dropdown"
               className="text-slate-400 hover:text-white p-1"
             >
               <X className="w-3.5 h-3.5" />
@@ -365,11 +368,13 @@ export function CategoryPills({
               value={artistSearch}
               onChange={(e) => setArtistSearch(e.target.value)}
               placeholder="Filter singers..."
+              aria-label="Filter singers"
               className="w-full pl-8 pr-7 py-1.5 rounded-lg bg-[#0e1411] border border-[#282f2b] text-white placeholder-slate-500 text-xs focus:outline-none focus:border-[#A31C1B]"
             />
             {artistSearch && (
               <button
                 onClick={() => setArtistSearch('')}
+                aria-label="Clear singer filter"
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
               >
                 <X className="w-3 h-3" />

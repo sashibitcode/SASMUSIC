@@ -75,11 +75,20 @@ export const DEMO_PLAYLISTS = [
 ];
 
 /**
- * Generates direct Google Drive audio streaming URL
+ * Generates direct high-speed Google Drive audio streaming URL
+ * Uses the fast global CDN uc?export=download endpoint with Range (206) support
  */
-export function getDriveStreamUrl(fileId, apiKey) {
-  if (!fileId || !apiKey) return '';
-  return `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?alt=media&key=${encodeURIComponent(apiKey)}`;
+export function getDriveStreamUrl(fileId) {
+  if (!fileId) return '';
+  return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`;
+}
+
+/**
+ * Fallback streaming endpoint
+ */
+export function getDriveFallbackStreamUrl(fileId) {
+  if (!fileId) return '';
+  return `https://docs.google.com/uc?export=open&id=${encodeURIComponent(fileId)}`;
 }
 
 /**
@@ -121,7 +130,8 @@ async function fetchFolderAudioFiles(folderId, apiKey, folderName = 'Main Drive'
         mimeType: file.mimeType,
         size: Number(file.size || 0),
         modifiedTime: file.modifiedTime,
-        streamUrl: getDriveStreamUrl(file.id, apiKey),
+        streamUrl: getDriveStreamUrl(file.id),
+        fallbackStreamUrl: getDriveFallbackStreamUrl(file.id),
         folderId,
         folderName
       };

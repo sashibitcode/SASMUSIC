@@ -10,6 +10,20 @@ const STORAGE_VOLUME = 'sas_volume';
 const STORAGE_REPEAT = 'sas_repeat_mode';
 const STORAGE_SHUFFLE = 'sas_shuffle_mode';
 
+/**
+ * Resolves high-speed streaming URL, bypassing slow/rate-limited googleapis.com endpoints
+ */
+export const resolveFastAudioUrl = (song) => {
+  if (!song) return '';
+  if (song.streamUrl && !song.streamUrl.includes('googleapis.com')) {
+    return song.streamUrl;
+  }
+  if (song.id && !song.isDemo) {
+    return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(song.id)}`;
+  }
+  return song.streamUrl || '';
+};
+
 export function AudioProvider({ children }) {
   const { addToRecentlyPlayed } = useLibrary();
 
@@ -62,7 +76,7 @@ export function AudioProvider({ children }) {
   // Audio element setup and event listeners
   useEffect(() => {
     const audio = audioRef.current;
-    audio.preload = 'metadata';
+    audio.preload = 'auto';
     audio.volume = volume;
 
     const onPlay = () => {
@@ -85,10 +99,25 @@ export function AudioProvider({ children }) {
       }
     };
     const onError = (e) => {
-      console.warn('Audio playback error:', e);
+      console.warn('Audio playback error, attempting recovery:', e);
       setIsLoadingAudio(false);
+      const active = stateRef.current.currentSong;
+
+      // First retry: instantly try docs.google.com open fallback endpoint
+      if (retryCountRef.current === 0 && active && active.id) {
+        retryCountRef.current = 1;
+        setIsLoadingAudio(true);
+        const fallbackUrl = active.fallbackStreamUrl || `https://docs.google.com/uc?export=open&id=${encodeURIComponent(active.id)}`;
+        if (audioRef.current && audioRef.current.src !== fallbackUrl) {
+          audioRef.current.src = fallbackUrl;
+          audioRef.current.load();
+          audioRef.current.play().catch(console.warn);
+          return;
+        }
+      }
+
       // Automatic network retry on mobile data drops
-      if (retryCountRef.current < 2 && stateRef.current.currentSong) {
+      if (retryCountRef.current < 2 && active) {
         retryCountRef.current += 1;
         setIsLoadingAudio(true);
         setTimeout(() => {
@@ -96,7 +125,7 @@ export function AudioProvider({ children }) {
             audioRef.current.load();
             audioRef.current.play().catch(console.warn);
           }
-        }, 1200);
+        }, 800);
       } else {
         setIsPlaying(false);
       }
@@ -168,13 +197,14 @@ export function AudioProvider({ children }) {
   useEffect(() => {
     if (isPlaying && queue.length > 0 && queueIndex + 1 < queue.length) {
       const nextSong = queue[queueIndex + 1];
-      if (nextSong && nextSong.streamUrl) {
+      const targetUrl = resolveFastAudioUrl(nextSong);
+      if (targetUrl) {
         try {
           if (!preloadAudioRef.current) {
             preloadAudioRef.current = new Audio();
           }
-          if (preloadAudioRef.current.src !== nextSong.streamUrl) {
-            preloadAudioRef.current.src = nextSong.streamUrl;
+          if (preloadAudioRef.current.src !== targetUrl) {
+            preloadAudioRef.current.src = targetUrl;
             preloadAudioRef.current.preload = 'auto';
           }
         } catch (_) {}
@@ -191,10 +221,13 @@ export function AudioProvider({ children }) {
       setCurrentSong(songToPlay);
 
       const audio = audioRef.current;
-      if (audio.src !== songToPlay.streamUrl) {
-        audio.src = songToPlay.streamUrl;
+      const targetUrl = resolveFastAudioUrl(songToPlay);
+      if (audio.src !== targetUrl) {
+        audio.src = targetUrl;
+        audio.preload = 'auto';
+      } else {
+        audio.currentTime = 0;
       }
-      audio.currentTime = 0;
       audio.play().catch((err) => {
         console.warn('Audio play request interrupted:', err);
       });
@@ -230,10 +263,13 @@ export function AudioProvider({ children }) {
     setCurrentSong(song);
 
     const audio = audioRef.current;
-    if (audio.src !== song.streamUrl) {
-      audio.src = song.streamUrl;
+    const targetUrl = resolveFastAudioUrl(song);
+    if (audio.src !== targetUrl) {
+      audio.src = targetUrl;
+      audio.preload = 'auto';
+    } else {
+      audio.currentTime = 0;
     }
-    audio.currentTime = 0;
     audio.play().catch((err) => {
       console.warn('Playback start error:', err);
     });
@@ -419,7 +455,7 @@ export function AudioProvider({ children }) {
           setQueueIndex(0);
 
           const audio = audioRef.current;
-          audio.src = parsedSong.streamUrl;
+          audio.src = resolveFastAudioUrl(parsedSong);
           if (savedTime && !isNaN(savedTime)) {
             const timeNum = Number(savedTime);
             audio.currentTime = timeNum;

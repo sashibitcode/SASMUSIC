@@ -21,25 +21,42 @@ export function SongRow({ song, index, playlist = null }) {
   const { isFavorite, toggleFavorite, localPlaylists, addSongToPlaylist } = useLibrary();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showPlaylistsSubmenu, setShowPlaylistsSubmenu] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
   const menuRef = useRef(null);
 
   const isCurrent = currentSong && currentSong.id === song.id;
   const isFav = isFavorite(song.id);
 
-  // Close context menu when clicking outside
+  // Close context menu when clicking or tapping outside
   useEffect(() => {
+    if (!isMenuOpen) return;
+
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setIsMenuOpen(false);
-        setShowPlaylistsSubmenu(false);
       }
     };
-    if (isMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside, { passive: true });
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, [isMenuOpen]);
+
+  const toggleMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isMenuOpen && menuRef.current) {
+      const rect = menuRef.current.getBoundingClientRect();
+      // If within 230px of bottom of screen, open upwards so it's fully visible
+      setOpenUpward(rect.bottom + 230 > window.innerHeight);
+    }
+    setIsMenuOpen((prev) => !prev);
+  };
 
   const handlePlayClick = () => {
     if (isCurrent) {
@@ -53,6 +70,8 @@ export function SongRow({ song, index, playlist = null }) {
     <div
       onClick={handlePlayClick}
       className={`group relative flex items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer border ${
+        isMenuOpen ? 'z-40' : 'z-0'
+      } ${
         isCurrent
           ? 'bg-[#06110c] border-[#A31C1B] shadow-[0_6px_28px_rgba(6,17,12,0.95),_0_0_15px_rgba(163,28,27,0.35)] ring-1 ring-[#A31C1B]/80'
           : 'glass-card hover:translate-x-0.5'
@@ -148,58 +167,103 @@ export function SongRow({ song, index, playlist = null }) {
         {/* More Options Context Menu - 44x44px touch target */}
         <div className="relative" ref={menuRef}>
           <button
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-slate-400 hover:text-white hover:bg-[#222222] transition-colors active:scale-90"
+            type="button"
+            onClick={toggleMenu}
+            className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-colors active:scale-90 ${
+              isMenuOpen ? 'text-white bg-[#222222]' : 'text-slate-400 hover:text-white hover:bg-[#222222]'
+            }`}
             aria-label="More options"
+            aria-expanded={isMenuOpen}
           >
             <MoreVertical className="w-4 h-4" />
           </button>
 
           {isMenuOpen && (
-            <div className="absolute right-0 top-full mt-1 w-48 rounded-xl bg-[#171717] border border-[#282f2b] shadow-2xl py-1.5 z-40 text-xs">
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className={`absolute right-0 ${
+                openUpward ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
+              } w-52 rounded-2xl bg-[#171717] border border-[#282f2b] shadow-[0_12px_40px_rgba(0,0,0,0.85)] py-2 z-50 text-xs backdrop-blur-xl animate-in fade-in duration-150`}
+            >
               <button
-                onClick={() => {
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playSong(song, playlist);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
+              >
+                <Play className="w-4 h-4 text-[#A31C1B] fill-[#A31C1B]" />
+                <span>Play Now</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playNextInQueue(song);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
+              >
+                <ListPlus className="w-4 h-4 text-[#A31C1B]" />
+                <span>Play Next</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
                   addToQueue(song);
                   setIsMenuOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
               >
                 <Plus className="w-4 h-4 text-[#A31C1B]" />
                 <span>Add to Queue</span>
               </button>
 
               <button
-                onClick={() => {
-                  playNextInQueue(song);
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(song.id);
                   setIsMenuOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
               >
-                <ListPlus className="w-4 h-4 text-[#A31C1B]" />
-                <span>Play Next</span>
+                <Heart className={`w-4 h-4 ${isFav ? 'text-[#A31C1B] fill-[#A31C1B]' : 'text-slate-400'}`} />
+                <span>{isFav ? 'Remove from Favorites' : 'Add to Favorites'}</span>
               </button>
 
-              {/* Add to Playlist sub-options */}
-              {localPlaylists.length > 0 && (
-                <div className="border-t border-[#282f2b] mt-1 pt-1">
-                  <p className="px-3.5 py-1 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-                    Add to Playlist:
-                  </p>
-                  {localPlaylists.map((pl) => (
+              {/* Add to Playlist section */}
+              <div className="border-t border-[#282f2b] my-1 pt-1.5">
+                <p className="px-4 py-1 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                  Add to Playlist:
+                </p>
+                {localPlaylists.length > 0 ? (
+                  localPlaylists.map((pl) => (
                     <button
                       key={pl.id}
-                      onClick={() => {
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         addSongToPlaylist(pl.id, song.id);
                         setIsMenuOpen(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3.5 py-1.5 text-slate-300 hover:bg-[#222222] hover:text-[#fca5a5] text-left truncate"
+                      className="w-full flex items-center gap-2.5 px-4 py-2 text-slate-300 hover:bg-[#222222] hover:text-[#fca5a5] text-left truncate transition-colors text-xs"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#A31C1B]" />
+                      <span className="w-2 h-2 rounded-full bg-[#A31C1B] flex-shrink-0" />
                       <span className="truncate">{pl.name}</span>
                     </button>
-                  ))}
-                </div>
-              )}
+                  ))
+                ) : (
+                  <p className="px-4 py-1.5 text-[11px] text-slate-500 italic">
+                    No playlists created yet
+                  </p>
+                )}
+              </div>
             </div>
           )}
         </div>

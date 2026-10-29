@@ -164,6 +164,15 @@ export function AudioProvider({ children }) {
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('error', onError);
 
+    // Prevent background audio suspension on screen lock / tab switch
+    const onVisibilityChange = () => {
+      const { isPlaying, currentSong } = stateRef.current;
+      if (document.visibilityState === 'visible' && isPlaying && audio.paused && currentSong) {
+        audio.play().catch(console.warn);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
     return () => {
       audio.removeEventListener('play', onPlay);
       audio.removeEventListener('pause', onPause);
@@ -173,8 +182,26 @@ export function AudioProvider({ children }) {
       audio.removeEventListener('durationchange', onDurationChange);
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('error', onError);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
+
+  // Screen WakeLock integration to keep audio pipeline active in background
+  useEffect(() => {
+    let wakeLock = null;
+    if (typeof navigator !== 'undefined' && 'wakeLock' in navigator && isPlaying) {
+      navigator.wakeLock.request('screen').then((lock) => {
+        wakeLock = lock;
+      }).catch(() => {});
+    }
+
+    return () => {
+      if (wakeLock) {
+        wakeLock.release().catch(() => {});
+        wakeLock = null;
+      }
+    };
+  }, [isPlaying]);
 
   // Update audio volume when state changes
   useEffect(() => {

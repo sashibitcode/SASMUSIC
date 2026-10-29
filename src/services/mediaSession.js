@@ -20,7 +20,8 @@ export function setupMediaSession({
   if (!('mediaSession' in navigator) || !song) return;
 
   try {
-    // Generate SVG/Data URI artwork matching the procedural gradient
+    // Absolute URLs required by Android/iOS notification systems for background artwork
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
     const artworkUri = generateArtworkDataUri(song.title, song.artist);
 
     navigator.mediaSession.metadata = new window.MediaMetadata({
@@ -29,8 +30,9 @@ export function setupMediaSession({
       album: song.folderName || 'SAS Music',
       artwork: [
         { src: artworkUri, sizes: '512x512', type: 'image/svg+xml' },
-        { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-        { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' }
+        { src: origin ? `${origin}/pwa-512x512.png` : '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+        { src: origin ? `${origin}/pwa-192x192.png` : '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: origin ? `${origin}/maskable-icon.png` : '/maskable-icon.png', sizes: '512x512', type: 'image/png' }
       ]
     });
 

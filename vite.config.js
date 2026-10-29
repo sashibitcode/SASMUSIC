@@ -27,6 +27,8 @@ export default defineConfig({
         theme_color: '#06110c',
         background_color: '#06110c',
         display: 'standalone',
+        display_override: ['standalone', 'window-controls-overlay'],
+        handle_links: 'preferred',
         orientation: 'portrait',
         scope: '/',
         start_url: '/',

@@ -21,10 +21,19 @@ import { SettingsModal } from './components/settings/SettingsModal';
 import { BottomNav } from './components/navigation/BottomNav';
 import { DesktopSidebar } from './components/navigation/DesktopSidebar';
 import { filterSongsByCategory } from './utils/categoryExtractor';
+import { useAudio } from './contexts/AudioContext';
+import { usePwaBackHandler } from './hooks/usePwaBackHandler';
 
 export function AppContent() {
   const { songs, drivePlaylists, isLoading, error, refreshLibrary } = useDrive();
   const { favorites, recentlyPlayed } = useLibrary();
+  const {
+    isPlaying,
+    isFullPlayerOpen,
+    setIsFullPlayerOpen,
+    isQueueOpen,
+    setIsQueueOpen
+  } = useAudio();
 
   // Keyboard shortcuts listener
   useKeyboardShortcuts();
@@ -36,6 +45,21 @@ export function AppContent() {
   const [activeFilter, setActiveFilter] = useState({ type: 'all', value: null });
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // Intelligent PWA back gesture and Android hardware back button handler
+  usePwaBackHandler({
+    activeTab,
+    setActiveTab,
+    isFullPlayerOpen,
+    setIsFullPlayerOpen,
+    isQueueOpen,
+    setIsQueueOpen,
+    isSettingsOpen,
+    setIsSettingsOpen,
+    isUploadOpen,
+    setIsUploadOpen,
+    isPlaying
+  });
 
   const searchInputRef = useRef(null);
   const mainScrollRef = useRef(null);

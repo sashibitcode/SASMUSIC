@@ -15,11 +15,11 @@ const STORAGE_SHUFFLE = 'sas_shuffle_mode';
  */
 export const resolveFastAudioUrl = (song) => {
   if (!song) return '';
-  if (song.streamUrl && !song.streamUrl.includes('googleapis.com')) {
+  if (song.isDemo && song.streamUrl) {
     return song.streamUrl;
   }
-  if (song.id && !song.isDemo) {
-    return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(song.id)}`;
+  if (song.id) {
+    return `/api/stream?id=${encodeURIComponent(song.id)}`;
   }
   return song.streamUrl || '';
 };

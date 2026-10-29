@@ -4,21 +4,19 @@ import { fetchDriveLibrary, deduplicateSongs, DEMO_SONGS, DEMO_PLAYLISTS } from 
 
 const DriveContext = createContext(null);
 
-const STORAGE_CACHED_SONGS = 'sas_cached_songs_v3';
-const STORAGE_CACHED_PLAYLISTS = 'sas_cached_playlists_v3';
+const STORAGE_CACHED_SONGS = 'sas_cached_songs_v4';
+const STORAGE_CACHED_PLAYLISTS = 'sas_cached_playlists_v4';
 
 function migrateFastStreamUrls(songList) {
   if (!Array.isArray(songList)) return [];
   return songList.map((s) => {
     if (!s || !s.id) return s;
-    if (!s.streamUrl || s.streamUrl.includes('googleapis.com')) {
-      return {
-        ...s,
-        streamUrl: `https://drive.google.com/uc?export=download&id=${encodeURIComponent(s.id)}`,
-        fallbackStreamUrl: `https://docs.google.com/uc?export=open&id=${encodeURIComponent(s.id)}`
-      };
-    }
-    return s;
+    if (s.isDemo) return s;
+    return {
+      ...s,
+      streamUrl: `/api/stream?id=${encodeURIComponent(s.id)}`,
+      fallbackStreamUrl: `https://drive.google.com/uc?export=download&id=${encodeURIComponent(s.id)}`
+    };
   });
 }
 
@@ -29,7 +27,7 @@ export function DriveProvider({ children }) {
   // Initialize from cache with strict deduplication & fast stream URL migration
   const [songs, setSongs] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_CACHED_SONGS) || localStorage.getItem('sas_cached_songs_v2');
+      const saved = localStorage.getItem(STORAGE_CACHED_SONGS) || localStorage.getItem('sas_cached_songs_v3') || localStorage.getItem('sas_cached_songs_v2');
       return saved ? deduplicateSongs(migrateFastStreamUrls(JSON.parse(saved))) : [];
     } catch (_) {
       return [];
@@ -38,7 +36,7 @@ export function DriveProvider({ children }) {
 
   const [drivePlaylists, setDrivePlaylists] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_CACHED_PLAYLISTS) || localStorage.getItem('sas_cached_playlists_v2');
+      const saved = localStorage.getItem(STORAGE_CACHED_PLAYLISTS) || localStorage.getItem('sas_cached_playlists_v3') || localStorage.getItem('sas_cached_playlists_v2');
       return saved ? JSON.parse(saved) : [];
     } catch (_) {
       return [];
@@ -47,7 +45,7 @@ export function DriveProvider({ children }) {
 
   const [isLoading, setIsLoading] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_CACHED_SONGS) || localStorage.getItem('sas_cached_songs_v2');
+      const saved = localStorage.getItem(STORAGE_CACHED_SONGS) || localStorage.getItem('sas_cached_songs_v3') || localStorage.getItem('sas_cached_songs_v2');
       return !saved || JSON.parse(saved).length === 0;
     } catch (_) {
       return true;

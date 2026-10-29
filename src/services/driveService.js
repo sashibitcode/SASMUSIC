@@ -75,12 +75,12 @@ export const DEMO_PLAYLISTS = [
 ];
 
 /**
- * Generates direct high-speed Google Drive audio streaming URL
- * Uses the fast global CDN uc?export=download endpoint with Range (206) support
+ * Generates direct high-speed audio streaming URL via same-origin edge proxy
+ * Bypasses Google Cross-Origin Resource Policy (CORP: same-site) blocks
  */
 export function getDriveStreamUrl(fileId) {
   if (!fileId) return '';
-  return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`;
+  return `/api/stream?id=${encodeURIComponent(fileId)}`;
 }
 
 /**
@@ -88,7 +88,7 @@ export function getDriveStreamUrl(fileId) {
  */
 export function getDriveFallbackStreamUrl(fileId) {
   if (!fileId) return '';
-  return `https://docs.google.com/uc?export=open&id=${encodeURIComponent(fileId)}`;
+  return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`;
 }
 
 /**

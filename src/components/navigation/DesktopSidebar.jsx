@@ -125,15 +125,23 @@ export function DesktopSidebar({
           </button>
         )}
 
-        <div className="flex items-center justify-between p-2 rounded-xl bg-[#06110c]/80 border border-white/[0.06] group">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-medium text-slate-300">
-              SAS Music
+        <a
+          href="https://sashibitcode.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.06] hover:border-[#A31C1B]/40 transition-colors group cursor-pointer"
+          title="Visit Creator Portfolio - Shashikant Raj"
+        >
+          <div className="flex flex-col">
+            <span className="text-[11px] font-semibold text-slate-200 group-hover:text-white transition-colors">
+              Shashikant Raj
+            </span>
+            <span className="text-[10px] text-slate-400 font-mono">
+              @sashibitcode
             </span>
           </div>
-          <Sparkles className="w-3.5 h-3.5 text-[#A31C1B]" />
-        </div>
+          <Sparkles className="w-3.5 h-3.5 text-[#A31C1B] group-hover:scale-110 transition-transform" />
+        </a>
       </div>
     </aside>
   );

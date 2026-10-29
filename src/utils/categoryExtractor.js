@@ -36,15 +36,42 @@ const KNOWN_ARTISTS = [
   'Richa Sharma'
 ];
 
+export const DEFAULT_TOP_ARTISTS = [
+  { name: 'Pawan Singh', count: 7 },
+  { name: 'Alka Yagnik', count: 6 },
+  { name: 'Sonu Nigam', count: 4 },
+  { name: 'Udit Narayan', count: 3 },
+  { name: 'Khesari Lal', count: 3 },
+  { name: 'Kishore Kumar', count: 2 },
+  { name: 'KK', count: 2 },
+  { name: 'Kumar Sanu', count: 2 },
+  { name: 'Kavita Krishnamurthy', count: 2 },
+  { name: 'Rahat Fateh Ali Khan', count: 2 },
+  { name: 'Neelkamal Singh', count: 2 },
+  { name: 'Arijit Singh', count: 1 },
+  { name: 'Sunidhi Chauhan', count: 1 },
+  { name: 'Mohammed Rafi', count: 1 },
+  { name: 'A.R. Rahman', count: 2 },
+  { name: 'Shilpi Raj', count: 1 },
+  { name: 'Babul Supriyo', count: 1 },
+  { name: 'Amit Trivedi', count: 1 }
+];
+
 /**
  * Extracts and sorts top artists present in the loaded library
  */
 export function extractTopArtists(songs = []) {
+  if (!songs || songs.length === 0) {
+    return DEFAULT_TOP_ARTISTS;
+  }
+
   const counts = {};
 
   for (const song of songs) {
     if (!song) continue;
-    const fullText = `${song.title || ''} ${song.artist || ''} ${song.name || ''}`.toLowerCase();
+    const fullText = `${song.title || ''} ${song.artist || ''} ${song.name || ''}`
+      .toLowerCase()
+      .replace(/_/g, ' ');
 
     for (const artist of KNOWN_ARTISTS) {
       const normalizedArtist = artist.toLowerCase();
@@ -59,6 +86,13 @@ export function extractTopArtists(songs = []) {
       if (art.length > 2 && !counts[art]) {
         counts[art] = (counts[art] || 0) + 1;
       }
+    }
+  }
+
+  // Merge with defaults so known library singers are always present
+  for (const def of DEFAULT_TOP_ARTISTS) {
+    if (!counts[def.name]) {
+      counts[def.name] = def.count;
     }
   }
 
@@ -170,7 +204,9 @@ export function filterSongsByCategory(songs = [], filter = { type: 'all', value:
     case 'artist': {
       const artistQuery = value.toLowerCase().trim();
       return songs.filter((song) => {
-        const text = `${song.artist || ''} ${song.title || ''} ${song.name || ''}`.toLowerCase();
+        const text = `${song.artist || ''} ${song.title || ''} ${song.name || ''}`
+          .toLowerCase()
+          .replace(/_/g, ' ');
         return text.includes(artistQuery);
       });
     }
@@ -179,3 +215,4 @@ export function filterSongsByCategory(songs = [], filter = { type: 'all', value:
       return songs;
   }
 }
+

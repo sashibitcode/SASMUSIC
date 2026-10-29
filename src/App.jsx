@@ -96,7 +96,7 @@ export function AppContent() {
 
         {/* Sticky Pinned Search & Categories Header */}
         {(activeTab === 'songs' || activeTab === 'search') && !error && !isLoading && (
-          <div className="flex-shrink-0 z-20 px-3.5 sm:px-6 pt-2 pb-1.5 bg-[#06110c]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-sm max-w-6xl w-full mx-auto space-y-2">
+          <div className="flex-shrink-0 z-30 px-3.5 sm:px-6 pt-2 pb-1.5 bg-[#06110c]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-sm max-w-6xl w-full mx-auto space-y-2">
             <SearchBar
               inputRef={searchInputRef}
               searchQuery={searchQuery}

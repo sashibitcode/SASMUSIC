@@ -173,3 +173,4 @@ export function SettingsModal({ isOpen, onClose, onOpenUpload }) {
     </div>
   );
 }
+

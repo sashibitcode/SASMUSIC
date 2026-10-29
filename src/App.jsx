@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDrive } from './contexts/DriveContext';
 import { useLibrary } from './contexts/LibraryContext';
-import { useDebounce } from './hooks/useDebounce';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { Header } from './components/header/Header';
-import { SearchBar } from './components/header/SearchBar';
 import { SongList } from './components/library/SongList';
+import { SearchView } from './components/library/SearchView';
 import { PlaylistsView } from './components/library/PlaylistsView';
 import { FavoritesView } from './components/library/FavoritesView';
 import { RecentsView } from './components/library/RecentsView';
@@ -49,8 +48,6 @@ export function AppContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const debouncedSearch = useDebounce(searchQuery, 180);
-
   // When switching to search tab, ensure user can immediately type
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
@@ -85,17 +82,6 @@ export function AppContent() {
 
         {/* Scrollable Main Views Container */}
         <main className="flex-1 overflow-y-auto no-scrollbar touch-pan-y px-3.5 sm:px-6 pt-3 pb-36 md:pb-28 max-w-6xl w-full mx-auto">
-          {/* Search Bar - Shown on 'songs' or 'search' tabs */}
-          {(activeTab === 'songs' || activeTab === 'search') && !error && !isLoading && (
-            <SearchBar
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-              totalCount={songs.length}
-            />
-          )}
-
           {/* Dynamic Content Views */}
           {isLoading ? (
             <SongListSkeleton count={8} />
@@ -106,11 +92,21 @@ export function AppContent() {
             />
           ) : (
             <div>
-              {(activeTab === 'songs' || activeTab === 'search') && (
+              {activeTab === 'songs' && (
                 <SongList
                   songs={songs}
-                  searchQuery={debouncedSearch}
                   sortBy={sortBy}
+                  onSortChange={setSortBy}
+                />
+              )}
+
+              {activeTab === 'search' && (
+                <SearchView
+                  songs={songs}
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
                 />
               )}
 

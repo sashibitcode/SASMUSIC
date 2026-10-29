@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1040" />
+      <stop offset="50%" stop-color="#0f0728" />
+      <stop offset="100%" stop-color="#070314" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <filter id="shadowGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#8b5cf6" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded rect -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle border highlight -->
+  <rect width="508" height="508" x="2" y="2" rx="126" stroke="#4c1d95" stroke-width="4" stroke-opacity="0.5"/>
+
+  <!-- Glowing vinyl disc lines in background -->
+  <circle cx="256" cy="256" r="180" stroke="#2c1e54" stroke-width="2" stroke-dasharray="10 15" opacity="0.6" />
+  <circle cx="256" cy="256" r="130" stroke="#3b2b6d" stroke-width="1.5" opacity="0.4" />
+
+  <!-- Music Note Double Beamed with SAS Accent -->
+  <g filter="url(#shadowGlow)">
+    <!-- Left Stem & Note Head -->
+    <ellipse cx="180" cy="340" rx="46" ry="34" transform="rotate(-20 180 340)" fill="url(#glowGrad)"/>
+    <rect x="204" y="140" width="22" height="200" rx="6" fill="url(#glowGrad)"/>
+
+    <!-- Right Stem & Note Head -->
+    <ellipse cx="320" cy="310" rx="46" ry="34" transform="rotate(-20 320 310)" fill="url(#glowGrad)"/>
+    <rect x="344" y="110" width="22" height="200" rx="6" fill="url(#glowGrad)"/>
+
+    <!-- Beam Connecting Top -->
+    <path d="M 204 150 L 366 115 L 366 160 L 204 195 Z" fill="url(#glowGrad)"/>
+  </g>
+
+  <!-- SAS Letters badge centered / embossed -->
+  <rect x="156" y="396" width="200" height="48" rx="24" fill="#120b26" stroke="#8b5cf6" stroke-width="2.5" opacity="0.95"/>
+  <text x="256" y="430" text-anchor="middle" font-family="'Inter', -apple-system, sans-serif" font-weight="900" font-size="28" fill="#ffffff" letter-spacing="4">SAS</text>
+</svg>
+

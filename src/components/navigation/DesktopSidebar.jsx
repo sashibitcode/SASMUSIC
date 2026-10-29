@@ -1,0 +1,133 @@
+import React from 'react';
+import {
+  Music,
+  Search,
+  Folder,
+  Heart,
+  History,
+  FolderOpen,
+  Sparkles,
+  Download
+} from 'lucide-react';
+import { Logo } from '../common/Logo';
+import { useDrive } from '../../contexts/DriveContext';
+
+export function DesktopSidebar({
+  activeTab,
+  onTabChange,
+  favoritesCount = 0,
+  recentsCount = 0,
+  onOpenConfig,
+  onSelectFolder
+}) {
+  const { drivePlaylists } = useDrive();
+
+  const primaryLinks = [
+    { id: 'songs', label: 'All Songs', icon: Music },
+    { id: 'search', label: 'Search', icon: Search },
+    { id: 'playlists', label: 'Playlists', icon: Folder, count: drivePlaylists.length },
+    { id: 'favorites', label: 'Favorites', icon: Heart, count: favoritesCount },
+    { id: 'recents', label: 'Recently Played', icon: History, count: recentsCount }
+  ];
+
+  return (
+    <aside
+      className="hidden md:flex flex-col w-64 lg:w-72 h-full bg-[#171717]/95 backdrop-blur-2xl border-r border-white/[0.08] p-5 select-none flex-shrink-0"
+      aria-label="Desktop Sidebar Navigation"
+    >
+      {/* Brand Logo */}
+      <div className="mb-8 px-1">
+        <Logo
+          className="h-9 w-auto"
+          onClick={onOpenConfig}
+        />
+      </div>
+
+      {/* Primary Navigation Links */}
+      <nav className="space-y-1 mb-6">
+        <p className="px-3 pb-2 text-[10px] uppercase font-bold tracking-wider text-slate-400">
+          Menu
+        </p>
+        {primaryLinks.map((link) => {
+          const Icon = link.icon;
+          const isActive = activeTab === link.id;
+
+          return (
+            <button
+              key={link.id}
+              onClick={() => onTabChange(link.id)}
+              className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
+                isActive
+                  ? 'crimson-glow-btn text-white shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-white/[0.06]'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Icon
+                  className={`w-4 h-4 ${
+                    isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'
+                  }`}
+                />
+                <span className="tracking-wide">{link.label}</span>
+              </div>
+
+              {link.count !== undefined && link.count > 0 && (
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                    isActive
+                      ? 'bg-black/30 text-white'
+                      : 'bg-black/40 text-slate-400'
+                  }`}
+                >
+                  {link.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Featured Playlists Section */}
+      {drivePlaylists.length > 0 && (
+        <div className="flex-1 overflow-y-auto no-scrollbar pt-2 border-t border-white/[0.08]">
+          <p className="px-3 pb-2 text-[10px] uppercase font-bold tracking-wider text-slate-400 flex items-center justify-between">
+            <span>Playlists</span>
+            <span className="text-emerald-400 text-[9px] font-medium lowercase">{drivePlaylists.length}</span>
+          </p>
+          <div className="space-y-1">
+            {drivePlaylists.map((folder) => (
+              <button
+                key={folder.id}
+                onClick={() => {
+                  onTabChange('playlists');
+                  onSelectFolder?.(folder.name);
+                }}
+                className="w-full min-h-[40px] flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] transition-colors truncate text-left"
+              >
+                <Music className="w-3.5 h-3.5 text-[#A31C1B] flex-shrink-0" />
+                <span className="truncate">{folder.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Bottom Footer Info */}
+      <div className="pt-4 border-t border-white/[0.08] mt-auto">
+        <div
+          onClick={onOpenConfig}
+          className="flex items-center justify-between p-2 rounded-xl bg-[#06110c]/80 border border-white/[0.06] hover:border-[#A31C1B]/50 transition-colors cursor-pointer group"
+        >
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] font-medium text-slate-300 group-hover:text-white">
+              SAS Music
+            </span>
+          </div>
+          <Sparkles className="w-3.5 h-3.5 text-[#A31C1B]" />
+        </div>
+      </div>
+    </aside>
+  );
+}
+

@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { Play, Shuffle, Music, SearchX, RotateCw, ArrowUpDown } from 'lucide-react';
+import { Play, Shuffle, Music, SearchX, RotateCw } from 'lucide-react';
 import { SongRow } from './SongRow';
 import { useAudio } from '../../contexts/AudioContext';
 import { useDrive } from '../../contexts/DriveContext';
@@ -8,7 +8,7 @@ import { usePullToRefresh } from '../../hooks/usePullToRefresh';
 const INITIAL_BATCH_SIZE = 35;
 const BATCH_INCREMENT = 30;
 
-export function SongList({ songs = [], searchQuery = '', sortBy = 'newest', onSortChange }) {
+export function SongList({ songs = [], searchQuery = '', sortBy = 'newest' }) {
   const { playSong } = useAudio();
   const { refreshLibrary } = useDrive();
 
@@ -175,29 +175,10 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'newest', onSo
       )}
 
       {/* Action Bar */}
-      <div className="flex flex-wrap items-center justify-between pb-2 border-b border-[#282f2b] gap-2">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="text-xs font-semibold text-slate-400">
-            {filteredSongs.length} {filteredSongs.length === 1 ? 'song' : 'songs'}
-          </span>
-
-          {onSortChange && (
-            <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-slate-300 text-[11px] shadow-sm hover:border-[#A31C1B]/40 transition-colors">
-              <ArrowUpDown className="w-3 h-3 text-[#A31C1B]" />
-              <select
-                value={sortBy}
-                onChange={(e) => onSortChange(e.target.value)}
-                className="bg-transparent text-white font-medium focus:outline-none cursor-pointer text-[11px]"
-                aria-label="Sort songs"
-              >
-                <option value="newest" className="bg-[#171717] text-white">Newest</option>
-                <option value="oldest" className="bg-[#171717] text-white">Oldest</option>
-                <option value="title-asc" className="bg-[#171717] text-white">Title (A-Z)</option>
-                <option value="artist-asc" className="bg-[#171717] text-white">Artist (A-Z)</option>
-              </select>
-            </div>
-          )}
-        </div>
+      <div className="flex items-center justify-between pb-2 border-b border-[#282f2b]">
+        <span className="text-xs font-semibold text-slate-400">
+          {filteredSongs.length} {filteredSongs.length === 1 ? 'song' : 'songs'}
+        </span>
 
         <div className="flex items-center gap-2">
           <button

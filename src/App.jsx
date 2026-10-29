@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDrive } from './contexts/DriveContext';
 import { useLibrary } from './contexts/LibraryContext';
+import { useDebounce } from './hooks/useDebounce';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { Header } from './components/header/Header';
+import { SearchBar } from './components/header/SearchBar';
 import { SongList } from './components/library/SongList';
-import { SearchView } from './components/library/SearchView';
 import { PlaylistsView } from './components/library/PlaylistsView';
 import { FavoritesView } from './components/library/FavoritesView';
 import { RecentsView } from './components/library/RecentsView';
@@ -33,6 +34,10 @@ export function AppContent() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const searchInputRef = useRef(null);
+  const mainScrollRef = useRef(null);
+  const debouncedSearch = useDebounce(searchQuery, 160);
+
   // Desktop creator shortcut: Shift + U opens upload modal directly
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -48,11 +53,12 @@ export function AppContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // When switching to search tab, ensure user can immediately type
+  // When switching to search tab, scroll to top and focus input
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
-    if (tabId === 'songs' && activeTab === 'search') {
-      // keep current search or reset
+    if (tabId === 'search') {
+      mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => searchInputRef.current?.focus(), 80);
     }
   };
 
@@ -80,8 +86,24 @@ export function AppContent() {
         {/* PWA Install Banner */}
         <PwaInstallPrompt />
 
+        {/* Sticky Pinned Search Bar - Always stays on screen when songs scroll! */}
+        {(activeTab === 'songs' || activeTab === 'search') && !error && !isLoading && (
+          <div className="flex-shrink-0 z-20 px-3.5 sm:px-6 py-2.5 bg-[#06110c]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-sm max-w-6xl w-full mx-auto">
+            <SearchBar
+              inputRef={searchInputRef}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+            />
+          </div>
+        )}
+
         {/* Scrollable Main Views Container */}
-        <main className="flex-1 overflow-y-auto no-scrollbar touch-pan-y px-3.5 sm:px-6 pt-3 pb-36 md:pb-28 max-w-6xl w-full mx-auto">
+        <main
+          ref={mainScrollRef}
+          className="flex-1 overflow-y-auto no-scrollbar touch-pan-y px-3.5 sm:px-6 pt-3 pb-36 md:pb-28 max-w-6xl w-full mx-auto"
+        >
           {/* Dynamic Content Views */}
           {isLoading ? (
             <SongListSkeleton count={8} />
@@ -92,21 +114,11 @@ export function AppContent() {
             />
           ) : (
             <div>
-              {activeTab === 'songs' && (
+              {(activeTab === 'songs' || activeTab === 'search') && (
                 <SongList
                   songs={songs}
+                  searchQuery={debouncedSearch}
                   sortBy={sortBy}
-                  onSortChange={setSortBy}
-                />
-              )}
-
-              {activeTab === 'search' && (
-                <SearchView
-                  songs={songs}
-                  searchQuery={searchQuery}
-                  onSearchChange={setSearchQuery}
-                  sortBy={sortBy}
-                  onSortChange={setSortBy}
                 />
               )}
 

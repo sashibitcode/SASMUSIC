@@ -172,22 +172,152 @@ VITE_DRIVE_API_KEY=your_google_drive_api_key_here
 
 ---
 
+## 📤 Audio Upload Feature Guide (Google Drive OAuth2 Setup)
+
+SAS Music includes an authenticated song uploader that lets you upload audio tracks directly from your phone or browser into your Google Drive music library.
+
+### 🔒 Security Highlights
+- **Zero Vercel Body Limits**: Uses Google Drive Resumable Upload sessions. File bytes are transmitted directly from your browser to Google Drive in chunks.
+- **Password Protected**: Protected by `UPLOAD_PASSWORD` with server-side IP rate limiting (max 5 failed attempts per 15 minutes).
+- **Session Memory**: Unlocked state is stored in `sessionStorage` (cleared automatically when the browser tab closes).
+- **Public Streaming Stays Read-Only**: Regular listeners never need OAuth credentials or a password.
+
+---
+
+### Step 1: Create OAuth 2.0 Credentials in Google Cloud Console
+1. Open the [Google Cloud Console](https://console.cloud.google.com/) under your project.
+2. In the left navigation, go to **APIs & Services** > **Credentials**.
+3. Click **+ CREATE CREDENTIALS** > **OAuth client ID**.
+   - If prompted to configure the OAuth consent screen:
+     - Choose **External**, enter an App name (e.g. `SAS Music`), and add your email.
+     - Add the scope: `https://www.googleapis.com/auth/drive` (or `drive.file`).
+     - Under **Test users**, add your Google email address.
+4. For **Application type**, select **Web application**.
+5. Set Name to `SAS Music Uploader`.
+6. Under **Authorized redirect URIs**, click **+ ADD URI** and enter:
+   ```
+   http://localhost:3000/oauth2callback
+   ```
+7. Click **Create**. Copy your **Client ID** and **Client Secret**.
+
+---
+
+### Step 2: Generate Your Google Refresh Token
+Run the included one-time setup script from your project root:
+
+```bash
+node scripts/get-refresh-token.js
+```
+
+1. Enter your **Client ID** and **Client Secret** when prompted.
+2. Open the URL printed in your terminal in your browser.
+3. Sign in with your Google account and grant Drive permissions.
+4. The terminal will immediately output your `GOOGLE_REFRESH_TOKEN`!
+
+---
+
+### Step 3: Configure Environment Variables on Vercel
+In your Vercel Project Dashboard (**Settings** > **Environment Variables**), add the following:
+
+| Variable | Description | Example / Value |
+|---|---|---|
+| `GOOGLE_CLIENT_ID` | OAuth 2.0 Web Client ID | `xxxx.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | OAuth 2.0 Client Secret | `GOCSPX-xxxx` |
+| `GOOGLE_REFRESH_TOKEN` | Generated refresh token | `1//04xxxx` |
+| `DRIVE_FOLDER_ID` | Your Google Drive music folder ID | `your_google_drive_folder_id_here` |
+| `UPLOAD_PASSWORD` | Password to unlock song uploads | Choose a strong password (e.g. `MyMusicSecret2026`) |
+| `JWT_SECRET` | Random 32+ character signing secret | Any random 32-character string |
+| `ALLOWED_ORIGIN` | CORS allowed domain | `https://sas-music.vercel.app` (or `*`) |
+
+---
+
+### Step 4: Testing the Upload Flow
+1. Open your web app (e.g. [https://sas-music.vercel.app](https://sas-music.vercel.app)).
+2. Tap **Upload** (in the desktop Header/Sidebar or in the mobile Bottom Navigation).
+3. Enter your `UPLOAD_PASSWORD`:
+   - Entering an incorrect password shows *"Wrong password"* with retry and blocks after 5 failed attempts.
+   - Entering the correct password unlocks the uploader for your current session.
+4. Select an audio file (`.mp3`, `.m4a`, `.aac`, `.wav`, max 50 MB).
+5. The song title and artist are automatically parsed from the filename; adjust them as desired.
+6. Check the required legal confirmation:
+   *"I confirm this song is my original work or I have permission to upload it."*
+7. Tap **Upload Song**. Watch the live progress bar as bytes stream directly to Google Drive.
+8. Upon completion: *"Uploaded! Your song is now live."* appears and your song library refreshes automatically!
+
+---
+
+## 🇮🇳 ऑडियो अपलोड गाइड (हिन्दी - Hindi Documentation)
+
+SAS Music में अब डायरेक्ट ऑडियो अपलोड फीचर उपलब्ध है। इसके ज़रिए आप अपने फोन या कंप्यूटर से सीधे गूगल ड्राइव में नए गाने अपलोड कर सकते हैं।
+
+### 🌟 मुख्य खूबियाँ
+- **Vercel 4.5MB लिमिट से आज़ाद**: गाने सीधे आपके ब्राउज़र से गूगल ड्राइव के रिज़्यूमेबल सेशन में अपलोड होते हैं।
+- **पासवर्ड से सुरक्षित**: केवल पासवर्ड जानने वाले ही अपलोड कर सकते हैं। 5 बार गलत पासवर्ड डालने पर 15 मिनट का ब्लॉक।
+- **सेशन मेमोरी**: अनलॉक होने पर उसी ब्राउज़र टैब में बार-बार पासवर्ड नहीं डालना पड़ता।
+- **गाने सुनने वालों के लिए पूरी तरह फ्री और बिना पासवर्ड**: सामान्य सुनने वालों को किसी पासवर्ड की आवश्यकता नहीं है।
+
+### चरण 1: Google Cloud Console में OAuth क्लाइंट बनाएं
+1. [Google Cloud Console](https://console.cloud.google.com/) खोलें।
+2. **APIs & Services** > **Credentials** में जाएं।
+3. **+ CREATE CREDENTIALS** > **OAuth client ID** चुनें।
+4. Application type में **Web application** चुनें।
+5. **Authorized redirect URIs** में जोड़ें:
+   ```
+   http://localhost:3000/oauth2callback
+   ```
+6. **Create** दबाएं और अपना **Client ID** व **Client Secret** कॉपी करें।
+
+### चरण 2: Refresh Token प्राप्त करें
+टर्मिनल में यह कमांड चलाएं:
+```bash
+node scripts/get-refresh-token.js
+```
+1. अपना Client ID और Client Secret दर्ज करें।
+2. स्क्रीन पर आने वाले लिंक को ब्राउज़र में खोलकर अपने गूगल अकाउंट से अनुमति दें।
+3. आपका `GOOGLE_REFRESH_TOKEN` टर्मिनल में दिख जाएगा!
+
+### चरण 3: Vercel में Environment Variables जोड़ें
+Vercel डैशबोर्ड (**Settings** > **Environment Variables**) में जाकर ये वेरिएबल्स सेट करें:
+- `GOOGLE_CLIENT_ID` = आपका Client ID
+- `GOOGLE_CLIENT_SECRET` = आपका Client Secret
+- `GOOGLE_REFRESH_TOKEN` = जनरेट किया गया Refresh Token
+- `DRIVE_FOLDER_ID` = आपका गूगल ड्राइव फ़ोल्डर ID
+- `UPLOAD_PASSWORD` = अपलोड अनलॉक करने का पासवर्ड
+- `JWT_SECRET` = कोई भी 32 अक्षरों का रैंडम सीक्रेट
+- `ALLOWED_ORIGIN` = `https://sas-music.vercel.app` (या `*`)
+
+### चरण 4: अपलोड टेस्ट करें
+1. ऐप खोलें और **Upload** बटन पर क्लिक करें।
+2. अपना पासवर्ड डालें।
+3. ऑडियो फाइल चुनें (mp3, m4a, aac, wav, अधिकतम 50 MB)।
+4. शीर्षक (Title) और गायक (Artist) चेक करें और परमिशन चेकबॉक्स टिक करें।
+5. **Upload Song** दबाएं। लाइव प्रोग्रेस बार के साथ गाना अपलोड हो जाएगा और ऐप में तुरंत दिखाई देने लगेगा!
+
+---
+
 ## 🛠️ Project Structure
 
 ```
 SAS PLAYER/
+├── api/                    # Vercel Serverless Functions
+│   ├── _utils.js           # JWT signing/verification, rate limiting, CORS
+│   ├── verify-password.js  # Password verification & session JWT issuance
+│   └── upload-session.js   # OAuth2 Drive session initiator & duplicate check
 ├── public/                 # Static assets, PWA icons, transparent logos
 │   ├── favicon.svg
 │   ├── pwa-192x192.png
 │   ├── pwa-512x512.png
 │   └── sas-music-logo.png
+├── scripts/
+│   └── get-refresh-token.js# One-time Google Drive OAuth2 token generator
 ├── src/
 │   ├── components/
 │   │   ├── common/         # Modals, PWA prompts, logo components
-│   │   ├── header/         # Header bar, search bar
+│   │   ├── header/         # Header bar with Upload button
 │   │   ├── library/        # SongList, SongRow, PlaylistsView, FavoritesView
-│   │   ├── navigation/     # BottomNav (mobile), DesktopSidebar
-│   │   └── player/         # MiniPlayer, FullPlayerModal, ProgressBar, QueueDrawer
+│   │   ├── navigation/     # BottomNav (mobile with Upload), DesktopSidebar
+│   │   ├── player/         # MiniPlayer, FullPlayerModal, ProgressBar, QueueDrawer
+│   │   └── upload/         # UploadModal (password gate, progress, retry)
 │   ├── contexts/           # AudioContext, DriveContext, LibraryContext
 │   ├── hooks/              # useSwipeGesture, usePullToRefresh, useKeyboardShortcuts
 │   ├── services/           # driveService (v3 API), mediaSession (lock screen)
@@ -199,6 +329,7 @@ SAS PLAYER/
 ├── .gitignore              # Privacy rules (excludes .env, node_modules, dist)
 ├── index.html              # HTML shell with mobile meta tags & Apple touch tags
 ├── tailwind.config.js      # Custom theme color definitions & animations
+├── vercel.json             # Vercel SPA rewrites & /api routing configuration
 └── vite.config.js          # Vite configuration with VitePWA plugin
 ```
 

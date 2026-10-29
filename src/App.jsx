@@ -15,6 +15,7 @@ import { QueueDrawer } from './components/player/QueueDrawer';
 import { ErrorState } from './components/common/ErrorState';
 import { SongListSkeleton } from './components/common/Skeleton';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
+import { UploadModal } from './components/upload/UploadModal';
 import { BottomNav } from './components/navigation/BottomNav';
 import { DesktopSidebar } from './components/navigation/DesktopSidebar';
 
@@ -29,6 +30,7 @@ export function AppContent() {
   const [activeTab, setActiveTab] = useState('songs'); // 'songs' | 'search' | 'playlists' | 'favorites' | 'recents'
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
 
   const debouncedSearch = useDebounce(searchQuery, 180);
 
@@ -48,13 +50,17 @@ export function AppContent() {
         onTabChange={handleTabChange}
         favoritesCount={favorites.length}
         recentsCount={recentlyPlayed.length}
+        onUploadClick={() => setIsUploadOpen(true)}
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden relative">
         {/* Mobile Header (< 768px) */}
         <div className="md:hidden">
-          <Header onLogoClick={() => handleTabChange('songs')} />
+          <Header
+            onLogoClick={() => handleTabChange('songs')}
+            onUploadClick={() => setIsUploadOpen(true)}
+          />
         </div>
 
         {/* PWA Install Banner */}
@@ -109,6 +115,7 @@ export function AppContent() {
         activeTab={activeTab}
         onTabChange={handleTabChange}
         favoritesCount={favorites.length}
+        onUploadClick={() => setIsUploadOpen(true)}
       />
 
       {/* Fullscreen Expandable Player Modal / Bottom Sheet */}
@@ -116,6 +123,12 @@ export function AppContent() {
 
       {/* Slide-out Up Next Queue Drawer */}
       <QueueDrawer />
+
+      {/* Upload Song Modal */}
+      <UploadModal
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+      />
     </div>
   );
 }

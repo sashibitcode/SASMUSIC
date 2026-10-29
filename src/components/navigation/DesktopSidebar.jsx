@@ -7,7 +7,8 @@ import {
   History,
   FolderOpen,
   Sparkles,
-  Download
+  Download,
+  Upload
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { useDrive } from '../../contexts/DriveContext';
@@ -17,6 +18,7 @@ export function DesktopSidebar({
   onTabChange,
   favoritesCount = 0,
   recentsCount = 0,
+  onUploadClick,
   onSelectFolder
 }) {
   const { drivePlaylists } = useDrive();
@@ -35,12 +37,23 @@ export function DesktopSidebar({
       aria-label="Desktop Sidebar Navigation"
     >
       {/* Brand Logo */}
-      <div className="mb-8 px-1">
+      <div className="mb-6 px-1">
         <Logo
           className="h-9 w-auto cursor-pointer"
           onClick={() => onTabChange('songs')}
         />
       </div>
+
+      {/* Upload Action Button */}
+      {onUploadClick && (
+        <button
+          onClick={onUploadClick}
+          className="w-full mb-6 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-[#A31C1B] hover:bg-[#be2524] transition-all active:scale-95 shadow-lg shadow-[#A31C1B]/30 select-none group"
+        >
+          <Upload className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
+          <span>Upload Song</span>
+        </button>
+      )}
 
       {/* Primary Navigation Links */}
       <nav className="space-y-1 mb-6">

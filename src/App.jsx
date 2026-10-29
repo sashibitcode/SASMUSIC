@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDrive } from './contexts/DriveContext';
 import { useLibrary } from './contexts/LibraryContext';
 import { useDebounce } from './hooks/useDebounce';
@@ -16,6 +16,7 @@ import { ErrorState } from './components/common/ErrorState';
 import { SongListSkeleton } from './components/common/Skeleton';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { UploadModal } from './components/upload/UploadModal';
+import { SettingsModal } from './components/settings/SettingsModal';
 import { BottomNav } from './components/navigation/BottomNav';
 import { DesktopSidebar } from './components/navigation/DesktopSidebar';
 
@@ -26,11 +27,27 @@ export function AppContent() {
   // Keyboard shortcuts listener
   useKeyboardShortcuts();
 
-  // Navigation and search state
+  // Navigation and modal state
   const [activeTab, setActiveTab] = useState('songs'); // 'songs' | 'search' | 'playlists' | 'favorites' | 'recents'
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // Desktop creator shortcut: Shift + U opens upload modal directly
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.shiftKey && (e.key === 'U' || e.key === 'u')) {
+        const activeTag = document.activeElement?.tagName?.toLowerCase();
+        if (activeTag !== 'input' && activeTag !== 'textarea') {
+          e.preventDefault();
+          setIsUploadOpen(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const debouncedSearch = useDebounce(searchQuery, 180);
 
@@ -50,7 +67,7 @@ export function AppContent() {
         onTabChange={handleTabChange}
         favoritesCount={favorites.length}
         recentsCount={recentlyPlayed.length}
-        onUploadClick={() => setIsUploadOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -59,7 +76,7 @@ export function AppContent() {
         <div className="md:hidden">
           <Header
             onLogoClick={() => handleTabChange('songs')}
-            onUploadClick={() => setIsUploadOpen(true)}
+            onOpenSettings={() => setIsSettingsOpen(true)}
           />
         </div>
 
@@ -115,7 +132,7 @@ export function AppContent() {
         activeTab={activeTab}
         onTabChange={handleTabChange}
         favoritesCount={favorites.length}
-        onUploadClick={() => setIsUploadOpen(true)}
+        recentsCount={recentlyPlayed.length}
       />
 
       {/* Fullscreen Expandable Player Modal / Bottom Sheet */}
@@ -124,10 +141,17 @@ export function AppContent() {
       {/* Slide-out Up Next Queue Drawer */}
       <QueueDrawer />
 
-      {/* Upload Song Modal */}
+      {/* Upload Song Modal (Password-Protected) */}
       <UploadModal
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
+      />
+
+      {/* Settings & Creator Studio Modal */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onOpenUpload={() => setIsUploadOpen(true)}
       />
     </div>
   );

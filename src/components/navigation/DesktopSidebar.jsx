@@ -8,7 +8,7 @@ import {
   FolderOpen,
   Sparkles,
   Download,
-  Upload
+  Settings
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { useDrive } from '../../contexts/DriveContext';
@@ -18,7 +18,7 @@ export function DesktopSidebar({
   onTabChange,
   favoritesCount = 0,
   recentsCount = 0,
-  onUploadClick,
+  onOpenSettings,
   onSelectFolder
 }) {
   const { drivePlaylists } = useDrive();
@@ -43,17 +43,6 @@ export function DesktopSidebar({
           onClick={() => onTabChange('songs')}
         />
       </div>
-
-      {/* Upload Action Button */}
-      {onUploadClick && (
-        <button
-          onClick={onUploadClick}
-          className="w-full mb-6 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-[#A31C1B] hover:bg-[#be2524] transition-all active:scale-95 shadow-lg shadow-[#A31C1B]/30 select-none group"
-        >
-          <Upload className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
-          <span>Upload Song</span>
-        </button>
-      )}
 
       {/* Primary Navigation Links */}
       <nav className="space-y-1 mb-6">
@@ -124,8 +113,18 @@ export function DesktopSidebar({
         </div>
       )}
 
-      {/* Bottom Footer Info */}
-      <div className="pt-4 border-t border-white/[0.08] mt-auto">
+      {/* Bottom Footer Info & Settings */}
+      <div className="pt-3 border-t border-white/[0.08] mt-auto space-y-2">
+        {onOpenSettings && (
+          <button
+            onClick={onOpenSettings}
+            className="w-full min-h-[42px] flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/[0.06] transition-all group select-none"
+          >
+            <Settings className="w-4 h-4 text-slate-400 group-hover:text-white transition-transform group-hover:rotate-45" />
+            <span>Settings & Studio</span>
+          </button>
+        )}
+
         <div className="flex items-center justify-between p-2 rounded-xl bg-[#06110c]/80 border border-white/[0.06] group">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />

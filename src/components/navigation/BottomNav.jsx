@@ -1,7 +1,7 @@
 import React from 'react';
-import { Music, Search, Folder, Heart, Upload } from 'lucide-react';
+import { Music, Search, Folder, Heart, History } from 'lucide-react';
 
-export function BottomNav({ activeTab, onTabChange, favoritesCount = 0, onUploadClick }) {
+export function BottomNav({ activeTab, onTabChange, favoritesCount = 0, recentsCount = 0 }) {
   const navItems = [
     {
       id: 'songs',
@@ -14,12 +14,6 @@ export function BottomNav({ activeTab, onTabChange, favoritesCount = 0, onUpload
       icon: Search
     },
     {
-      id: 'upload',
-      label: 'Upload',
-      icon: Upload,
-      isAction: true
-    },
-    {
       id: 'playlists',
       label: 'Playlists',
       icon: Folder
@@ -29,6 +23,12 @@ export function BottomNav({ activeTab, onTabChange, favoritesCount = 0, onUpload
       label: 'Favorites',
       icon: Heart,
       badge: favoritesCount
+    },
+    {
+      id: 'recents',
+      label: 'Recents',
+      icon: History,
+      badge: recentsCount
     }
   ];
 
@@ -42,18 +42,10 @@ export function BottomNav({ activeTab, onTabChange, favoritesCount = 0, onUpload
           const Icon = item.icon;
           const isActive = activeTab === item.id;
 
-          const handleClick = () => {
-            if (item.isAction) {
-              onUploadClick?.();
-            } else {
-              onTabChange(item.id);
-            }
-          };
-
           return (
             <button
               key={item.id}
-              onClick={handleClick}
+              onClick={() => onTabChange(item.id)}
               className="flex-1 min-h-[48px] flex flex-col items-center justify-center relative py-1 transition-transform active:scale-90 group select-none"
               aria-label={item.label}
               aria-selected={isActive}
@@ -61,9 +53,7 @@ export function BottomNav({ activeTab, onTabChange, favoritesCount = 0, onUpload
               <div className="relative">
                 <Icon
                   className={`w-5 h-5 transition-all duration-200 ${
-                    item.isAction
-                      ? 'text-[#A31C1B] group-hover:scale-110 drop-shadow-[0_0_8px_rgba(163,28,27,0.6)]'
-                      : isActive
+                    isActive
                       ? 'text-[#A31C1B] scale-110 drop-shadow-[0_0_10px_rgba(163,28,27,0.7)]'
                       : 'text-slate-400 group-hover:text-slate-200'
                   }`}
@@ -77,18 +67,14 @@ export function BottomNav({ activeTab, onTabChange, favoritesCount = 0, onUpload
 
               <span
                 className={`text-[10px] tracking-wider font-semibold mt-1 transition-colors ${
-                  item.isAction
-                    ? 'text-white/90 group-hover:text-white font-bold'
-                    : isActive 
-                    ? 'text-white font-bold' 
-                    : 'text-slate-400 group-hover:text-slate-300'
+                  isActive ? 'text-white font-bold' : 'text-slate-400 group-hover:text-slate-300'
                 }`}
               >
                 {item.label}
               </span>
 
               {/* Active bottom glow indicator */}
-              {isActive && !item.isAction && (
+              {isActive && (
                 <span className="absolute bottom-0 w-6 h-0.5 bg-[#A31C1B] rounded-full shadow-[0_0_8px_rgba(163,28,27,0.9)]" />
               )}
             </button>

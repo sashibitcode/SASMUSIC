@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useDrive } from './contexts/DriveContext';
 import { useLibrary } from './contexts/LibraryContext';
 import { useDebounce } from './hooks/useDebounce';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { Header } from './components/header/Header';
 import { SearchBar } from './components/header/SearchBar';
+import { CategoryPills } from './components/navigation/CategoryPills';
 import { SongList } from './components/library/SongList';
 import { PlaylistsView } from './components/library/PlaylistsView';
 import { FavoritesView } from './components/library/FavoritesView';
@@ -19,24 +20,31 @@ import { UploadModal } from './components/upload/UploadModal';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { BottomNav } from './components/navigation/BottomNav';
 import { DesktopSidebar } from './components/navigation/DesktopSidebar';
+import { filterSongsByCategory } from './utils/categoryExtractor';
 
 export function AppContent() {
-  const { songs, isLoading, error, refreshLibrary } = useDrive();
+  const { songs, drivePlaylists, isLoading, error, refreshLibrary } = useDrive();
   const { favorites, recentlyPlayed } = useLibrary();
 
   // Keyboard shortcuts listener
   useKeyboardShortcuts();
 
-  // Navigation and modal state
+  // Navigation, search and category filter state
   const [activeTab, setActiveTab] = useState('songs'); // 'songs' | 'search' | 'playlists' | 'favorites' | 'recents'
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
+  const [activeFilter, setActiveFilter] = useState({ type: 'all', value: null });
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const searchInputRef = useRef(null);
   const mainScrollRef = useRef(null);
   const debouncedSearch = useDebounce(searchQuery, 160);
+
+  // Filter songs by active category/artist/genre filter
+  const categorizedSongs = useMemo(() => {
+    return filterSongsByCategory(songs, activeFilter);
+  }, [songs, activeFilter]);
 
   // Desktop creator shortcut: Shift + U opens upload modal directly
   useEffect(() => {
@@ -86,15 +94,22 @@ export function AppContent() {
         {/* PWA Install Banner */}
         <PwaInstallPrompt />
 
-        {/* Sticky Pinned Search Bar - Always stays on screen when songs scroll! */}
+        {/* Sticky Pinned Search & Categories Header */}
         {(activeTab === 'songs' || activeTab === 'search') && !error && !isLoading && (
-          <div className="flex-shrink-0 z-20 px-3.5 sm:px-6 py-2.5 bg-[#06110c]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-sm max-w-6xl w-full mx-auto">
+          <div className="flex-shrink-0 z-20 px-3.5 sm:px-6 pt-2 pb-1.5 bg-[#06110c]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-sm max-w-6xl w-full mx-auto space-y-2">
             <SearchBar
               inputRef={searchInputRef}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
               sortBy={sortBy}
               onSortChange={setSortBy}
+            />
+            <CategoryPills
+              songs={songs}
+              drivePlaylists={drivePlaylists}
+              activeFilter={activeFilter}
+              onSelectFilter={setActiveFilter}
+              onClearFilter={() => setActiveFilter({ type: 'all', value: null })}
             />
           </div>
         )}
@@ -116,7 +131,7 @@ export function AppContent() {
             <div>
               {(activeTab === 'songs' || activeTab === 'search') && (
                 <SongList
-                  songs={songs}
+                  songs={categorizedSongs}
                   searchQuery={debouncedSearch}
                   sortBy={sortBy}
                 />

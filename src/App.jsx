@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useDrive } from './contexts/DriveContext';
 import { useLibrary } from './contexts/LibraryContext';
-import { useAudio } from './contexts/AudioContext';
-import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useDebounce } from './hooks/useDebounce';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { Header } from './components/header/Header';
 import { SearchBar } from './components/header/SearchBar';
 import { SongList } from './components/library/SongList';
@@ -13,7 +12,6 @@ import { RecentsView } from './components/library/RecentsView';
 import { MiniPlayer } from './components/player/MiniPlayer';
 import { FullPlayerModal } from './components/player/FullPlayerModal';
 import { QueueDrawer } from './components/player/QueueDrawer';
-import { ConfigModal } from './components/common/ConfigModal';
 import { ErrorState } from './components/common/ErrorState';
 import { SongListSkeleton } from './components/common/Skeleton';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
@@ -31,7 +29,6 @@ export function AppContent() {
   const [activeTab, setActiveTab] = useState('songs'); // 'songs' | 'search' | 'playlists' | 'favorites' | 'recents'
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
-  const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   const debouncedSearch = useDebounce(searchQuery, 180);
 
@@ -51,14 +48,13 @@ export function AppContent() {
         onTabChange={handleTabChange}
         favoritesCount={favorites.length}
         recentsCount={recentlyPlayed.length}
-        onOpenConfig={() => setIsConfigOpen(true)}
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden relative">
         {/* Mobile Header (< 768px) */}
         <div className="md:hidden">
-          <Header onOpenConfig={() => setIsConfigOpen(true)} />
+          <Header onLogoClick={() => handleTabChange('songs')} />
         </div>
 
         {/* PWA Install Banner */}
@@ -84,7 +80,6 @@ export function AppContent() {
             <ErrorState
               error={error}
               onRetry={refreshLibrary}
-              onOpenConfig={() => setIsConfigOpen(true)}
             />
           ) : (
             <div>
@@ -121,12 +116,6 @@ export function AppContent() {
 
       {/* Slide-out Up Next Queue Drawer */}
       <QueueDrawer />
-
-      {/* Setup / Configuration Modal */}
-      <ConfigModal
-        isOpen={isConfigOpen}
-        onClose={() => setIsConfigOpen(false)}
-      />
     </div>
   );
 }

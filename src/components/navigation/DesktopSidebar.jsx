@@ -17,7 +17,6 @@ export function DesktopSidebar({
   onTabChange,
   favoritesCount = 0,
   recentsCount = 0,
-  onOpenConfig,
   onSelectFolder
 }) {
   const { drivePlaylists } = useDrive();
@@ -38,8 +37,8 @@ export function DesktopSidebar({
       {/* Brand Logo */}
       <div className="mb-8 px-1">
         <Logo
-          className="h-9 w-auto"
-          onClick={onOpenConfig}
+          className="h-9 w-auto cursor-pointer"
+          onClick={() => onTabChange('songs')}
         />
       </div>
 
@@ -114,13 +113,10 @@ export function DesktopSidebar({
 
       {/* Bottom Footer Info */}
       <div className="pt-4 border-t border-white/[0.08] mt-auto">
-        <div
-          onClick={onOpenConfig}
-          className="flex items-center justify-between p-2 rounded-xl bg-[#06110c]/80 border border-white/[0.06] hover:border-[#A31C1B]/50 transition-colors cursor-pointer group"
-        >
+        <div className="flex items-center justify-between p-2 rounded-xl bg-[#06110c]/80 border border-white/[0.06] group">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-medium text-slate-300 group-hover:text-white">
+            <span className="text-[11px] font-medium text-slate-300">
               SAS Music
             </span>
           </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertCircle, WifiOff, KeyRound, ServerOff, FolderX, RotateCw, Settings } from 'lucide-react';
 
-export function ErrorState({ error, onRetry, onOpenConfig }) {
+export function ErrorState({ error, onRetry }) {
   if (!error) return null;
 
   const isOffline = error.code === 'OFFLINE' || !navigator.onLine;
@@ -13,13 +13,11 @@ export function ErrorState({ error, onRetry, onOpenConfig }) {
   let Icon = AlertCircle;
   let title = 'Something went wrong';
   let description = error.message || 'Unable to load songs from Google Drive.';
-  let showConfigBtn = true;
 
   if (isOffline) {
     Icon = WifiOff;
     title = 'No Internet Connection';
     description = 'Please check your Wi-Fi or mobile data network. Your cached app shell and saved favorites are safe.';
-    showConfigBtn = false;
   } else if (isInvalidKey) {
     Icon = KeyRound;
     title = 'Invalid Google Drive API Key';
@@ -55,16 +53,6 @@ export function ErrorState({ error, onRetry, onOpenConfig }) {
           >
             <RotateCw className="w-4 h-4" />
             <span>Try Again</span>
-          </button>
-        )}
-
-        {showConfigBtn && onOpenConfig && (
-          <button
-            onClick={onOpenConfig}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#222222] hover:bg-[#282f2b] text-slate-200 font-medium text-sm transition-all duration-200 border border-[#282f2b]"
-          >
-            <Settings className="w-4 h-4" />
-            <span>Check Settings</span>
           </button>
         )}
       </div>

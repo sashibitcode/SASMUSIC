@@ -17,10 +17,8 @@ function formatBytes(bytes) {
 export function UploadModal({ isOpen, onClose }) {
   const { refreshLibrary } = useDrive();
 
-  // Session token from sessionStorage
-  const [token, setToken] = useState(() => {
-    return typeof window !== 'undefined' ? sessionStorage.getItem('sas_upload_token') : null;
-  });
+  // Fresh token per upload - requires password every single time
+  const [token, setToken] = useState(null);
 
   // UI Step: 'AUTH' | 'FORM' | 'UPLOADING' | 'SUCCESS' | 'ERROR'
   const [step, setStep] = useState('AUTH');
@@ -48,16 +46,20 @@ export function UploadModal({ isOpen, onClose }) {
   const xhrRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // Initialize view based on existing session token
+  // Always reset to password screen every single time the modal is opened
   useEffect(() => {
     if (isOpen) {
-      const stored = sessionStorage.getItem('sas_upload_token');
-      if (stored) {
-        setToken(stored);
-        setStep('FORM');
-      } else {
-        setStep('AUTH');
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('sas_upload_token');
       }
+      setToken(null);
+      setStep('AUTH');
+      setPassword('');
+      setFile(null);
+      setTitle('');
+      setArtist('');
+      setConfirmedOriginal(false);
+      setUploadProgress(0);
       setAuthError('');
       setFormError('');
       setUploadError('');
@@ -67,6 +69,9 @@ export function UploadModal({ isOpen, onClose }) {
         xhrRef.current.abort();
         xhrRef.current = null;
       }
+      setToken(null);
+      setStep('AUTH');
+      setPassword('');
     }
   }, [isOpen]);
 
@@ -90,7 +95,6 @@ export function UploadModal({ isOpen, onClose }) {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        sessionStorage.setItem('sas_upload_token', data.token);
         setToken(data.token);
         setPassword('');
         setStep('FORM');
@@ -247,7 +251,9 @@ export function UploadModal({ isOpen, onClose }) {
     setArtist('');
     setConfirmedOriginal(false);
     setUploadProgress(0);
-    setStep('FORM');
+    setToken(null);
+    setPassword('');
+    setStep('AUTH');
   };
 
   return (
@@ -590,3 +596,4 @@ export function UploadModal({ isOpen, onClose }) {
     </div>
   );
 }
+

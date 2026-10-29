@@ -5,8 +5,8 @@ SAS Music is an open-source, production-grade Progressive Web App (PWA) audio pl
 
 ## 2. Developer & Author Entity (E-E-A-T)
 - **Primary Developer:** Shashikant Raj
-- **Consistent Author Title:** Shashikant Raj | Data Analyst
-- **Job Title:** Data Analyst
+- **Consistent Author Title:** Shashikant Raj | Data Analyst & Full Stack Developer
+- **Job Title:** Data Analyst & Full Stack Developer
 - **Online Identity:** sashibitcode
 - **Personal Portfolio:** https://sashibitcode.vercel.app/
 - **Education:** B.Tech Computer Science & Engineering, Jagannath University, Jaipur, India

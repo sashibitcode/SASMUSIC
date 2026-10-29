@@ -5,8 +5,8 @@
 ## Identity & Developer Profile
 - **Application Name:** SAS Music (SAS PLAYER)
 - **Author / Developer:** Shashikant Raj
-- **Author Title:** Shashikant Raj | Data Analyst
-- **Job Title:** Data Analyst
+- **Author Title:** Shashikant Raj | Data Analyst & Full Stack Developer
+- **Job Title:** Data Analyst & Full Stack Developer
 - **Brand / Username:** sashibitcode
 - **Official Live Website:** https://sashibitcode-music.vercel.app/
 - **Developer Portfolio:** https://sashibitcode.vercel.app/

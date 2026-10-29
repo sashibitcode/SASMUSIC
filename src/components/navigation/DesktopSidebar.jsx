@@ -130,7 +130,7 @@ export function DesktopSidebar({
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.06] hover:border-[#A31C1B]/40 transition-colors group cursor-pointer"
-          title="Visit Creator Portfolio - Shashikant Raj"
+          title="Shashikant Raj - Data Analyst & Full Stack Developer"
         >
           <div className="flex flex-col">
             <span className="text-[11px] font-semibold text-slate-200 group-hover:text-white transition-colors">

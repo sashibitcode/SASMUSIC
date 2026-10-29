@@ -156,7 +156,7 @@ export function SettingsModal({ isOpen, onClose, onOpenUpload }) {
 
             <div className="flex items-center justify-between text-xs">
               <span className="text-slate-400">Job Title:</span>
-              <span className="font-medium text-slate-300">Data Analyst</span>
+              <span className="font-medium text-slate-300">Data Analyst & Full Stack Developer</span>
             </div>
 
             <div className="flex items-center gap-2 pt-1">

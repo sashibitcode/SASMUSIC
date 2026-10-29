@@ -30,3 +30,6 @@ yarn-error.log*
 # Editor directories
 .vscode/
 .idea/
+
+.vercel
+.env*

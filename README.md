@@ -4,7 +4,10 @@
 [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-sas--music.vercel.app-success?logo=vercel&logoColor=white)](https://sas-music.vercel.app)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+🌐 **Live URL**: [https://sas-music.vercel.app](https://sas-music.vercel.app)
 
 A production-ready, ad-free, mobile-native Progressive Web App (PWA) music streaming player powered directly by a public Google Drive folder. No backend server, no database, and no login required.
 

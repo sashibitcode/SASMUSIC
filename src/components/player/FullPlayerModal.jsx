@@ -96,11 +96,8 @@ export function FullPlayerModal() {
 
         <div className="text-center px-2 min-w-0 flex flex-col items-center">
           <SyncStatusBadge className="mb-0.5" />
-          <p className="text-[10px] uppercase font-bold tracking-widest text-[#fca5a5]">
-            {isLoadingAudio ? 'Buffering Stream...' : 'Playing from'}
-          </p>
-          <p className="text-xs font-semibold text-slate-300 truncate max-w-[180px] sm:max-w-xs">
-            {currentSong.folderName || 'SAS Music'}
+          <p className="text-xs font-medium text-slate-300 truncate max-w-[200px] sm:max-w-xs">
+            {isLoadingAudio ? 'Buffering...' : (currentSong.folderName || 'SAS Music')}
           </p>
         </div>
 
@@ -145,10 +142,10 @@ export function FullPlayerModal() {
         {/* Title, Artist & Favorite */}
         <div className="w-full mt-6 flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h2 className="text-lg sm:text-xl font-black text-white truncate tracking-tight">
+            <h2 className="text-lg sm:text-xl font-bold text-white truncate tracking-tight">
               {currentSong.title}
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-300 font-semibold truncate mt-0.5">
+            <p className="text-xs sm:text-sm text-slate-300 font-medium truncate mt-0.5">
               {currentSong.artist}
             </p>
           </div>

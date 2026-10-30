@@ -117,38 +117,20 @@ export function SongRow({ song, index, playlist = null }) {
 
         {/* Title and Artist */}
         <div className="min-w-0 flex-1 pr-2">
-          <div className="flex items-center gap-2">
-            <p
-              className={`text-xs sm:text-sm font-bold truncate transition-colors ${
-                isCurrent ? 'text-white' : 'text-slate-100 group-hover:text-white'
-              }`}
-            >
-              {song.title}
-            </p>
-            {isCurrent && (
-              <span className={`inline-flex items-center gap-1 text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full shadow-sm flex-shrink-0 ${
-                isLoadingAudio ? 'bg-amber-600/90 text-white' : 'bg-[#A31C1B] text-white'
-              }`}>
-                <span className={`w-1.5 h-1.5 rounded-full bg-white ${isLoadingAudio ? 'animate-ping' : isPlaying ? 'animate-pulse' : ''}`} />
-                {isLoadingAudio ? 'Buffering...' : isPlaying ? 'Playing' : 'Paused'}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 mt-0.5">
-            <span
-              className={`text-[11px] truncate ${
-                isCurrent ? 'text-emerald-300 font-medium' : 'text-slate-400'
-              }`}
-            >
-              {song.artist}
-            </span>
-            {song.folderName && song.folderName !== 'Main Folder' && song.folderName !== 'Main Drive' && (
-              <span className="inline-flex items-center gap-1 text-[10px] text-[#fca5a5] bg-[#06110c] px-1.5 py-0.2 rounded border border-[#A31C1B]/40">
-                <Music2 className="w-2.5 h-2.5 text-[#A31C1B]" />
-                {song.folderName}
-              </span>
-            )}
-          </div>
+          <p
+            className={`text-xs sm:text-sm font-semibold truncate transition-colors ${
+              isCurrent ? 'text-white' : 'text-slate-200 group-hover:text-white'
+            }`}
+          >
+            {song.title}
+          </p>
+          <p
+            className={`text-xs truncate mt-0.5 ${
+              isCurrent ? 'text-emerald-300 font-medium' : 'text-slate-400'
+            }`}
+          >
+            {song.artist}
+          </p>
         </div>
       </div>
 

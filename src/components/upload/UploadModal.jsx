@@ -269,8 +269,8 @@ export function UploadModal({ isOpen, onClose }) {
               <Upload className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white tracking-wide">Upload Song</h3>
-              <p className="text-[11px] text-slate-400">Add an audio track directly to SAS Music</p>
+              <h3 className="text-sm font-semibold text-white tracking-wide">Upload Track</h3>
+              <p className="text-xs text-slate-400">Add audio to library</p>
             </div>
           </div>
           <button
@@ -285,26 +285,23 @@ export function UploadModal({ isOpen, onClose }) {
         {step === 'AUTH' && (
           <form onSubmit={handleVerifyPassword} className="mt-5 space-y-4">
             <div className="text-center py-2">
-              <div className="w-12 h-12 mx-auto rounded-full bg-[#06110c] border border-white/[0.08] flex items-center justify-center text-slate-300 mb-3 shadow-[0_0_15px_rgba(0,0,0,0.6)]">
-                <Lock className="w-5 h-5 text-[#A31C1B]" />
+              <div className="w-11 h-11 mx-auto rounded-full bg-[#06110c] border border-white/[0.08] flex items-center justify-center text-slate-300 mb-2 shadow-md">
+                <Lock className="w-4 h-4 text-[#A31C1B]" />
               </div>
-              <h4 className="text-sm font-semibold text-white">Password Protected</h4>
+              <h4 className="text-sm font-semibold text-white">Passkey Required</h4>
               <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
-                Enter your upload password to unlock song submissions for this session.
+                Enter creator passkey to unlock uploads.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Upload Password
-              </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 w-4 h-4 text-slate-500" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password..."
+                  placeholder="Enter passkey..."
                   autoFocus
                   className="w-full pl-9 pr-10 py-2.5 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:border-[#A31C1B] focus:ring-1 focus:ring-[#A31C1B]"
                 />
@@ -336,7 +333,7 @@ export function UploadModal({ isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={isVerifying || !password.trim()}
-                className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold text-white bg-[#A31C1B] hover:bg-[#be2524] transition-all disabled:opacity-50 disabled:pointer-events-none shadow-lg shadow-[#A31C1B]/30"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#A31C1B] hover:bg-[#be2524] transition-all disabled:opacity-50 disabled:pointer-events-none shadow-md shadow-[#A31C1B]/30"
               >
                 {isVerifying ? (
                   <>
@@ -344,7 +341,7 @@ export function UploadModal({ isOpen, onClose }) {
                     <span>Verifying...</span>
                   </>
                 ) : (
-                  <span>Unlock Uploader</span>
+                  <span>Unlock</span>
                 )}
               </button>
             </div>

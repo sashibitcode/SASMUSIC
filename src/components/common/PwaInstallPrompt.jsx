@@ -64,8 +64,8 @@ export function PwaInstallPrompt() {
             <Download className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs font-bold text-white">Install SAS Music App</p>
-            <p className="text-[11px] text-slate-400">Add to Home Screen for the best offline experience</p>
+            <p className="text-xs font-semibold text-white">Install SAS Music</p>
+            <p className="text-xs text-slate-400">Fast, ad-free & works offline</p>
           </div>
         </div>
 

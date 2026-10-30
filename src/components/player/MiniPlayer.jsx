@@ -66,7 +66,7 @@ export function MiniPlayer() {
 
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <p className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-[#fca5a5] transition-colors">
+                <p className="text-xs sm:text-sm font-semibold text-white truncate group-hover:text-[#fca5a5] transition-colors">
                   {currentSong.title}
                 </p>
                 <SyncStatusBadge className="text-[10px] py-0 px-2 flex-shrink-0" showDetails={false} />
@@ -76,7 +76,7 @@ export function MiniPlayer() {
                   </div>
                 )}
               </div>
-              <p className="text-[11px] sm:text-xs text-emerald-300 font-medium truncate mt-0.5">
+              <p className="text-xs text-slate-400 truncate mt-0.5">
                 {currentSong.artist}
               </p>
             </div>

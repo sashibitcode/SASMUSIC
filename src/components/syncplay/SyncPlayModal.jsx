@@ -104,11 +104,11 @@ export function SyncPlayModal() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-black text-white tracking-wide flex items-center gap-1.5">
+                <h2 className="text-base sm:text-lg font-bold text-white tracking-wide flex items-center gap-1.5">
                   SAS MUSIC <span className="text-[#fca5a5]">SyncPlay</span>
                 </h2>
                 {isInRoom && (
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                     isReconnecting ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                   }`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${isReconnecting ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}`} />
@@ -116,8 +116,8 @@ export function SyncPlayModal() {
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-400">
-                {isInRoom ? `Active Listening Room #${roomCode}` : 'Listen with friends in real-time, perfectly synchronized.'}
+              <p className="text-xs text-slate-400">
+                {isInRoom ? `Room #${roomCode}` : 'Group Listening'}
               </p>
             </div>
           </div>
@@ -135,16 +135,16 @@ export function SyncPlayModal() {
         <div className="p-4 sm:p-6 overflow-y-auto space-y-5 no-scrollbar relative z-10">
           {/* Autoplay Unlock Banner */}
           {needsUserGesture && (
-            <div className="p-3.5 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-between gap-3 animate-pulse">
-              <div className="flex items-center gap-2.5 text-xs text-amber-200">
-                <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                <span>Audio autoplay restricted by browser. Tap to tune into the live session!</span>
+            <div className="p-3 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-between gap-3 animate-pulse">
+              <div className="flex items-center gap-2 text-xs text-amber-200">
+                <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span>Audio paused by browser. Tap to enable.</span>
               </div>
               <button
                 onClick={triggerAutoplayUnlock}
-                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-[#A31C1B] hover:brightness-110 text-white text-xs font-black shadow-lg transition-all active:scale-95 flex-shrink-0"
+                className="px-3 py-1.5 rounded-xl bg-[#A31C1B] hover:bg-[#be2524] text-white text-xs font-semibold shadow-md transition-all active:scale-95 flex-shrink-0"
               >
-                Join & Start Listening
+                Tune In
               </button>
             </div>
           )}
@@ -179,15 +179,15 @@ export function SyncPlayModal() {
               </div>
 
               {/* Display Name Field */}
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
-                  Your Display Name
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300">
+                  Your Name
                 </label>
                 <input
                   type="text"
                   value={inputName}
                   onChange={(e) => setInputName(e.target.value)}
-                  placeholder="Enter your name or nickname"
+                  placeholder="Enter your name"
                   maxLength={24}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-[#171717] border border-white/[0.1] focus:border-[#A31C1B] text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#A31C1B] transition-all"
                 />
@@ -196,30 +196,20 @@ export function SyncPlayModal() {
               {activeTab === 'create' ? (
                 /* CREATE ROOM TAB */
                 <form onSubmit={handleCreate} className="space-y-4">
-                  <div className="p-4 rounded-2xl bg-[#171717]/80 border border-white/[0.06] space-y-2.5">
-                    <p className="text-xs text-slate-300 leading-relaxed">
-                      As the <span className="text-[#fca5a5] font-bold">Host</span>, you generate a 6-digit room code to share with friends. You control playback, seeking, and song choices.
-                    </p>
-                    <div className="flex items-center gap-2 text-[11px] text-emerald-400">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Sub-50ms live synchronization across all devices</span>
-                    </div>
-                  </div>
-
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-2xl crimson-glow-btn text-white text-sm font-bold shadow-lg transition-transform active:scale-98 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 rounded-xl crimson-glow-btn text-white text-xs font-semibold shadow-md transition-transform active:scale-98 flex items-center justify-center gap-2"
                   >
                     <Radio className="w-4 h-4" />
-                    <span>Create Sync Room</span>
+                    <span>Create Room</span>
                   </button>
                 </form>
               ) : (
                 /* JOIN ROOM TAB */
-                <form onSubmit={handleJoin} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
-                      6-Digit Room Code
+                <form onSubmit={handleJoin} className="space-y-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-300">
+                      6-Digit Code
                     </label>
                     <input
                       type="text"
@@ -228,15 +218,15 @@ export function SyncPlayModal() {
                       maxLength={6}
                       value={inputCode}
                       onChange={(e) => setInputCode(e.target.value.replace(/\D/g, ''))}
-                      placeholder="e.g. 749201"
-                      className="w-full px-3.5 py-3 rounded-xl bg-[#171717] border border-white/[0.1] focus:border-[#A31C1B] text-white text-lg tracking-widest text-center font-mono placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-[#A31C1B] transition-all"
+                      placeholder="000000"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#171717] border border-white/[0.1] focus:border-[#A31C1B] text-white text-base tracking-widest text-center font-mono placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-[#A31C1B] transition-all"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={inputCode.length !== 6}
-                    className="w-full py-3 rounded-2xl crimson-glow-btn text-white text-sm font-bold shadow-lg transition-transform active:scale-98 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2"
+                    className="w-full py-2.5 rounded-xl crimson-glow-btn text-white text-xs font-semibold shadow-md transition-transform active:scale-98 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2"
                   >
                     <Users className="w-4 h-4" />
                     <span>Join Room</span>
@@ -304,32 +294,28 @@ export function SyncPlayModal() {
                       <p className="text-[11px] text-emerald-300 font-medium truncate mt-0.5">
                         {currentSong.artist}
                       </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">
-                        {isHost ? '👑 You control playback' : `🎧 Synced with Host (${hostName || 'Host'})`}
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        {isHost ? 'Host Controls' : `Synced with ${hostName || 'Host'}`}
                       </p>
                     </div>
                   </div>
 
                   {/* Scheduled Start Countdown Notification */}
                   {scheduledCountdownMs > 0 && (
-                    <div className="px-3 py-1.5 rounded-xl bg-[#A31C1B]/20 border border-[#A31C1B]/50 flex items-center justify-between text-[11px] text-[#fca5a5] animate-pulse font-mono">
-                      <span>⏳ Synchronizing playback buffer...</span>
-                      <span>Starting in {scheduledCountdownMs}ms</span>
+                    <div className="px-3 py-1.5 rounded-xl bg-[#A31C1B]/20 border border-[#A31C1B]/50 flex items-center justify-between text-xs text-[#fca5a5] animate-pulse">
+                      <span>Syncing buffer...</span>
+                      <span className="font-mono">{scheduledCountdownMs}ms</span>
                     </div>
                   )}
 
-                  {/* Real-time Drift & Clock Calibration Telemetry */}
-                  <div className="flex items-center justify-between px-2 py-1.5 rounded-xl bg-black/40 border border-white/[0.05] text-[10px] font-mono text-slate-400">
-                    <span className="flex items-center gap-1.5">
-                      <span className={`w-2 h-2 rounded-full ${
-                        Math.abs(measuredDriftMs) < 40 ? 'bg-emerald-400' : Math.abs(measuredDriftMs) < 300 ? 'bg-amber-400' : 'bg-[#A31C1B]'
-                      }`} />
-                      <span className="text-slate-300 font-semibold">
-                        {isHost ? 'Host Master Clock' : `Drift: ${measuredDriftMs > 0 ? '+' : ''}${measuredDriftMs}ms`}
-                      </span>
+                  {/* Real-time Status Badge */}
+                  <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-black/40 border border-white/[0.05] text-xs">
+                    <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>{isHost ? 'Master Clock' : 'In Sync'}</span>
                     </span>
-                    <span className="text-slate-400">
-                      Offset: {clockOffset > 0 ? '+' : ''}{clockOffset}ms • RTT: {estimatedRTT}ms
+                    <span className="text-slate-400 text-xs">
+                      {members.length} {members.length === 1 ? 'listener' : 'listeners'}
                     </span>
                   </div>
 

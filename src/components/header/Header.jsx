@@ -39,15 +39,15 @@ export function Header({ onLogoClick, onOpenSettings }) {
               <span className={`relative inline-flex rounded-full h-2 w-2 ${isInRoom ? 'bg-[#A31C1B]' : 'bg-slate-400'}`} />
             </span>
             <Radio className="w-4 h-4 text-[#fca5a5]" />
-            <span className="text-xs font-bold hidden xs:inline">SyncPlay</span>
+            <span className="text-xs font-semibold hidden xs:inline">SyncPlay</span>
           </button>
 
-          {/* Discreet Settings & Studio Trigger Button */}
+          {/* Settings Trigger Button */}
           {onOpenSettings && (
             <button
               onClick={onOpenSettings}
               className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-full glass-card hover:border-[#A31C1B]/50 text-slate-300 hover:text-white transition-all active:scale-95 shadow-sm group select-none"
-              aria-label="Settings and Studio"
+              aria-label="Settings"
             >
               <Settings className="w-4 h-4 text-slate-300 group-hover:text-white transition-transform group-hover:rotate-45" />
             </button>

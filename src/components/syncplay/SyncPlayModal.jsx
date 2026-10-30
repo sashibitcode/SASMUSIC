@@ -39,6 +39,11 @@ export function SyncPlayModal() {
     setIsSyncModalOpen,
     needsUserGesture,
     triggerAutoplayUnlock,
+    measuredDriftMs,
+    driftStatus,
+    scheduledCountdownMs,
+    clockOffset,
+    estimatedRTT,
     createRoom,
     joinRoom,
     leaveRoom,
@@ -133,13 +138,13 @@ export function SyncPlayModal() {
             <div className="p-3.5 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-between gap-3 animate-pulse">
               <div className="flex items-center gap-2.5 text-xs text-amber-200">
                 <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                <span>Autoplay is paused by your browser. Tap to listen live!</span>
+                <span>Audio autoplay restricted by browser. Tap to tune into the live session!</span>
               </div>
               <button
                 onClick={triggerAutoplayUnlock}
-                className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black shadow-md transition-all active:scale-95"
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-[#A31C1B] hover:brightness-110 text-white text-xs font-black shadow-lg transition-all active:scale-95 flex-shrink-0"
               >
-                Sync Audio
+                Join & Start Listening
               </button>
             </div>
           )}
@@ -303,6 +308,29 @@ export function SyncPlayModal() {
                         {isHost ? '👑 You control playback' : `🎧 Synced with Host (${hostName || 'Host'})`}
                       </p>
                     </div>
+                  </div>
+
+                  {/* Scheduled Start Countdown Notification */}
+                  {scheduledCountdownMs > 0 && (
+                    <div className="px-3 py-1.5 rounded-xl bg-[#A31C1B]/20 border border-[#A31C1B]/50 flex items-center justify-between text-[11px] text-[#fca5a5] animate-pulse font-mono">
+                      <span>⏳ Synchronizing playback buffer...</span>
+                      <span>Starting in {scheduledCountdownMs}ms</span>
+                    </div>
+                  )}
+
+                  {/* Real-time Drift & Clock Calibration Telemetry */}
+                  <div className="flex items-center justify-between px-2 py-1.5 rounded-xl bg-black/40 border border-white/[0.05] text-[10px] font-mono text-slate-400">
+                    <span className="flex items-center gap-1.5">
+                      <span className={`w-2 h-2 rounded-full ${
+                        Math.abs(measuredDriftMs) < 40 ? 'bg-emerald-400' : Math.abs(measuredDriftMs) < 300 ? 'bg-amber-400' : 'bg-[#A31C1B]'
+                      }`} />
+                      <span className="text-slate-300 font-semibold">
+                        {isHost ? 'Host Master Clock' : `Drift: ${measuredDriftMs > 0 ? '+' : ''}${measuredDriftMs}ms`}
+                      </span>
+                    </span>
+                    <span className="text-slate-400">
+                      Offset: {clockOffset > 0 ? '+' : ''}{clockOffset}ms • RTT: {estimatedRTT}ms
+                    </span>
                   </div>
 
                   {/* Synchronized Progress Bar */}

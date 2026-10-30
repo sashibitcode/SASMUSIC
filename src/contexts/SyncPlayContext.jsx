@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { SyncClient } from '../services/sync/syncClient';
+import { DriftController } from '../services/sync/driftController';
+import { getServerTime, getClockOffset, getEstimatedRTT, syncClockWithServer } from '../services/sync/clockSync';
 import { useAudio } from './AudioContext';
 import { showFloatingToast } from '../utils/toast';
 
@@ -52,7 +54,8 @@ export function SyncPlayProvider({ children }) {
     queue,
     queueIndex,
     setSyncActionHandler,
-    isSyncActionRef
+    isSyncActionRef,
+    audioRef
   } = useAudio();
 
   // User Profile
@@ -70,7 +73,23 @@ export function SyncPlayProvider({ children }) {
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [needsUserGesture, setNeedsUserGesture] = useState(false);
 
+  // Synchronization Telemetry
+  const [measuredDriftMs, setMeasuredDriftMs] = useState(0);
+  const [driftStatus, setDriftStatus] = useState('PERFECT_SYNC'); // PERFECT_SYNC | CATCHING_UP | SLOWING_DOWN | BUFFERING
+  const [scheduledCountdownMs, setScheduledCountdownMs] = useState(0);
+
   const clientRef = useRef(null);
+  const driftControllerRef = useRef(null);
+  const scheduledTimerRef = useRef(null);
+  const lastAuthoritativeStateRef = useRef(null);
+
+  // Initialize Drift Controller on audioRef
+  useEffect(() => {
+    if (audioRef?.current) {
+      driftControllerRef.current = new DriftController(audioRef.current);
+    }
+  }, [audioRef]);
+
   const stateRef = useRef({
     roomCode,
     isHost,
@@ -103,7 +122,6 @@ export function SyncPlayProvider({ children }) {
     }
   };
 
-  // Convert members map to sorted list (Host first, then alphabetically)
   const members = Array.from(membersMap.values()).sort((a, b) => {
     if (a.isHost) return -1;
     if (b.isHost) return 1;
@@ -131,86 +149,172 @@ export function SyncPlayProvider({ children }) {
     return () => clearInterval(interval);
   }, [roomCode, userId]);
 
-  // Host Heartbeat Broadcast (every 4 seconds) to prevent drift and inform late joiners
+  // Host Continuous Synchronization Heartbeat (every 3 seconds)
   useEffect(() => {
     if (!isHost || !clientRef.current || !roomCode) return;
 
     const interval = setInterval(() => {
-      const { currentSong: activeSong, isPlaying: activePlaying, currentTime: activeTime, queue: activeQueue, queueIndex: activeIdx } = stateRef.current;
-      if (activeSong && clientRef.current) {
+      const { currentSong: s, isPlaying: p, currentTime: t, queue: q, queueIndex: qi } = stateRef.current;
+      if (s && clientRef.current) {
         clientRef.current.publishState({
           type: 'SYNC_STATE',
-          song: activeSong,
-          isPlaying: activePlaying,
-          position: activeTime,
-          queue: activeQueue,
-          queueIndex: activeIdx
+          song: s,
+          isPlaying: p,
+          position: t,
+          queue: q,
+          queueIndex: qi,
+          serverTimestamp: getServerTime()
         });
       }
-    }, 4000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isHost, roomCode]);
 
-  // Handle incoming authoritative state from Host
-  const handleHostState = useCallback((state) => {
-    if (stateRef.current.isHost) return; // Host doesn't mirror themselves
+  /**
+   * Continuous High-Precision Drift Loop (Runs every 300ms)
+   * Calculates difference between local playback position and authoritative server timeline.
+   */
+  useEffect(() => {
+    if (!roomCode || isHost || !driftControllerRef.current || !audioRef?.current) return;
 
-    const { song, isPlaying: hostPlaying, position, hostTime, hostName: currentHostName, hostId: currentHostId } = state;
+    const interval = setInterval(() => {
+      const auth = lastAuthoritativeStateRef.current;
+      if (!auth || !auth.song) return;
+
+      const audio = audioRef.current;
+      if (!audio || audio.readyState < 2) {
+        setDriftStatus('BUFFERING');
+        return;
+      }
+
+      // Calculate expected position from authoritative server timestamp
+      const nowServer = getServerTime();
+      const elapsedSeconds = Math.max(0, (nowServer - (auth.serverTimestamp || nowServer)) / 1000);
+      const expectedPosition = auth.position + (auth.isPlaying ? elapsedSeconds : 0);
+
+      // Evaluate drift and apply micro-rate tuning or gentle realign
+      const result = driftControllerRef.current.evaluate(expectedPosition, auth.isPlaying);
+      setMeasuredDriftMs(result.driftMs);
+      setDriftStatus(result.status);
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, [roomCode, isHost, audioRef]);
+
+  /**
+   * Executes a synchronized playback schedule across all connected devices
+   */
+  const executeScheduledPlayback = useCallback((scheduledTime, targetSong, targetPosition) => {
+    if (scheduledTimerRef.current) {
+      clearTimeout(scheduledTimerRef.current);
+      scheduledTimerRef.current = null;
+    }
+
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const nowServer = getServerTime();
+    const delay = scheduledTime - nowServer;
+
+    // 1. Ensure track is cued
+    if (isSyncActionRef) isSyncActionRef.current = true;
+    if (targetSong && (!stateRef.current.currentSong || stateRef.current.currentSong.id !== targetSong.id)) {
+      playSong(targetSong);
+    }
+
+    // 2. Schedule exact start
+    if (delay > 0) {
+      setScheduledCountdownMs(delay);
+      audio.currentTime = Math.max(0, targetPosition);
+
+      scheduledTimerRef.current = setTimeout(() => {
+        setScheduledCountdownMs(0);
+        audio.currentTime = Math.max(0, targetPosition);
+        audio.play().catch((err) => {
+          if (err?.name === 'NotAllowedError') {
+            setNeedsUserGesture(true);
+          }
+        });
+        if (isSyncActionRef) isSyncActionRef.current = false;
+      }, delay);
+    } else {
+      // Late arrival: compute exact offset from missed schedule
+      const elapsed = Math.abs(delay) / 1000;
+      const accuratePos = targetPosition + elapsed;
+      audio.currentTime = Math.max(0, accuratePos);
+      audio.play().catch((err) => {
+        if (err?.name === 'NotAllowedError') {
+          setNeedsUserGesture(true);
+        }
+      });
+      if (isSyncActionRef) isSyncActionRef.current = false;
+    }
+  }, [audioRef, playSong, isSyncActionRef]);
+
+  // Handle incoming authoritative state from Host (retained on broker)
+  const handleHostState = useCallback((state) => {
+    if (stateRef.current.isHost) return;
+
+    const { song, isPlaying: hostPlaying, position, serverTimestamp, hostName: hName, hostId: hId } = state;
     if (!song) return;
 
-    setHostId(currentHostId);
-    if (currentHostName) setHostName(currentHostName);
+    setHostId(hId);
+    if (hName) setHostName(hName);
 
-    // Latency & elapsed time calculation
-    const elapsed = Math.max(0, (Date.now() - (hostTime || Date.now())) / 1000);
-    const expectedPosition = position + (hostPlaying ? elapsed : 0);
+    lastAuthoritativeStateRef.current = {
+      song,
+      isPlaying: hostPlaying,
+      position: position || 0,
+      serverTimestamp: serverTimestamp || getServerTime()
+    };
 
-    const { currentSong: localSong, isPlaying: localPlaying, currentTime: localTime } = stateRef.current;
+    const nowServer = getServerTime();
+    const elapsed = Math.max(0, (nowServer - (serverTimestamp || nowServer)) / 1000);
+    const expectedPosition = (position || 0) + (hostPlaying ? elapsed : 0);
 
-    // Track changed
+    const { currentSong: localSong } = stateRef.current;
+    const audio = audioRef.current;
+
+    // Late Joiner or Track Change
     if (!localSong || localSong.id !== song.id) {
       if (isSyncActionRef) isSyncActionRef.current = true;
       playSong(song);
       setTimeout(() => {
-        seek(expectedPosition);
+        if (audio) {
+          audio.currentTime = expectedPosition;
+          if (hostPlaying) {
+            audio.play().catch((err) => {
+              if (err?.name === 'NotAllowedError') setNeedsUserGesture(true);
+            });
+          } else {
+            audio.pause();
+          }
+        }
         if (isSyncActionRef) isSyncActionRef.current = false;
-      }, 300);
+      }, 350);
       return;
     }
 
-    // Playback state toggle (Play/Pause)
-    if (localPlaying !== hostPlaying) {
-      if (isSyncActionRef) isSyncActionRef.current = true;
-      if (hostPlaying) {
-        seek(expectedPosition);
-        togglePlay();
-      } else {
-        seek(position);
-        togglePlay();
+    // Play/Pause State Synchronization
+    if (audio) {
+      if (!hostPlaying && !audio.paused) {
+        audio.pause();
+        audio.currentTime = position || 0;
+      } else if (hostPlaying && audio.paused) {
+        audio.currentTime = expectedPosition;
+        audio.play().catch((err) => {
+          if (err?.name === 'NotAllowedError') setNeedsUserGesture(true);
+        });
       }
-      setTimeout(() => {
-        if (isSyncActionRef) isSyncActionRef.current = false;
-      }, 100);
-      return;
     }
+  }, [audioRef, playSong, isSyncActionRef]);
 
-    // Drift correction: if drift > 1.8 seconds, smoothly adjust without re-buffering
-    const drift = Math.abs(localTime - expectedPosition);
-    if (drift > 1.8) {
-      if (isSyncActionRef) isSyncActionRef.current = true;
-      seek(expectedPosition);
-      setTimeout(() => {
-        if (isSyncActionRef) isSyncActionRef.current = false;
-      }, 100);
-    }
-  }, [playSong, seek, togglePlay, isSyncActionRef]);
-
-  // Handle transient playback actions from Host
+  // Handle transient actions broadcast by Host
   const handleHostAction = useCallback((action) => {
-    if (stateRef.current.isHost) return; // Host doesn't mirror themselves
+    if (stateRef.current.isHost) return;
 
-    const { type, position, song, hostTime, senderName } = action;
+    const { type, position, song, scheduledStartTime, serverTimestamp, senderName } = action;
 
     if (type === 'ROOM_CLOSED') {
       showFloatingToast(`The host (${senderName || 'Host'}) has closed the SyncPlay room.`, 'info');
@@ -218,47 +322,68 @@ export function SyncPlayProvider({ children }) {
       return;
     }
 
-    const elapsed = Math.max(0, (Date.now() - (hostTime || Date.now())) / 1000);
-    const expectedPosition = (position || 0) + (action.isPlaying ? elapsed : 0);
-
-    if (isSyncActionRef) isSyncActionRef.current = true;
+    const audio = audioRef.current;
 
     switch (type) {
-      case 'PLAY':
-        seek(expectedPosition);
-        if (!stateRef.current.isPlaying) {
-          togglePlay();
-        }
+      case 'SCHEDULED_PLAY':
+        lastAuthoritativeStateRef.current = {
+          song,
+          isPlaying: true,
+          position: position || 0,
+          serverTimestamp: scheduledStartTime || getServerTime()
+        };
+        executeScheduledPlayback(scheduledStartTime || (getServerTime() + 100), song, position || 0);
         break;
 
       case 'PAUSE':
-        seek(position || 0);
-        if (stateRef.current.isPlaying) {
-          togglePlay();
+        if (scheduledTimerRef.current) {
+          clearTimeout(scheduledTimerRef.current);
+          scheduledTimerRef.current = null;
+        }
+        lastAuthoritativeStateRef.current = {
+          song: song || stateRef.current.currentSong,
+          isPlaying: false,
+          position: position || 0,
+          serverTimestamp: serverTimestamp || getServerTime()
+        };
+        if (audio) {
+          audio.pause();
+          if (position !== undefined) audio.currentTime = position;
         }
         break;
 
       case 'SEEK':
-        seek(expectedPosition);
+        lastAuthoritativeStateRef.current = {
+          song: stateRef.current.currentSong,
+          isPlaying: action.isPlaying,
+          position: position || 0,
+          serverTimestamp: serverTimestamp || getServerTime()
+        };
+        if (action.isPlaying && scheduledStartTime) {
+          executeScheduledPlayback(scheduledStartTime, stateRef.current.currentSong, position || 0);
+        } else if (audio && position !== undefined) {
+          audio.currentTime = position;
+        }
         break;
 
       case 'CHANGE_SONG':
         if (song) {
-          playSong(song);
-          setTimeout(() => seek(expectedPosition), 300);
+          lastAuthoritativeStateRef.current = {
+            song,
+            isPlaying: true,
+            position: 0,
+            serverTimestamp: scheduledStartTime || getServerTime()
+          };
+          executeScheduledPlayback(scheduledStartTime || (getServerTime() + 700), song, 0);
         }
         break;
 
       default:
         break;
     }
+  }, [audioRef, executeScheduledPlayback]);
 
-    setTimeout(() => {
-      if (isSyncActionRef) isSyncActionRef.current = false;
-    }, 150);
-  }, [playSong, seek, togglePlay, isSyncActionRef]);
-
-  // Handle member presence updates
+  // Handle presence updates from members
   const handlePresenceUpdate = useCallback((p) => {
     if (!p || !p.userId) return;
 
@@ -289,7 +414,7 @@ export function SyncPlayProvider({ children }) {
     }
   }, []);
 
-  // Hook into AudioContext to broadcast Host events to room
+  // Hook into AudioContext to broadcast Host events with Scheduled Playback
   useEffect(() => {
     if (!setSyncActionHandler) return;
 
@@ -297,31 +422,103 @@ export function SyncPlayProvider({ children }) {
       const { isHost: activeIsHost, roomCode: activeCode } = stateRef.current;
       if (!activeIsHost || !activeCode || !clientRef.current) return;
 
-      // Host broadcasts action to members
-      clientRef.current.publishAction(action);
+      const nowServer = getServerTime();
 
-      // Also publish updated state
-      const { currentSong: activeSong, isPlaying: activePlaying, currentTime: activeTime, queue: activeQueue, queueIndex: activeIdx } = stateRef.current;
-      if (activeSong) {
+      if (action.type === 'PLAY') {
+        // Schedule future start 650ms ahead so all connected devices buffer and play together
+        const scheduledStartTime = nowServer + 650;
+        const currentPos = action.position !== undefined ? action.position : (audioRef?.current?.currentTime || 0);
+
+        clientRef.current.publishAction({
+          type: 'SCHEDULED_PLAY',
+          song: stateRef.current.currentSong,
+          position: currentPos,
+          scheduledStartTime
+        });
+
         clientRef.current.publishState({
           type: 'SYNC_STATE',
-          song: activeSong,
-          isPlaying: action.type === 'PLAY' ? true : action.type === 'PAUSE' ? false : activePlaying,
-          position: action.position !== undefined ? action.position : activeTime,
-          queue: activeQueue,
-          queueIndex: activeIdx
+          song: stateRef.current.currentSong,
+          isPlaying: true,
+          position: currentPos,
+          serverTimestamp: scheduledStartTime
         });
+
+        executeScheduledPlayback(scheduledStartTime, stateRef.current.currentSong, currentPos);
+      } else if (action.type === 'PAUSE') {
+        const currentPos = action.position !== undefined ? action.position : (audioRef?.current?.currentTime || 0);
+        clientRef.current.publishAction({
+          type: 'PAUSE',
+          position: currentPos,
+          song: stateRef.current.currentSong
+        });
+
+        clientRef.current.publishState({
+          type: 'SYNC_STATE',
+          song: stateRef.current.currentSong,
+          isPlaying: false,
+          position: currentPos,
+          serverTimestamp: nowServer
+        });
+      } else if (action.type === 'SEEK') {
+        const targetPos = action.position || 0;
+        const scheduledStartTime = nowServer + 450;
+
+        clientRef.current.publishAction({
+          type: 'SEEK',
+          position: targetPos,
+          isPlaying: action.isPlaying,
+          scheduledStartTime
+        });
+
+        clientRef.current.publishState({
+          type: 'SYNC_STATE',
+          song: stateRef.current.currentSong,
+          isPlaying: action.isPlaying,
+          position: targetPos,
+          serverTimestamp: scheduledStartTime
+        });
+
+        if (action.isPlaying) {
+          executeScheduledPlayback(scheduledStartTime, stateRef.current.currentSong, targetPos);
+        }
+      } else if (action.type === 'CHANGE_SONG') {
+        const scheduledStartTime = nowServer + 700;
+
+        clientRef.current.publishAction({
+          type: 'CHANGE_SONG',
+          song: action.song,
+          position: 0,
+          scheduledStartTime
+        });
+
+        clientRef.current.publishState({
+          type: 'SYNC_STATE',
+          song: action.song,
+          isPlaying: true,
+          position: 0,
+          serverTimestamp: scheduledStartTime
+        });
+
+        executeScheduledPlayback(scheduledStartTime, action.song, 0);
       }
     });
 
     return () => setSyncActionHandler(null);
-  }, [setSyncActionHandler]);
+  }, [setSyncActionHandler, executeScheduledPlayback, audioRef]);
 
-  // Disconnect from active room
+  // Disconnect from room
   const disconnectRoom = useCallback(() => {
+    if (scheduledTimerRef.current) {
+      clearTimeout(scheduledTimerRef.current);
+      scheduledTimerRef.current = null;
+    }
     if (clientRef.current) {
       clientRef.current.disconnect();
       clientRef.current = null;
+    }
+    if (driftControllerRef.current) {
+      driftControllerRef.current.reset();
     }
     setRoomCode(null);
     setIsHost(false);
@@ -330,16 +527,18 @@ export function SyncPlayProvider({ children }) {
     setConnectionStatus('DISCONNECTED');
     setMembersMap(new Map());
     setNeedsUserGesture(false);
+    setMeasuredDriftMs(0);
+    setDriftStatus('PERFECT_SYNC');
+    lastAuthoritativeStateRef.current = null;
   }, []);
 
-  // Create Room (User becomes Host)
-  const createRoom = useCallback((customHostName) => {
+  // Create Room (Host)
+  const createRoom = useCallback(async (customHostName) => {
     disconnectRoom();
+    await syncClockWithServer();
 
     if (customHostName) setUserName(customHostName);
     const activeHostName = customHostName || userName;
-
-    // Generate random 6-digit numeric room code (e.g. 749201)
     const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     const userProfile = {
@@ -361,13 +560,11 @@ export function SyncPlayProvider({ children }) {
     setIsHost(true);
     setHostId(userId);
     setHostName(activeHostName);
-
-    // Initial member roster with Host
     setMembersMap(new Map([[userId, { ...userProfile, lastSeen: Date.now() }]]));
 
     client.connect();
 
-    // If host is already playing a song, publish initial state immediately
+    // If a track is already loaded, publish state with current server timestamp
     const { currentSong: s, isPlaying: p, currentTime: t, queue: q, queueIndex: qi } = stateRef.current;
     if (s) {
       setTimeout(() => {
@@ -377,7 +574,8 @@ export function SyncPlayProvider({ children }) {
           isPlaying: p,
           position: t,
           queue: q,
-          queueIndex: qi
+          queueIndex: qi,
+          serverTimestamp: getServerTime()
         });
       }, 500);
     }
@@ -386,8 +584,8 @@ export function SyncPlayProvider({ children }) {
     return code;
   }, [disconnectRoom, userName, userId, avatarColor, handleHostState, handleHostAction, handlePresenceUpdate]);
 
-  // Join Room (User becomes Member)
-  const joinRoom = useCallback((code, customUserName) => {
+  // Join Room (Guest)
+  const joinRoom = useCallback(async (code, customUserName) => {
     const cleanCode = String(code).trim().replace(/\D/g, '');
     if (cleanCode.length !== 6) {
       showFloatingToast('Please enter a valid 6-digit room code.', 'error');
@@ -395,6 +593,7 @@ export function SyncPlayProvider({ children }) {
     }
 
     disconnectRoom();
+    await syncClockWithServer();
 
     if (customUserName) setUserName(customUserName);
     const activeUserName = customUserName || userName;
@@ -416,12 +615,9 @@ export function SyncPlayProvider({ children }) {
 
     setRoomCode(cleanCode);
     setIsHost(false);
-
-    // Add self to member roster
     setMembersMap(new Map([[userId, { ...userProfile, lastSeen: Date.now() }]]));
 
     client.connect();
-
     showFloatingToast(`Joined Sync Room #${cleanCode}! Syncing with host...`, 'info');
     return true;
   }, [disconnectRoom, userName, userId, avatarColor, handleHostState, handleHostAction, handlePresenceUpdate]);
@@ -444,32 +640,30 @@ export function SyncPlayProvider({ children }) {
     showFloatingToast('SyncPlay room has been ended.', 'info');
   }, [disconnectRoom]);
 
-  // Copy 6-digit room code
+  // Copy code & share link
   const copyRoomCode = useCallback(() => {
     if (!roomCode) return;
     navigator.clipboard?.writeText(roomCode).then(() => {
       showFloatingToast(`Room Code ${roomCode} copied to clipboard!`, 'info');
-    }).catch(() => {
-      showFloatingToast(`Room Code: ${roomCode}`, 'info');
-    });
+    }).catch(() => showFloatingToast(`Room Code: ${roomCode}`, 'info'));
   }, [roomCode]);
 
-  // Copy shareable invite link
   const copyShareLink = useCallback(() => {
     if (!roomCode) return;
     const url = `${window.location.origin}/?room=${roomCode}`;
     navigator.clipboard?.writeText(url).then(() => {
       showFloatingToast('Invite link copied to clipboard!', 'info');
-    }).catch(() => {
-      showFloatingToast(`Invite URL: ${url}`, 'info');
-    });
+    }).catch(() => showFloatingToast(`Invite URL: ${url}`, 'info'));
   }, [roomCode]);
 
-  // Autoplay unlock gesture trigger
+  // Autoplay gesture unlock
   const triggerAutoplayUnlock = useCallback(() => {
     setNeedsUserGesture(false);
-    togglePlay();
-  }, [togglePlay]);
+    const audio = audioRef.current;
+    if (audio) {
+      audio.play().catch(console.warn);
+    }
+  }, [audioRef]);
 
   return (
     <SyncPlayContext.Provider
@@ -489,6 +683,11 @@ export function SyncPlayProvider({ children }) {
         setIsSyncModalOpen,
         needsUserGesture,
         triggerAutoplayUnlock,
+        measuredDriftMs,
+        driftStatus,
+        scheduledCountdownMs,
+        clockOffset: getClockOffset(),
+        estimatedRTT: getEstimatedRTT(),
         createRoom,
         joinRoom,
         leaveRoom,
@@ -509,4 +708,3 @@ export function useSyncPlay() {
   }
   return context;
 }
-

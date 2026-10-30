@@ -593,7 +593,8 @@ export function AudioProvider({ children }) {
         clearQueue,
         reorderQueue,
         setSyncActionHandler,
-        isSyncActionRef
+        isSyncActionRef,
+        audioRef
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 import Paho from 'paho-mqtt';
+import { getServerTime } from './clockSync';
 
 /**
  * Public high-availability MQTT WebSocket broker endpoints
@@ -181,7 +182,7 @@ export class SyncClient {
       isHost: this.user.isHost,
       avatarColor: this.user.avatarColor,
       status,
-      timestamp: Date.now()
+      timestamp: getServerTime()
     };
 
     this.publishToTopic(this.myPresenceTopic, payload, false);
@@ -195,20 +196,20 @@ export class SyncClient {
       ...state,
       hostId: this.user.userId,
       hostName: this.user.userName,
-      hostTime: Date.now()
+      serverTimestamp: getServerTime()
     };
     this.publishToTopic(this.stateTopic, payload, true);
   }
 
   /**
-   * Host or members publish transient playback action (PLAY, PAUSE, SEEK, CHANGE_SONG, ROOM_CLOSED)
+   * Host or members publish transient playback action (SCHEDULED_PLAY, PAUSE, SEEK, CUE_TRACK, ROOM_CLOSED)
    */
   publishAction(action) {
     const payload = {
       ...action,
       senderId: this.user.userId,
       senderName: this.user.userName,
-      hostTime: Date.now()
+      serverTimestamp: getServerTime()
     };
     this.publishToTopic(this.actionTopic, payload, false);
   }

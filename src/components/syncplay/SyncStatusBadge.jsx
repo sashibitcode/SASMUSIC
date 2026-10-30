@@ -3,11 +3,12 @@ import { Radio, Crown, Headphones } from 'lucide-react';
 import { useSyncPlay } from '../../contexts/SyncPlayContext';
 
 export function SyncStatusBadge({ className = '', showDetails = true }) {
-  const { isInRoom, isHost, roomCode, members, setIsSyncModalOpen, connectionStatus } = useSyncPlay();
+  const { isInRoom, isHost, roomCode, members, setIsSyncModalOpen, connectionStatus, measuredDriftMs } = useSyncPlay();
 
   if (!isInRoom) return null;
 
   const isReconnecting = connectionStatus === 'RECONNECTING';
+  const absDrift = Math.abs(measuredDriftMs);
 
   return (
     <button
@@ -53,7 +54,7 @@ export function SyncStatusBadge({ className = '', showDetails = true }) {
             ) : (
               <>
                 <Headphones className="w-3 h-3 text-emerald-300" />
-                <span>Synced</span>
+                <span>{absDrift < 40 ? 'Synced (±20ms)' : `${measuredDriftMs > 0 ? '+' : ''}${measuredDriftMs}ms`}</span>
               </>
             )}
           </span>

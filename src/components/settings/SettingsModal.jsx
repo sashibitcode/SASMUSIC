@@ -6,7 +6,9 @@ import {
   ShieldCheck,
   Music,
   Radio,
-  Command
+  Command,
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
 import { useDrive } from '../../contexts/DriveContext';
 
@@ -106,7 +108,53 @@ export function SettingsModal({ isOpen, onClose, onOpenUpload }) {
             </div>
           </div>
 
-          {/* Section 4: Keyboard Shortcuts (Desktop) */}
+          {/* Section 4: Developer & Brand */}
+          <div className="rounded-2xl p-4 bg-gradient-to-br from-[#121614] to-[#1a1111] border border-[#A31C1B]/40 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#A31C1B]" />
+                <h4 className="text-xs font-semibold text-slate-200">
+                  Developer & Brand
+                </h4>
+              </div>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#A31C1B]/20 text-[#fca5a5] border border-[#A31C1B]/40">
+                @sashibitcode
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400">Creator:</span>
+              <span className="font-semibold text-white">Shashikant Raj</span>
+            </div>
+
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400">Role:</span>
+              <span className="text-slate-300 font-medium">Data Analyst & Full Stack Developer</span>
+            </div>
+
+            <div className="flex items-center gap-2 pt-1">
+              <a
+                href="https://sashibitcode.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl bg-black/40 hover:bg-[#A31C1B]/20 border border-white/10 hover:border-[#A31C1B]/40 text-xs font-medium text-slate-200 transition-colors"
+              >
+                <span>Portfolio</span>
+                <ExternalLink className="w-3.5 h-3.5 text-[#A31C1B]" />
+              </a>
+              <a
+                href="https://github.com/sashibitcode"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl bg-black/40 hover:bg-white/10 border border-white/10 text-xs font-medium text-slate-200 transition-colors"
+              >
+                <span>GitHub</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+              </a>
+            </div>
+          </div>
+
+          {/* Section 5: Keyboard Shortcuts (Desktop) */}
           <div className="hidden sm:block rounded-2xl p-4 bg-[#121614]/60 border border-[#282f2b] space-y-2">
             <div className="flex items-center gap-2 mb-2">
               <Command className="w-4 h-4 text-[#A31C1B]" />
@@ -137,9 +185,17 @@ export function SettingsModal({ isOpen, onClose, onOpenUpload }) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-[#282f2b] bg-[#121614]/80 flex items-center justify-between text-xs text-slate-400">
-          <span>SAS Music</span>
-          <span className="text-slate-400">v1.0.0</span>
+        <div className="px-5 py-3 border-t border-[#282f2b] bg-[#121614]/80 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+          <span>SAS Music • v1.0.0</span>
+          <a
+            href="https://sashibitcode.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 font-medium"
+          >
+            <span>By Shashikant Raj (<span className="text-[#fca5a5] font-mono">@sashibitcode</span>)</span>
+            <ExternalLink className="w-3 h-3 text-[#A31C1B]" />
+          </a>
         </div>
       </div>
     </div>

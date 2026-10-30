@@ -39,6 +39,8 @@ export default defineConfig({
         'pwa-192x192.png',
         'pwa-512x512.png',
         'maskable-icon.png',
+        'sas-music-logo.webp',
+        'sas-music-logo.png',
         'sas-music-logo-red.webp',
         'sas-music-logo-red.png'
       ],

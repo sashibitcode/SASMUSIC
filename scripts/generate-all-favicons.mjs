@@ -167,11 +167,16 @@ async function generateFavicons() {
   fs.writeFileSync('public/favicon.svg', faviconSvg, 'utf8');
   console.log('✓ Created: public/favicon.svg (SVG Favicon)');
 
-  // 9. Generate ultra-compressed WebP splash logo for instant LCP
+  // 9. Generate ultra-compressed WebP logos for instant LCP
   await sharp('public/sas-music-logo-red.png')
     .webp({ quality: 90 })
     .toFile('public/sas-music-logo-red.webp');
   console.log('✓ Created: public/sas-music-logo-red.webp (Optimized WebP Splash Logo)');
+
+  await sharp('public/sas-music-logo.png')
+    .webp({ quality: 90 })
+    .toFile('public/sas-music-logo.webp');
+  console.log('✓ Created: public/sas-music-logo.webp (Optimized WebP Header Logo)');
 
   console.log('\n🎉 ALL FAVICON AND BRAND ICON ASSETS SUCCESSFULLY GENERATED!');
 }

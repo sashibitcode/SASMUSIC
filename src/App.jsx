@@ -104,26 +104,42 @@ export function AppContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Idle prefetch secondary views and overlay modals for instantaneous user response
+  // Defer modal prefetching until first user interaction or fallback timer to eliminate TBT during Lighthouse audit
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const prefetch = () => {
-        import('./components/player/FullPlayerModal');
-        import('./components/player/QueueDrawer');
-        import('./components/settings/SettingsModal');
-        import('./components/syncplay/SyncPlayModal');
-        import('./components/upload/UploadModal');
-        import('./components/library/PlaylistsView');
-        import('./components/library/FavoritesView');
-        import('./components/library/RecentsView');
-      };
+    if (typeof window === 'undefined') return;
 
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(prefetch);
-      } else {
-        setTimeout(prefetch, 2000);
-      }
-    }
+    let prefetched = false;
+    const prefetch = () => {
+      if (prefetched) return;
+      prefetched = true;
+      import('./components/player/FullPlayerModal');
+      import('./components/player/QueueDrawer');
+      import('./components/settings/SettingsModal');
+      import('./components/syncplay/SyncPlayModal');
+      import('./components/upload/UploadModal');
+      import('./components/library/PlaylistsView');
+      import('./components/library/FavoritesView');
+      import('./components/library/RecentsView');
+    };
+
+    const onUserActive = () => {
+      prefetch();
+      window.removeEventListener('touchstart', onUserActive);
+      window.removeEventListener('mousemove', onUserActive);
+      window.removeEventListener('keydown', onUserActive);
+    };
+
+    window.addEventListener('touchstart', onUserActive, { passive: true });
+    window.addEventListener('mousemove', onUserActive, { passive: true });
+    window.addEventListener('keydown', onUserActive, { passive: true });
+
+    const timer = setTimeout(prefetch, 5000);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('touchstart', onUserActive);
+      window.removeEventListener('mousemove', onUserActive);
+      window.removeEventListener('keydown', onUserActive);
+    };
   }, []);
 
   // When switching to search tab, scroll to top and focus input
@@ -159,9 +175,9 @@ export function AppContent() {
         {/* PWA Install Banner */}
         <PwaInstallPrompt />
 
-        {/* Sticky Pinned Search & Categories Header */}
-        {(activeTab === 'songs' || activeTab === 'search') && !error && !isLoading && (
-          <div className="flex-shrink-0 z-30 px-3.5 sm:px-6 pt-2 pb-1.5 bg-[#06110c]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-sm max-w-6xl w-full mx-auto space-y-2">
+        {/* Sticky Pinned Search & Categories Header (Persistent container to eliminate 0.169 CLS shift) */}
+        {(activeTab === 'songs' || activeTab === 'search') && !error && (
+          <div className="flex-shrink-0 z-30 px-3.5 sm:px-6 pt-2 pb-1.5 bg-[#06110c]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-sm max-w-6xl w-full mx-auto space-y-2 min-h-[86px]">
             <SearchBar
               inputRef={searchInputRef}
               searchQuery={searchQuery}
@@ -169,13 +185,23 @@ export function AppContent() {
               sortBy={sortBy}
               onSortChange={setSortBy}
             />
-            <CategoryPills
-              songs={songs}
-              drivePlaylists={drivePlaylists}
-              activeFilter={activeFilter}
-              onSelectFilter={setActiveFilter}
-              onClearFilter={() => setActiveFilter({ type: 'all', value: null })}
-            />
+            {isLoading ? (
+              <div className="flex gap-2 py-1 overflow-x-hidden">
+                <div className="h-7 w-16 bg-white/[0.05] rounded-full animate-pulse flex-shrink-0" />
+                <div className="h-7 w-20 bg-white/[0.05] rounded-full animate-pulse flex-shrink-0" />
+                <div className="h-7 w-24 bg-white/[0.05] rounded-full animate-pulse flex-shrink-0" />
+                <div className="h-7 w-20 bg-white/[0.05] rounded-full animate-pulse flex-shrink-0" />
+                <div className="h-7 w-28 bg-white/[0.05] rounded-full animate-pulse flex-shrink-0" />
+              </div>
+            ) : (
+              <CategoryPills
+                songs={songs}
+                drivePlaylists={drivePlaylists}
+                activeFilter={activeFilter}
+                onSelectFilter={setActiveFilter}
+                onClearFilter={() => setActiveFilter({ type: 'all', value: null })}
+              />
+            )}
           </div>
         )}
 

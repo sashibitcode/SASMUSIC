@@ -27,7 +27,18 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png', 'maskable-icon.png'],
+      includeAssets: [
+        'favicon.ico',
+        'favicon.svg',
+        'apple-touch-icon.png',
+        'favicon-16x16.png',
+        'favicon-32x32.png',
+        'favicon-48x48.png',
+        'favicon-192x192.png',
+        'pwa-192x192.png',
+        'pwa-512x512.png',
+        'maskable-icon.png'
+      ],
       manifest: {
         name: 'SAS Music',
         short_name: 'SAS Music',

@@ -197,14 +197,27 @@
     <!-- React Application Mount Point -->
     <div id="root"></div>
 
-    <!-- Independent Full-Screen Native Splash Screen (1.8s Hold + 500ms Smooth Dissolve) -->
+    <!-- Independent Full-Screen Native Splash Screen (2.0s Hold + Loading Bar + 500ms Smooth Dissolve) -->
+    <style>
+      @keyframes splashLoading {
+        0% { width: 0%; opacity: 0.6; }
+        25% { width: 35%; opacity: 0.85; }
+        65% { width: 75%; opacity: 0.95; }
+        100% { width: 100%; opacity: 1; }
+      }
+    </style>
     <div id="app-splash" style="position:fixed;inset:0;background-color:#06110c;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,24px)+36px) 24px calc(env(safe-area-inset-bottom,16px)+36px);z-index:99999;transition:opacity 0.5s cubic-bezier(0.16,1,0.3,1),transform 0.5s cubic-bezier(0.16,1,0.3,1);user-select:none;-webkit-user-select:none;cursor:pointer;">
       <div></div>
 
-      <!-- Center Official Brand Logo with atmospheric glow -->
+      <!-- Center Official Brand Logo with atmospheric glow & loading indicator -->
       <div style="display:flex;flex-direction:column;align-items:center;position:relative;">
         <div style="position:absolute;width:260px;height:130px;background:rgba(163,28,27,0.32);filter:blur(55px);border-radius:50%;pointer-events:none;"></div>
         <img src="/sas-music-logo-red.png" alt="SAS Music" style="width:220px;max-width:68vw;height:auto;position:relative;z-index:1;" />
+        
+        <!-- Luxury Animated Loading Bar -->
+        <div style="width:130px;height:3px;background:rgba(255,255,255,0.08);border-radius:9999px;overflow:hidden;position:relative;margin-top:24px;">
+          <div style="height:100%;background:linear-gradient(90deg,#A31C1B,#e2403f,#ffffff);border-radius:9999px;animation:splashLoading 2s cubic-bezier(0.2,0.8,0.2,1) forwards;box-shadow:0 0 10px rgba(163,28,27,0.85);"></div>
+        </div>
       </div>
 
       <!-- Bottom Studio Brand Signature -->
@@ -236,8 +249,8 @@
         splash.addEventListener('click', dismiss);
         splash.addEventListener('touchstart', dismiss, { passive: true });
 
-        // Guaranteed hold time of 1.8 seconds so users comfortably read the brand
-        setTimeout(dismiss, 1800);
+        // Guaranteed hold time of 2.0 seconds so users comfortably read the brand & see loading
+        setTimeout(dismiss, 2000);
       })();
     </script>
     <script type="module" src="/src/main.jsx"></script>

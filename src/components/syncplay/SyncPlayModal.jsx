@@ -100,12 +100,12 @@ export function SyncPlayModal() {
         <div className="relative z-10 flex items-center justify-between p-4 sm:p-5 border-b border-white/[0.08]">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-[#A31C1B]/20 border border-[#A31C1B]/60 flex items-center justify-center shadow-sm">
-              <Radio className="w-5 h-5 text-[#fca5a5]" />
+              <Users className="w-5 h-5 text-[#fca5a5]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base sm:text-lg font-bold text-white tracking-wide flex items-center gap-1.5">
-                  SAS MUSIC <span className="text-[#fca5a5]">SyncPlay</span>
+                  Listen Together <span className="text-[#fca5a5]">With Friends</span>
                 </h2>
                 {isInRoom && (
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
@@ -117,7 +117,7 @@ export function SyncPlayModal() {
                 )}
               </div>
               <p className="text-xs text-slate-400">
-                {isInRoom ? `Room #${roomCode}` : 'Group Listening'}
+                {isInRoom ? `Active Room #${roomCode}` : 'Stream music in real-time with friends'}
               </p>
             </div>
           </div>
@@ -200,7 +200,7 @@ export function SyncPlayModal() {
                     type="submit"
                     className="w-full py-2.5 rounded-xl crimson-glow-btn text-white text-xs font-semibold shadow-md transition-transform active:scale-98 flex items-center justify-center gap-2"
                   >
-                    <Radio className="w-4 h-4" />
+                    <Users className="w-4 h-4" />
                     <span>Create Room</span>
                   </button>
                 </form>

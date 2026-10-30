@@ -1,5 +1,5 @@
 import React from 'react';
-import { Radio, Crown, Headphones } from 'lucide-react';
+import { Users, Crown, Headphones } from 'lucide-react';
 import { useSyncPlay } from '../../contexts/SyncPlayContext';
 
 export function SyncStatusBadge({ className = '', showDetails = true }) {
@@ -21,7 +21,7 @@ export function SyncStatusBadge({ className = '', showDetails = true }) {
           ? 'bg-amber-950/80 border-amber-500/50 text-amber-200 animate-pulse'
           : 'bg-[#A31C1B]/20 hover:bg-[#A31C1B]/30 border-[#A31C1B]/60 text-white shadow-[0_0_12px_rgba(163,28,27,0.35)]'
       } ${className}`}
-      title="Click to open SyncPlay controls"
+      title="Click to open group session controls"
     >
       <span className="relative flex h-2 w-2">
         <span
@@ -36,10 +36,10 @@ export function SyncStatusBadge({ className = '', showDetails = true }) {
         />
       </span>
 
-      <Radio className="w-3.5 h-3.5 text-[#fca5a5]" />
+      <Users className="w-3.5 h-3.5 text-[#fca5a5]" />
 
       <span className="tracking-wide">
-        SyncPlay #{roomCode}
+        With Friends #{roomCode}
       </span>
 
       {showDetails && (

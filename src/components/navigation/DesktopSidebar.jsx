@@ -9,7 +9,7 @@ import {
   Sparkles,
   Download,
   Settings,
-  Radio
+  Users
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { useDrive } from '../../contexts/DriveContext';
@@ -47,7 +47,7 @@ export function DesktopSidebar({
         />
       </div>
 
-      {/* SyncPlay Live Card */}
+      {/* Listen Together Live Card */}
       <div className="mb-4">
         <button
           onClick={() => setIsSyncModalOpen(true)}
@@ -58,13 +58,13 @@ export function DesktopSidebar({
           }`}
         >
           <div className="flex items-center gap-2.5">
-            <Radio className="w-4 h-4 text-[#fca5a5]" />
-            <span className="tracking-wide">SyncPlay</span>
+            <Users className="w-4 h-4 text-[#fca5a5]" />
+            <span className="tracking-wide">Listen Together</span>
           </div>
-          <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
-            isInRoom ? 'bg-[#A31C1B] text-white animate-pulse' : 'bg-black/40 text-emerald-400'
+          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+            isInRoom ? 'bg-[#A31C1B] text-white animate-pulse' : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
           }`}>
-            {isInRoom ? `Room #${roomCode}` : 'LIVE'}
+            {isInRoom ? `Room #${roomCode}` : 'Friends'}
           </span>
         </button>
       </div>

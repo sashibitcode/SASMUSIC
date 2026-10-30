@@ -18,7 +18,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
-          'vendor-icons': ['lucide-react']
+          'vendor-icons': ['lucide-react'],
+          'vendor-mqtt': ['paho-mqtt']
         }
       }
     }
@@ -37,7 +38,9 @@ export default defineConfig({
         'favicon-192x192.png',
         'pwa-192x192.png',
         'pwa-512x512.png',
-        'maskable-icon.png'
+        'maskable-icon.png',
+        'sas-music-logo-red.webp',
+        'sas-music-logo-red.png'
       ],
       manifest: {
         name: 'SAS Music',

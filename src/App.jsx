@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, Suspense, lazy } from 'react';
 import { useDrive } from './contexts/DriveContext';
 import { useLibrary } from './contexts/LibraryContext';
 import { useDebounce } from './hooks/useDebounce';
@@ -7,24 +7,26 @@ import { Header } from './components/header/Header';
 import { SearchBar } from './components/header/SearchBar';
 import { CategoryPills } from './components/navigation/CategoryPills';
 import { SongList } from './components/library/SongList';
-import { PlaylistsView } from './components/library/PlaylistsView';
-import { FavoritesView } from './components/library/FavoritesView';
-import { RecentsView } from './components/library/RecentsView';
 import { MiniPlayer } from './components/player/MiniPlayer';
-import { FullPlayerModal } from './components/player/FullPlayerModal';
-import { QueueDrawer } from './components/player/QueueDrawer';
 import { ErrorState } from './components/common/ErrorState';
 import { SongListSkeleton } from './components/common/Skeleton';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
-import { UploadModal } from './components/upload/UploadModal';
-import { SettingsModal } from './components/settings/SettingsModal';
-import { SyncPlayModal } from './components/syncplay/SyncPlayModal';
 import { BottomNav } from './components/navigation/BottomNav';
 import { DesktopSidebar } from './components/navigation/DesktopSidebar';
 import { filterSongsByCategory } from './utils/categoryExtractor';
 import { useAudio } from './contexts/AudioContext';
 import { useSyncPlay } from './contexts/SyncPlayContext';
 import { usePwaBackHandler } from './hooks/usePwaBackHandler';
+
+// Code-split secondary views & overlay modals for ultra-fast initial load & 90+ Lighthouse score
+const PlaylistsView = lazy(() => import('./components/library/PlaylistsView').then(m => ({ default: m.PlaylistsView })));
+const FavoritesView = lazy(() => import('./components/library/FavoritesView').then(m => ({ default: m.FavoritesView })));
+const RecentsView = lazy(() => import('./components/library/RecentsView').then(m => ({ default: m.RecentsView })));
+const FullPlayerModal = lazy(() => import('./components/player/FullPlayerModal').then(m => ({ default: m.FullPlayerModal })));
+const QueueDrawer = lazy(() => import('./components/player/QueueDrawer').then(m => ({ default: m.QueueDrawer })));
+const UploadModal = lazy(() => import('./components/upload/UploadModal').then(m => ({ default: m.UploadModal })));
+const SettingsModal = lazy(() => import('./components/settings/SettingsModal').then(m => ({ default: m.SettingsModal })));
+const SyncPlayModal = lazy(() => import('./components/syncplay/SyncPlayModal').then(m => ({ default: m.SyncPlayModal })));
 
 export function AppContent() {
   const { songs, drivePlaylists, isLoading, error, refreshLibrary } = useDrive();
@@ -100,6 +102,28 @@ export function AppContent() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Idle prefetch secondary views and overlay modals for instantaneous user response
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const prefetch = () => {
+        import('./components/player/FullPlayerModal');
+        import('./components/player/QueueDrawer');
+        import('./components/settings/SettingsModal');
+        import('./components/syncplay/SyncPlayModal');
+        import('./components/upload/UploadModal');
+        import('./components/library/PlaylistsView');
+        import('./components/library/FavoritesView');
+        import('./components/library/RecentsView');
+      };
+
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(prefetch);
+      } else {
+        setTimeout(prefetch, 2000);
+      }
+    }
   }, []);
 
   // When switching to search tab, scroll to top and focus input
@@ -178,11 +202,11 @@ export function AppContent() {
                 />
               )}
 
-              {activeTab === 'playlists' && <PlaylistsView />}
-
-              {activeTab === 'favorites' && <FavoritesView />}
-
-              {activeTab === 'recents' && <RecentsView />}
+              <Suspense fallback={<SongListSkeleton count={6} />}>
+                {activeTab === 'playlists' && <PlaylistsView />}
+                {activeTab === 'favorites' && <FavoritesView />}
+                {activeTab === 'recents' && <RecentsView />}
+              </Suspense>
             </div>
           )}
         </main>
@@ -199,27 +223,21 @@ export function AppContent() {
         recentsCount={recentlyPlayed.length}
       />
 
-      {/* Fullscreen Expandable Player Modal / Bottom Sheet */}
-      <FullPlayerModal />
-
-      {/* Slide-out Up Next Queue Drawer */}
-      <QueueDrawer />
-
-      {/* Upload Song Modal (Password-Protected) */}
-      <UploadModal
-        isOpen={isUploadOpen}
-        onClose={() => setIsUploadOpen(false)}
-      />
-
-      {/* Settings & Creator Studio Modal */}
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        onOpenUpload={() => setIsUploadOpen(true)}
-      />
-
-      {/* SyncPlay Group Listening Modal */}
-      <SyncPlayModal />
+      {/* Code-split Fullscreen Expandable Player Modal / Bottom Sheet & Modals */}
+      <Suspense fallback={null}>
+        <FullPlayerModal />
+        <QueueDrawer />
+        <UploadModal
+          isOpen={isUploadOpen}
+          onClose={() => setIsUploadOpen(false)}
+        />
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          onOpenUpload={() => setIsUploadOpen(true)}
+        />
+        <SyncPlayModal />
+      </Suspense>
     </div>
   );
 }

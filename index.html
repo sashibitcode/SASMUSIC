@@ -197,7 +197,7 @@
     <!-- React Application Mount Point -->
     <div id="root"></div>
 
-    <!-- Independent Full-Screen Native Splash Screen (2.0s Hold + Loading Bar + 500ms Smooth Dissolve) -->
+    <!-- Independent Full-Screen Native Splash Screen (2.5s Hold + Loading Bar + 500ms Smooth Dissolve) -->
     <style>
       @keyframes splashLoading {
         0% { width: 0%; opacity: 0.6; }
@@ -216,12 +216,12 @@
         
         <!-- Luxury Animated Loading Bar -->
         <div style="width:130px;height:3px;background:rgba(255,255,255,0.08);border-radius:9999px;overflow:hidden;position:relative;margin-top:24px;">
-          <div style="height:100%;background:linear-gradient(90deg,#A31C1B,#e2403f,#ffffff);border-radius:9999px;animation:splashLoading 2s cubic-bezier(0.2,0.8,0.2,1) forwards;box-shadow:0 0 10px rgba(163,28,27,0.85);"></div>
+          <div style="height:100%;background:linear-gradient(90deg,#A31C1B,#e2403f,#ffffff);border-radius:9999px;animation:splashLoading 2.5s cubic-bezier(0.2,0.8,0.2,1) forwards;box-shadow:0 0 10px rgba(163,28,27,0.85);"></div>
         </div>
       </div>
 
-      <!-- Bottom Studio Brand Signature -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;">
+      <!-- Bottom Studio Brand Signature (Elevated by 38px for comfortable optical balance) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;margin-bottom:38px;">
         <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.25em;color:#94a3b8;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">from</span>
         <span style="font-size:13px;font-weight:800;letter-spacing:0.22em;color:#ffffff;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;">SASHIBITCODE</span>
       </div>
@@ -249,8 +249,8 @@
         splash.addEventListener('click', dismiss);
         splash.addEventListener('touchstart', dismiss, { passive: true });
 
-        // Guaranteed hold time of 2.0 seconds so users comfortably read the brand & see loading
-        setTimeout(dismiss, 2000);
+        // Guaranteed hold time of 2.5 seconds so users comfortably read the brand & see loading
+        setTimeout(dismiss, 2500);
       })();
     </script>
     <script type="module" src="/src/main.jsx"></script>

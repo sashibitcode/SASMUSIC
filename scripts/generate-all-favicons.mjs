@@ -71,9 +71,9 @@ async function generateFavicons() {
       <rect width="512" height="512" rx="112" fill="url(#badgeGlow)"/>
       <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="#A31C1B" stroke-width="8" stroke-opacity="0.85"/>
       
-      <!-- Studio Brand Signature -->
-      <text x="256" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600" fill="#94a3b8" letter-spacing="4" text-anchor="middle">FROM</text>
-      <text x="256" y="452" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="800" fill="#ffffff" letter-spacing="5" text-anchor="middle">SASHIBITCODE</text>
+      <!-- Studio Brand Signature (Elevated inside safe zone) -->
+      <text x="256" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600" fill="#94a3b8" letter-spacing="4" text-anchor="middle">FROM</text>
+      <text x="256" y="422" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="800" fill="#ffffff" letter-spacing="5" text-anchor="middle">SASHIBITCODE</text>
     </svg>
   `;
 

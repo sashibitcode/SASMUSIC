@@ -194,7 +194,22 @@
     </script>
   </head>
   <body class="bg-[#06110c] text-slate-100 antialiased selection:bg-[#A31C1B] selection:text-white h-[100dvh] w-full overflow-hidden select-none">
-    <div id="root"></div>
+    <div id="root">
+      <!-- Instant First-Paint Splash Screen (Seamlessly replaced on React mount) -->
+      <div id="app-splash" style="position:fixed;inset:0;background-color:#06110c;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,24px)+36px) 24px calc(env(safe-area-inset-bottom,16px)+36px);z-index:9999;user-select:none;-webkit-user-select:none;">
+        <div></div>
+        <!-- Center Official Brand Logo -->
+        <div style="display:flex;flex-direction:column;align-items:center;position:relative;">
+          <div style="position:absolute;width:240px;height:120px;background:rgba(163,28,27,0.25);filter:blur(50px);border-radius:50%;pointer-events:none;"></div>
+          <img src="/sas-music-logo-red.png" alt="SAS Music" style="width:220px;max-width:68vw;height:auto;position:relative;z-index:1;" />
+        </div>
+        <!-- Bottom Developer Brand -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;">
+          <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.25em;color:#94a3b8;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">from</span>
+          <span style="font-size:13px;font-weight:800;letter-spacing:0.22em;color:#ffffff;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;">SASHIBITCODE</span>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

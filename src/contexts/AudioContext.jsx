@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { setupMediaSession } from '../services/mediaSession';
 import { useLibrary } from './LibraryContext';
+import { showFloatingToast } from '../utils/toast';
 
 const AudioContext = createContext(null);
 
@@ -28,7 +29,6 @@ export function AudioProvider({ children }) {
   const { addToRecentlyPlayed } = useLibrary();
 
   const audioRef = useRef(new Audio());
-  const preloadAudioRef = useRef(null);
   const retryCountRef = useRef(0);
 
   const [currentSong, setCurrentSong] = useState(null);
@@ -51,6 +51,14 @@ export function AudioProvider({ children }) {
   const [isFullPlayerOpen, setIsFullPlayerOpen] = useState(false);
   const [isQueueOpen, setIsQueueOpen] = useState(false);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [playbackError, setPlaybackError] = useState(null);
+
+  // SyncPlay Integration
+  const syncActionHandlerRef = useRef(null);
+  const isSyncActionRef = useRef(false);
+  const setSyncActionHandler = useCallback((handler) => {
+    syncActionHandlerRef.current = handler;
+  }, []);
 
   // Keep a ref to current values to avoid closure issues in audio event listeners
   const stateRef = useRef({
@@ -82,12 +90,23 @@ export function AudioProvider({ children }) {
     const onPlay = () => {
       setIsPlaying(true);
       retryCountRef.current = 0;
+      setPlaybackError(null);
     };
     const onPause = () => setIsPlaying(false);
+    const onLoadStart = () => setIsLoadingAudio(true);
     const onWaiting = () => setIsLoadingAudio(true);
+    const onPlaying = () => {
+      setIsLoadingAudio(false);
+      setIsPlaying(true);
+      setPlaybackError(null);
+    };
     const onCanPlay = () => setIsLoadingAudio(false);
+    const onSeeked = () => setIsLoadingAudio(false);
     const onTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
+      if (audio.currentTime > 0) {
+        setIsLoadingAudio(false);
+      }
       // Save position periodically every ~3 seconds
       if (Math.floor(audio.currentTime) % 3 === 0) {
         localStorage.setItem(STORAGE_LAST_TIME, String(audio.currentTime));
@@ -99,24 +118,30 @@ export function AudioProvider({ children }) {
       }
     };
     const onError = (e) => {
-      console.warn('Audio playback error, attempting recovery:', e);
+      console.warn('Audio playback error:', e);
       setIsLoadingAudio(false);
-      const active = stateRef.current.currentSong;
 
-      // First retry: instantly try docs.google.com open fallback endpoint
-      if (retryCountRef.current === 0 && active && active.id) {
-        retryCountRef.current = 1;
-        setIsLoadingAudio(true);
-        const fallbackUrl = active.fallbackStreamUrl || `https://docs.google.com/uc?export=open&id=${encodeURIComponent(active.id)}`;
-        if (audioRef.current && audioRef.current.src !== fallbackUrl) {
-          audioRef.current.src = fallbackUrl;
-          audioRef.current.load();
-          audioRef.current.play().catch(console.warn);
-          return;
+      const mediaErr = audio.error;
+      let errMsg = 'Playback error: failed to stream this audio track.';
+      if (mediaErr) {
+        switch (mediaErr.code) {
+          case 1:
+            errMsg = 'Audio playback aborted.';
+            break;
+          case 2:
+            errMsg = 'Network error while streaming audio.';
+            break;
+          case 3:
+            errMsg = 'Audio decoding error.';
+            break;
+          case 4:
+            errMsg = 'Audio format not supported or stream unreachable.';
+            break;
         }
       }
 
-      // Automatic network retry on mobile data drops
+      const active = stateRef.current.currentSong;
+      // Automatic network retry on transient mobile data drops
       if (retryCountRef.current < 2 && active) {
         retryCountRef.current += 1;
         setIsLoadingAudio(true);
@@ -125,9 +150,11 @@ export function AudioProvider({ children }) {
             audioRef.current.load();
             audioRef.current.play().catch(console.warn);
           }
-        }, 800);
+        }, 1000);
       } else {
         setIsPlaying(false);
+        setPlaybackError(errMsg);
+        showFloatingToast(errMsg, 'error');
       }
     };
 
@@ -157,8 +184,11 @@ export function AudioProvider({ children }) {
 
     audio.addEventListener('play', onPlay);
     audio.addEventListener('pause', onPause);
+    audio.addEventListener('loadstart', onLoadStart);
     audio.addEventListener('waiting', onWaiting);
+    audio.addEventListener('playing', onPlaying);
     audio.addEventListener('canplay', onCanPlay);
+    audio.addEventListener('seeked', onSeeked);
     audio.addEventListener('timeupdate', onTimeUpdate);
     audio.addEventListener('durationchange', onDurationChange);
     audio.addEventListener('ended', onEnded);
@@ -176,8 +206,11 @@ export function AudioProvider({ children }) {
     return () => {
       audio.removeEventListener('play', onPlay);
       audio.removeEventListener('pause', onPause);
+      audio.removeEventListener('loadstart', onLoadStart);
       audio.removeEventListener('waiting', onWaiting);
+      audio.removeEventListener('playing', onPlaying);
       audio.removeEventListener('canplay', onCanPlay);
+      audio.removeEventListener('seeked', onSeeked);
       audio.removeEventListener('timeupdate', onTimeUpdate);
       audio.removeEventListener('durationchange', onDurationChange);
       audio.removeEventListener('ended', onEnded);
@@ -220,25 +253,6 @@ export function AudioProvider({ children }) {
     localStorage.setItem(STORAGE_SHUFFLE, String(shuffleMode));
   }, [shuffleMode]);
 
-  // Mobile Preload Engine: Preload next song for zero-latency gapless transitions
-  useEffect(() => {
-    if (isPlaying && queue.length > 0 && queueIndex + 1 < queue.length) {
-      const nextSong = queue[queueIndex + 1];
-      const targetUrl = resolveFastAudioUrl(nextSong);
-      if (targetUrl) {
-        try {
-          if (!preloadAudioRef.current) {
-            preloadAudioRef.current = new Audio();
-          }
-          if (preloadAudioRef.current.src !== targetUrl) {
-            preloadAudioRef.current.src = targetUrl;
-            preloadAudioRef.current.preload = 'auto';
-          }
-        } catch (_) {}
-      }
-    }
-  }, [isPlaying, queue, queueIndex]);
-
   // Play a specific queue index
   const playQueueIndex = useCallback((index) => {
     const currentQueue = stateRef.current.queue;
@@ -246,6 +260,8 @@ export function AudioProvider({ children }) {
       const songToPlay = currentQueue[index];
       setQueueIndex(index);
       setCurrentSong(songToPlay);
+      setIsLoadingAudio(true);
+      setPlaybackError(null);
 
       const audio = audioRef.current;
       const targetUrl = resolveFastAudioUrl(songToPlay);
@@ -288,6 +304,8 @@ export function AudioProvider({ children }) {
     setQueue(targetQueue);
     setQueueIndex(targetIndex);
     setCurrentSong(song);
+    setIsLoadingAudio(true);
+    setPlaybackError(null);
 
     const audio = audioRef.current;
     const targetUrl = resolveFastAudioUrl(song);
@@ -304,6 +322,17 @@ export function AudioProvider({ children }) {
     addToRecentlyPlayed(song);
     localStorage.setItem(STORAGE_LAST_SONG, JSON.stringify(song));
     localStorage.setItem(STORAGE_LAST_TIME, '0');
+
+    if (syncActionHandlerRef.current && !isSyncActionRef.current) {
+      syncActionHandlerRef.current({
+        type: 'CHANGE_SONG',
+        song,
+        queue: targetQueue,
+        queueIndex: targetIndex,
+        position: 0,
+        isPlaying: true
+      });
+    }
   }, [addToRecentlyPlayed]);
 
   // Play / Pause toggle
@@ -311,10 +340,19 @@ export function AudioProvider({ children }) {
     const audio = audioRef.current;
     if (!currentSong) return;
 
-    if (audio.paused) {
+    const willPlay = audio.paused;
+    if (willPlay) {
       audio.play().catch(console.warn);
     } else {
       audio.pause();
+    }
+
+    if (syncActionHandlerRef.current && !isSyncActionRef.current) {
+      syncActionHandlerRef.current({
+        type: willPlay ? 'PLAY' : 'PAUSE',
+        position: audio.currentTime,
+        isPlaying: willPlay
+      });
     }
   }, [currentSong]);
 
@@ -356,8 +394,17 @@ export function AudioProvider({ children }) {
   const seek = useCallback((targetSeconds) => {
     const audio = audioRef.current;
     if (audio && !isNaN(targetSeconds)) {
+      setIsLoadingAudio(true);
       audio.currentTime = targetSeconds;
       setCurrentTime(targetSeconds);
+
+      if (syncActionHandlerRef.current && !isSyncActionRef.current) {
+        syncActionHandlerRef.current({
+          type: 'SEEK',
+          position: targetSeconds,
+          isPlaying: !audio.paused
+        });
+      }
     }
   }, []);
 
@@ -518,6 +565,7 @@ export function AudioProvider({ children }) {
         currentSong,
         isPlaying,
         isLoadingAudio,
+        playbackError,
         currentTime,
         duration,
         volume,
@@ -543,7 +591,9 @@ export function AudioProvider({ children }) {
         playNextInQueue,
         removeFromQueue,
         clearQueue,
-        reorderQueue
+        reorderQueue,
+        setSyncActionHandler,
+        isSyncActionRef
       }}
     >
       {children}

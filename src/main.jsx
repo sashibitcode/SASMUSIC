@@ -5,6 +5,7 @@ import './index.css';
 import { LibraryProvider } from './contexts/LibraryContext';
 import { DriveProvider } from './contexts/DriveContext';
 import { AudioProvider } from './contexts/AudioContext';
+import { SyncPlayProvider } from './contexts/SyncPlayContext';
 import { registerSW } from 'virtual:pwa-register';
 
 // Auto-register service worker for PWA offline shell & updates
@@ -25,7 +26,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <LibraryProvider>
       <DriveProvider>
         <AudioProvider>
-          <App />
+          <SyncPlayProvider>
+            <App />
+          </SyncPlayProvider>
         </AudioProvider>
       </DriveProvider>
     </LibraryProvider>

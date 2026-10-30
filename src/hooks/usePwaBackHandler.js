@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { showFloatingToast } from '../utils/toast';
 
 /**
  * Intelligent PWA Back-Button & Gesture Navigation Hook
@@ -18,6 +19,8 @@ export function usePwaBackHandler({
   setIsSettingsOpen,
   isUploadOpen,
   setIsUploadOpen,
+  isSyncModalOpen,
+  setIsSyncModalOpen,
   isPlaying
 }) {
   const lastExitPressRef = useRef(0);
@@ -30,6 +33,7 @@ export function usePwaBackHandler({
     isQueueOpen,
     isSettingsOpen,
     isUploadOpen,
+    isSyncModalOpen,
     isPlaying
   });
 
@@ -40,9 +44,10 @@ export function usePwaBackHandler({
       isQueueOpen,
       isSettingsOpen,
       isUploadOpen,
+      isSyncModalOpen,
       isPlaying
     };
-  }, [activeTab, isFullPlayerOpen, isQueueOpen, isSettingsOpen, isUploadOpen, isPlaying]);
+  }, [activeTab, isFullPlayerOpen, isQueueOpen, isSettingsOpen, isUploadOpen, isSyncModalOpen, isPlaying]);
 
   // Initial history sentinel setup so there's always a history state to pop
   useEffect(() => {
@@ -91,6 +96,15 @@ export function usePwaBackHandler({
     }
   }, [isUploadOpen]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (isHandlingPopRef.current) return;
+
+    if (isSyncModalOpen) {
+      window.history.pushState({ sasApp: true, layer: 'syncmodal' }, '');
+    }
+  }, [isSyncModalOpen]);
+
   // Handle popstate (Back button / swipe-back)
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -134,6 +148,13 @@ export function usePwaBackHandler({
         return;
       }
 
+      // 5. If SyncPlay Modal is open: close sync modal
+      if (isSyncModalOpen) {
+        setIsSyncModalOpen(false);
+        setTimeout(() => { isHandlingPopRef.current = false; }, 80);
+        return;
+      }
+
       // 5. If on a sub-tab (search, playlists, favorites, recents): go back to Home
       if (activeTab !== 'songs') {
         setActiveTab('songs');
@@ -151,7 +172,7 @@ export function usePwaBackHandler({
           lastExitPressRef.current = now;
           window.history.pushState({ sasApp: true, layer: 'base' }, '');
 
-          showBackgroundToast('Music playing in background • Press back again to exit');
+          showFloatingToast('Music playing in background • Press back again to exit');
           setTimeout(() => { isHandlingPopRef.current = false; }, 80);
           return;
         }
@@ -172,27 +193,3 @@ export function usePwaBackHandler({
   ]);
 }
 
-/**
- * Lightweight, non-intrusive floating toast notification
- */
-function showBackgroundToast(message) {
-  if (typeof document === 'undefined') return;
-
-  const existingToast = document.getElementById('sas-bg-toast');
-  if (existingToast) {
-    existingToast.remove();
-  }
-
-  const toast = document.createElement('div');
-  toast.id = 'sas-bg-toast';
-  toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-[#171717]/95 border border-[#A31C1B]/60 text-white text-xs font-medium shadow-[0_8px_30px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-all duration-300 pointer-events-none select-none flex items-center gap-2 animate-in fade-in zoom-in-95';
-  toast.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>${message}</span>`;
-
-  document.body.appendChild(toast);
-
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translate(-50%, 10px)';
-    setTimeout(() => toast.remove(), 350);
-  }, 2200);
-}

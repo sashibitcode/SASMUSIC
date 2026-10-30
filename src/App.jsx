@@ -18,10 +18,12 @@ import { SongListSkeleton } from './components/common/Skeleton';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { UploadModal } from './components/upload/UploadModal';
 import { SettingsModal } from './components/settings/SettingsModal';
+import { SyncPlayModal } from './components/syncplay/SyncPlayModal';
 import { BottomNav } from './components/navigation/BottomNav';
 import { DesktopSidebar } from './components/navigation/DesktopSidebar';
 import { filterSongsByCategory } from './utils/categoryExtractor';
 import { useAudio } from './contexts/AudioContext';
+import { useSyncPlay } from './contexts/SyncPlayContext';
 import { usePwaBackHandler } from './hooks/usePwaBackHandler';
 
 export function AppContent() {
@@ -46,6 +48,19 @@ export function AppContent() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const { isSyncModalOpen, setIsSyncModalOpen, isInRoom } = useSyncPlay();
+
+  // Auto-detect ?room=123456 in URL
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const roomParam = params.get('room');
+      if (roomParam && /^\d{6}$/.test(roomParam) && !isInRoom) {
+        setIsSyncModalOpen(true);
+      }
+    }
+  }, [isInRoom, setIsSyncModalOpen]);
+
   // Intelligent PWA back gesture and Android hardware back button handler
   usePwaBackHandler({
     activeTab,
@@ -58,6 +73,8 @@ export function AppContent() {
     setIsSettingsOpen,
     isUploadOpen,
     setIsUploadOpen,
+    isSyncModalOpen,
+    setIsSyncModalOpen,
     isPlaying
   });
 
@@ -200,6 +217,9 @@ export function AppContent() {
         onClose={() => setIsSettingsOpen(false)}
         onOpenUpload={() => setIsUploadOpen(true)}
       />
+
+      {/* SyncPlay Group Listening Modal */}
+      <SyncPlayModal />
     </div>
   );
 }

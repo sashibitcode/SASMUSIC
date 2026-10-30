@@ -5,6 +5,7 @@ import { useLibrary } from '../../contexts/LibraryContext';
 import { getSongGradientStyle } from '../../utils/artGenerator';
 import { VisualizerBars } from './VisualizerBars';
 import { useSwipeGesture } from '../../hooks/useSwipeGesture';
+import { SyncStatusBadge } from '../syncplay/SyncStatusBadge';
 
 export function MiniPlayer() {
   const {
@@ -68,6 +69,7 @@ export function MiniPlayer() {
                 <p className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-[#fca5a5] transition-colors">
                   {currentSong.title}
                 </p>
+                <SyncStatusBadge className="text-[10px] py-0 px-2 flex-shrink-0" showDetails={false} />
                 {isPlaying && (
                   <div className="hidden sm:block flex-shrink-0 ml-1">
                     <VisualizerBars isPlaying={isPlaying} className="h-3 w-3" />
@@ -101,7 +103,6 @@ export function MiniPlayer() {
             {/* Play / Pause button - 44x44px touch target */}
             <button
               onClick={togglePlay}
-              disabled={isLoadingAudio}
               className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full crimson-glow-btn text-white flex items-center justify-center shadow-lg transition-transform active:scale-95"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >

@@ -19,6 +19,8 @@ import { getSongGradientStyle, getSongPalette } from '../../utils/artGenerator';
 import { ProgressBar } from './ProgressBar';
 import { VolumeSlider } from './VolumeSlider';
 import { useSwipeGesture } from '../../hooks/useSwipeGesture';
+import { useSyncPlay } from '../../contexts/SyncPlayContext';
+import { SyncStatusBadge } from '../syncplay/SyncStatusBadge';
 
 export function FullPlayerModal() {
   const {
@@ -92,9 +94,10 @@ export function FullPlayerModal() {
           <ChevronDown className="w-6 h-6" />
         </button>
 
-        <div className="text-center px-2 min-w-0">
+        <div className="text-center px-2 min-w-0 flex flex-col items-center">
+          <SyncStatusBadge className="mb-0.5" />
           <p className="text-[10px] uppercase font-bold tracking-widest text-[#fca5a5]">
-            Playing from
+            {isLoadingAudio ? 'Buffering Stream...' : 'Playing from'}
           </p>
           <p className="text-xs font-semibold text-slate-300 truncate max-w-[180px] sm:max-w-xs">
             {currentSong.folderName || 'SAS Music'}
@@ -199,7 +202,6 @@ export function FullPlayerModal() {
           {/* Big Play / Pause Button */}
           <button
             onClick={togglePlay}
-            disabled={isLoadingAudio}
             className="w-16 h-16 sm:w-18 sm:h-18 rounded-full crimson-glow-btn text-white flex items-center justify-center shadow-[0_0_35px_rgba(163,28,27,0.85)] transition-transform active:scale-95"
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >

@@ -17,7 +17,7 @@ import { VisualizerBars } from '../player/VisualizerBars';
 import { formatFileSize } from '../../utils/formatters';
 
 export function SongRow({ song, index, playlist = null }) {
-  const { currentSong, isPlaying, playSong, togglePlay, addToQueue, playNextInQueue } = useAudio();
+  const { currentSong, isPlaying, isLoadingAudio, playSong, togglePlay, addToQueue, playNextInQueue } = useAudio();
   const { isFavorite, toggleFavorite, localPlaylists, addSongToPlaylist } = useLibrary();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -95,7 +95,9 @@ export function SongRow({ song, index, playlist = null }) {
           }`}
           style={getSongGradientStyle(song.title, song.artist)}
         >
-          {isCurrent && isPlaying ? (
+          {isCurrent && isLoadingAudio ? (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : isCurrent && isPlaying ? (
             <Disc className="w-5 h-5 text-white animate-[spin_4s_linear_infinite]" />
           ) : (
             <Music2 className="w-5 h-5 text-white/90" />
@@ -103,7 +105,9 @@ export function SongRow({ song, index, playlist = null }) {
 
           {/* Hover play icon overlay */}
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-            {isCurrent && isPlaying ? (
+            {isCurrent && isLoadingAudio ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : isCurrent && isPlaying ? (
               <Pause className="w-4 h-4 text-white fill-white" />
             ) : (
               <Play className="w-4 h-4 text-white fill-white ml-0.5" />
@@ -122,9 +126,11 @@ export function SongRow({ song, index, playlist = null }) {
               {song.title}
             </p>
             {isCurrent && (
-              <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider font-extrabold bg-[#A31C1B] text-white px-2 py-0.5 rounded-full shadow-sm flex-shrink-0">
-                <span className={`w-1.5 h-1.5 rounded-full bg-white ${isPlaying ? 'animate-pulse' : ''}`} />
-                {isPlaying ? 'Playing' : 'Paused'}
+              <span className={`inline-flex items-center gap-1 text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full shadow-sm flex-shrink-0 ${
+                isLoadingAudio ? 'bg-amber-600/90 text-white' : 'bg-[#A31C1B] text-white'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full bg-white ${isLoadingAudio ? 'animate-ping' : isPlaying ? 'animate-pulse' : ''}`} />
+                {isLoadingAudio ? 'Buffering...' : isPlaying ? 'Playing' : 'Paused'}
               </span>
             )}
           </div>

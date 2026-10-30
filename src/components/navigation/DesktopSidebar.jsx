@@ -8,10 +8,12 @@ import {
   FolderOpen,
   Sparkles,
   Download,
-  Settings
+  Settings,
+  Radio
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { useDrive } from '../../contexts/DriveContext';
+import { useSyncPlay } from '../../contexts/SyncPlayContext';
 
 export function DesktopSidebar({
   activeTab,
@@ -22,6 +24,7 @@ export function DesktopSidebar({
   onSelectFolder
 }) {
   const { drivePlaylists } = useDrive();
+  const { isInRoom, roomCode, setIsSyncModalOpen } = useSyncPlay();
 
   const primaryLinks = [
     { id: 'songs', label: 'All Songs', icon: Music },
@@ -42,6 +45,28 @@ export function DesktopSidebar({
           className="h-9 w-auto cursor-pointer"
           onClick={() => onTabChange('songs')}
         />
+      </div>
+
+      {/* SyncPlay Live Card */}
+      <div className="mb-4">
+        <button
+          onClick={() => setIsSyncModalOpen(true)}
+          className={`w-full min-h-[46px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
+            isInRoom
+              ? 'bg-[#A31C1B]/25 border-[#A31C1B] text-white shadow-[0_0_15px_rgba(163,28,27,0.4)]'
+              : 'glass-card hover:border-[#A31C1B]/50 text-slate-200 hover:text-white'
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            <Radio className="w-4 h-4 text-[#fca5a5]" />
+            <span className="tracking-wide">SyncPlay</span>
+          </div>
+          <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
+            isInRoom ? 'bg-[#A31C1B] text-white animate-pulse' : 'bg-black/40 text-emerald-400'
+          }`}>
+            {isInRoom ? `Room #${roomCode}` : 'LIVE'}
+          </span>
+        </button>
       </div>
 
       {/* Primary Navigation Links */}

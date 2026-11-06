@@ -155,10 +155,38 @@ export function LibraryProvider({ children }) {
           }
         }).catch((e) => console.warn('Initial cloud merge sync warning:', e));
       }
+
+      // D. Send Real-Time Telegram Login Alert (session-deduplicated)
+      try {
+        const sessionAlertKey = `sas_login_alert_${userId}`;
+        if (typeof window !== 'undefined' && !sessionStorage.getItem(sessionAlertKey)) {
+          sessionStorage.setItem(sessionAlertKey, String(Date.now()));
+          fetch('/api/notify-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId,
+              userName: user.fullName || user.firstName || 'Music Listener',
+              userEmail: user.primaryEmailAddress?.emailAddress || 'Not Provided',
+              authProvider: user.externalAccounts?.[0]?.providerTitle || 'Google',
+              userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : ''
+            })
+          }).catch((err) => {
+            console.debug('Login alert dispatch warning:', err);
+          });
+        }
+      } catch (_) {}
     } else {
       // User is signed out: fallback to guest storage
       setCurrentUser(null);
       setIsCloudSynced(false);
+      try {
+        if (typeof window !== 'undefined') {
+          Object.keys(sessionStorage).forEach((k) => {
+            if (k.startsWith('sas_login_alert_')) sessionStorage.removeItem(k);
+          });
+        }
+      } catch (_) {}
       try {
         const savedFavs = localStorage.getItem(STORAGE_FAVORITES);
         setFavorites(savedFavs ? JSON.parse(savedFavs) : []);

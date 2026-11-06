@@ -1,4 +1,13 @@
-import { setCorsHeaders, getClientIp, signToken, checkRateLimit, recordFailedAttempt, clearAttempts } from './_utils.js';
+import {
+  setCorsHeaders,
+  getClientIp,
+  signToken,
+  checkRateLimit,
+  recordFailedAttempt,
+  clearAttempts,
+  getSecureJwtSecret,
+  constantTimeCompare
+} from './_utils.js';
 
 export default async function handler(req, res) {
   setCorsHeaders(req, res);
@@ -39,7 +48,7 @@ export default async function handler(req, res) {
       });
     }
 
-    if (!password || password !== expectedPassword) {
+    if (!password || !constantTimeCompare(String(password), String(expectedPassword))) {
       recordFailedAttempt(clientIp);
       return res.status(401).json({ error: 'Wrong password' });
     }
@@ -47,7 +56,13 @@ export default async function handler(req, res) {
     // Success! Clear failed attempts
     clearAttempts(clientIp);
 
-    const jwtSecret = process.env.JWT_SECRET || 'sas-music-jwt-secret-key-32-chars-long';
+    const jwtSecret = getSecureJwtSecret();
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: 'Upload security is not fully configured on server. Please set JWT_SECRET or UPLOAD_PASSWORD.'
+      });
+    }
+
     const nowInSeconds = Math.floor(Date.now() / 1000);
     const token = signToken(
       {

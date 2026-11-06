@@ -1,4 +1,4 @@
-import { setCorsHeaders, verifyToken } from './_utils.js';
+import { setCorsHeaders, verifyToken, getSecureJwtSecret } from './_utils.js';
 
 const ALLOWED_EXTENSIONS = ['.mp3', '.m4a', '.aac', '.wav'];
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
@@ -6,12 +6,14 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 /**
  * Sanitizes strings for safe filename usage in Google Drive
  */
-function sanitizeFileName(str) {
-  if (!str) return 'Unknown';
-  return str
+function sanitizeFileName(str, fallback = 'Unknown') {
+  if (!str || typeof str !== 'string') return fallback;
+  const cleaned = str
     .replace(/[<>:"/\\|?*\x00-\x1F]/g, '') // remove invalid filesystem chars
+    .replace(/\.{2,}/g, '') // prevent path traversal
     .replace(/\s+/g, ' ')
     .trim();
+  return cleaned.length > 0 ? cleaned.slice(0, 100) : fallback;
 }
 
 /**
@@ -83,7 +85,11 @@ export default async function handler(req, res) {
   // 1. Verify Authorization Bearer JWT
   const authHeader = req.headers.authorization || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
-  const jwtSecret = process.env.JWT_SECRET || 'sas-music-jwt-secret-key-32-chars-long';
+  const jwtSecret = getSecureJwtSecret();
+
+  if (!jwtSecret) {
+    return res.status(500).json({ error: 'Upload security is not fully configured on server.' });
+  }
 
   const decoded = verifyToken(token, jwtSecret);
   if (!decoded || decoded.role !== 'uploader') {
@@ -126,8 +132,8 @@ export default async function handler(req, res) {
     const formattedFileName = `${cleanTitle} - ${cleanArtist}${ext}`;
 
     const folderId = process.env.DRIVE_FOLDER_ID || process.env.VITE_DRIVE_FOLDER_ID;
-    if (!folderId) {
-      return res.status(500).json({ error: 'DRIVE_FOLDER_ID is not configured on the server' });
+    if (!folderId || !/^[a-zA-Z0-9_-]+$/.test(folderId)) {
+      return res.status(500).json({ error: 'DRIVE_FOLDER_ID is invalid or not configured on the server' });
     }
 
     // 2. Get fresh Google Drive OAuth2 Access Token

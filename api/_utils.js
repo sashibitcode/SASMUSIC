@@ -11,14 +11,50 @@ export function setCorsHeaders(req, res) {
 }
 
 /**
- * Client IP resolver
+ * Client IP resolver with Edge & Proxy protection
  */
 export function getClientIp(req) {
+  const vercelIp = req.headers['x-vercel-ip'] || req.headers['x-real-ip'];
+  if (vercelIp && typeof vercelIp === 'string') {
+    return vercelIp.trim();
+  }
+
   const forwarded = req.headers['x-forwarded-for'];
-  if (forwarded) {
+  if (forwarded && typeof forwarded === 'string') {
     return forwarded.split(',')[0].trim();
   }
   return req.socket?.remoteAddress || 'unknown';
+}
+
+/**
+ * Derives a cryptographically secure JWT secret key.
+ * Never falls back to a static, publicly visible string in code.
+ * If JWT_SECRET is not explicitly provided, safely derives one from server-only secrets.
+ */
+export function getSecureJwtSecret() {
+  if (process.env.JWT_SECRET && process.env.JWT_SECRET.trim().length >= 16) {
+    return process.env.JWT_SECRET.trim();
+  }
+
+  // Derive from private server environment variables if JWT_SECRET is not set
+  const privateServerSecret = process.env.UPLOAD_PASSWORD || process.env.GOOGLE_CLIENT_SECRET;
+  if (privateServerSecret && privateServerSecret.trim().length > 0) {
+    return crypto.createHmac('sha256', 'sas-music-internal-kdf-salt-v1')
+      .update(privateServerSecret.trim())
+      .digest('hex');
+  }
+
+  return null;
+}
+
+/**
+ * Constant-time comparison to prevent timing attacks
+ */
+export function constantTimeCompare(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const bufA = crypto.createHash('sha256').update(a).digest();
+  const bufB = crypto.createHash('sha256').update(b).digest();
+  return crypto.timingSafeEqual(bufA, bufB);
 }
 
 /**

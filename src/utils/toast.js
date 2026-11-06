@@ -18,7 +18,15 @@ export function showFloatingToast(message, type = 'info') {
   const borderColor = isError ? 'border-[#A31C1B]' : 'border-[#A31C1B]/60';
 
   toast.className = `fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-[#171717]/95 ${borderColor} border text-white text-xs font-medium shadow-[0_8px_30px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-all duration-300 pointer-events-none select-none flex items-center gap-2 animate-in fade-in zoom-in-95`;
-  toast.innerHTML = `<span class="w-2 h-2 rounded-full ${dotColor} animate-pulse"></span><span>${message}</span>`;
+  
+  const dot = document.createElement('span');
+  dot.className = `w-2 h-2 rounded-full ${dotColor} animate-pulse flex-shrink-0`;
+  
+  const textSpan = document.createElement('span');
+  textSpan.textContent = String(message || '');
+
+  toast.appendChild(dot);
+  toast.appendChild(textSpan);
 
   document.body.appendChild(toast);
 

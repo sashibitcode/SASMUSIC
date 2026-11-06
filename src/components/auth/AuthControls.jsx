@@ -21,7 +21,7 @@ export function AuthHeaderButton() {
         onClick={() => {
           showFloatingToast('Add VITE_CLERK_PUBLISHABLE_KEY in .env to enable login', 'info');
         }}
-        className="min-h-[38px] px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B]/80 hover:bg-[#A31C1B] text-white text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/40"
+        className="h-9 px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B]/80 hover:bg-[#A31C1B] text-white text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/40"
         title="Clerk Authentication Setup"
       >
         <LogIn className="w-3.5 h-3.5" />
@@ -35,7 +35,7 @@ export function AuthHeaderButton() {
       <SignedOut>
         <SignInButton mode="modal">
           <button
-            className="min-h-[38px] px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B] hover:bg-[#851615] text-white text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/50"
+            className="h-9 px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B] hover:bg-[#851615] text-white text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/50"
             aria-label="Sign In"
           >
             <LogIn className="w-3.5 h-3.5" />
@@ -45,32 +45,18 @@ export function AuthHeaderButton() {
       </SignedOut>
 
       <SignedIn>
-        <div className="flex items-center gap-1.5">
-          {/* Avatar with Popover Profile Menu */}
-          <div className="flex items-center justify-center p-0.5 rounded-full border border-white/20 hover:border-[#A31C1B] transition-colors bg-[#06110c]">
-            <UserButton
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  avatarBox: 'w-7 h-7 sm:w-8 sm:h-8 rounded-full',
-                  userButtonPopoverCard: 'bg-[#121614] border border-[#282f2b] text-white shadow-2xl',
-                  userButtonPopoverFooter: 'hidden'
-                }
-              }}
-            />
-          </div>
-
-          {/* Direct 1-Click Log Out Button */}
-          <SignOutButton>
-            <button
-              className="min-h-[38px] px-2.5 rounded-full flex items-center justify-center gap-1 text-slate-300 hover:text-red-400 glass-card hover:border-red-500/40 text-xs font-medium transition-all active:scale-95"
-              title="Sign Out"
-              aria-label="Sign Out"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Logout</span>
-            </button>
-          </SignOutButton>
+        {/* Profile Avatar with Popover Profile Menu (Exit icon removed from top header) */}
+        <div className="w-9 h-9 rounded-full flex items-center justify-center border border-white/20 hover:border-[#A31C1B]/60 transition-all bg-[#06110c] shadow-sm flex-shrink-0">
+          <UserButton
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: 'w-7.5 h-7.5 rounded-full',
+                userButtonPopoverCard: 'bg-[#121614] border border-[#282f2b] text-white shadow-2xl',
+                userButtonPopoverFooter: 'hidden'
+              }
+            }}
+          />
         </div>
       </SignedIn>
     </>

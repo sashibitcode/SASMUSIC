@@ -71,12 +71,8 @@ export function CategoryHub({
               {/* Top ambient highlight */}
               <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform" />
 
-              {/* Card Header: Emoji & Live Badge */}
-              <div className="flex items-start justify-between relative z-10">
-                <span className="text-2xl sm:text-3xl select-none group-hover:scale-110 transition-transform">
-                  {cat.emoji}
-                </span>
-
+              {/* Card Header: Live Badge */}
+              <div className="flex items-start justify-end relative z-10">
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/40 text-slate-200 border border-white/10 backdrop-blur-sm">
                   {count > 0 ? `${count} songs` : 'Browse'}
                 </span>

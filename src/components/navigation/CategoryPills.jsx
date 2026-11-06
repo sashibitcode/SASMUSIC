@@ -114,7 +114,6 @@ export function CategoryPills({
                   : 'glass-card hover:border-white/20 text-slate-300 hover:text-white'
                 }`}
             >
-              <span>{cat.emoji}</span>
               <span>{cat.shortLabel || cat.label}</span>
               {isActive && (
                 <X

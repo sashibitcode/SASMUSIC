@@ -93,7 +93,9 @@ export function CategoryBanner({
                 className="shadow-2xl flex-shrink-0"
               />
             ) : (
-              <span className="text-3xl sm:text-4xl select-none">{emoji}</span>
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-lg">
+                <Music2 className="w-5 h-5 sm:w-6 sm:h-6 text-[#fca5a5]" />
+              </div>
             )}
             <div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight drop-shadow-md">

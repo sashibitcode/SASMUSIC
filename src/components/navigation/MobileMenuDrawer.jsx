@@ -359,7 +359,7 @@ export function MobileMenuDrawer({
                 onClick={() => handleCategoryClick(col.id)}
                 className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.05] text-xs text-slate-300 hover:text-white transition-colors text-left"
               >
-                <span className="text-sm select-none">{col.emoji}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#A31C1B]/70 flex-shrink-0" />
                 <span className="truncate text-[11px] font-medium">{col.label}</span>
               </button>
             ))}

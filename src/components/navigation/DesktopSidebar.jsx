@@ -138,7 +138,7 @@ export function DesktopSidebar({
                 onClick={() => onSelectCategory?.(col.id)}
                 className="w-full min-h-[36px] flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-white/[0.06] transition-colors truncate text-left group"
               >
-                <span className="text-sm select-none group-hover:scale-110 transition-transform">{col.emoji}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#A31C1B]/70 group-hover:bg-[#A31C1B] transition-colors flex-shrink-0" />
                 <span className="truncate">{col.label}</span>
               </button>
             ))}

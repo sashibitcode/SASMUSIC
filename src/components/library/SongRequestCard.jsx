@@ -217,3 +217,4 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
     </div>
   );
 }
+

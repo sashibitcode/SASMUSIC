@@ -167,6 +167,7 @@ export function AppContent() {
         favoritesCount={favorites.length}
         recentsCount={recentlyPlayed.length}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenUpload={() => setIsUploadOpen(true)}
         onSelectCategory={(catId) => {
           setActiveTab('songs');
           setActiveFilter({ type: 'category', value: catId });
@@ -324,6 +325,10 @@ export function AppContent() {
             setIsMobileMenuOpen(false);
             setIsSettingsOpen(true);
           }}
+          onOpenUpload={() => {
+            setIsMobileMenuOpen(false);
+            setIsUploadOpen(true);
+          }}
           onOpenSync={() => {
             setIsMobileMenuOpen(false);
             setIsSyncModalOpen(true);
@@ -340,7 +345,6 @@ export function AppContent() {
         <SettingsModal
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
-          onOpenUpload={() => setIsUploadOpen(true)}
         />
         <SyncPlayModal />
       </Suspense>

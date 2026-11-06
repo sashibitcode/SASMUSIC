@@ -1,9 +1,7 @@
 import React from 'react';
 import {
   X,
-  Upload,
   RotateCw,
-  ShieldCheck,
   Music,
   Radio,
   Command,
@@ -13,7 +11,7 @@ import {
 import { useDrive } from '../../contexts/DriveContext';
 import { AuthSettingsSection } from '../auth/AuthControls';
 
-export function SettingsModal({ isOpen, onClose, onOpenUpload }) {
+export function SettingsModal({ isOpen, onClose }) {
   const { songs, isLoading, refreshLibrary } = useDrive();
 
   if (!isOpen) return null;
@@ -44,36 +42,7 @@ export function SettingsModal({ isOpen, onClose, onOpenUpload }) {
           {/* Section 0: User Authentication */}
           <AuthSettingsSection />
 
-          {/* Section 1: Creator Studio */}
-          <div className="rounded-2xl p-4 bg-gradient-to-br from-[#1c1212] via-[#171717] to-[#0c1611] border border-[#A31C1B]/40 shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#A31C1B]/20 flex items-center justify-center text-[#A31C1B] flex-shrink-0 border border-[#A31C1B]/30">
-                  <ShieldCheck className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-white">Creator Studio</h4>
-                  <p className="text-xs text-slate-400">Song uploads to cloud library</p>
-                </div>
-              </div>
-              <span className="text-[10px] font-medium bg-[#A31C1B]/20 text-[#fca5a5] px-2 py-0.5 rounded-full border border-[#A31C1B]/40">
-                Admin
-              </span>
-            </div>
-
-            <button
-              onClick={() => {
-                onClose();
-                onOpenUpload();
-              }}
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl crimson-glow-btn text-white text-xs font-semibold transition-all active:scale-95 shadow-md shadow-[#A31C1B]/30"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              <span>Upload Tracks</span>
-            </button>
-          </div>
-
-          {/* Section 2: Library */}
+          {/* Section 1: Library */}
           <div className="rounded-2xl p-4 bg-[#121614]/60 border border-[#282f2b] space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

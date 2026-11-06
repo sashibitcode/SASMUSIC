@@ -14,7 +14,8 @@ import {
   Music2,
   Folder,
   ShieldCheck,
-  Cloud
+  Cloud,
+  Upload
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { SignedIn, SignedOut, SignInButton, SignOutButton, useUser } from '@clerk/clerk-react';
@@ -35,6 +36,7 @@ export function MobileMenuDrawer({
   onClose,
   onOpenSettings,
   onOpenSync,
+  onOpenUpload,
   onSelectCategory
 }) {
   const { user } = useUser();
@@ -109,6 +111,13 @@ export function MobileMenuDrawer({
     onClose();
     setTimeout(() => {
       onOpenSettings?.();
+    }, 150);
+  };
+
+  const handleUploadClick = () => {
+    onClose();
+    setTimeout(() => {
+      onOpenUpload?.();
     }, 150);
   };
 
@@ -235,7 +244,26 @@ export function MobileMenuDrawer({
             Quick Actions
           </p>
 
-          {/* 1. Settings & Drive Setup */}
+          {/* 1. Upload Song (Creator Studio) */}
+          {onOpenUpload && (
+            <button
+              onClick={handleUploadClick}
+              className="w-full min-h-[46px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group border border-[#A31C1B]/25 bg-gradient-to-r from-[#A31C1B]/15 to-transparent shadow-sm"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#A31C1B]/25 border border-[#A31C1B]/40 text-[#fca5a5] flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
+                  <Upload className="w-4 h-4 text-[#fca5a5]" />
+                </div>
+                <div className="text-left">
+                  <span className="block font-bold text-white">Upload Song</span>
+                  <span className="block text-[10px] text-slate-400 font-normal">Add tracks to Cloud Library</span>
+                </div>
+              </div>
+              <span className="text-[10px] text-rose-300 font-semibold bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/25">Admin</span>
+            </button>
+          )}
+
+          {/* 2. Settings & Drive Setup */}
           <button
             onClick={handleSettingsClick}
             className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group"
@@ -252,7 +280,7 @@ export function MobileMenuDrawer({
             <span className="text-[10px] text-slate-400 font-mono">›</span>
           </button>
 
-          {/* 2. Listen Together (SyncPlay) */}
+          {/* 3. Listen Together (SyncPlay) */}
           <button
             onClick={handleSyncClick}
             className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group"
@@ -365,3 +393,4 @@ export function MobileMenuDrawer({
     </div>
   );
 }
+

@@ -9,7 +9,8 @@ import {
   Sparkles,
   Download,
   Settings,
-  Users
+  Users,
+  Upload
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { useDrive } from '../../contexts/DriveContext';
@@ -22,6 +23,7 @@ export function DesktopSidebar({
   favoritesCount = 0,
   recentsCount = 0,
   onOpenSettings,
+  onOpenUpload,
   onSelectCategory,
   onSelectFolder
 }) {
@@ -173,6 +175,21 @@ export function DesktopSidebar({
       <div className="pt-3 border-t border-white/[0.08] mt-auto space-y-2">
         {/* Clerk Auth Profile */}
         <AuthSidebarProfile />
+
+        {onOpenUpload && (
+          <button
+            onClick={onOpenUpload}
+            className="w-full min-h-[40px] flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-all group select-none border border-[#A31C1B]/20 bg-gradient-to-r from-[#A31C1B]/10 to-transparent"
+          >
+            <div className="flex items-center gap-3">
+              <Upload className="w-4 h-4 text-[#A31C1B] group-hover:scale-110 transition-transform" />
+              <span>Upload Song</span>
+            </div>
+            <span className="text-[9px] font-mono text-slate-400 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
+              Shift+U
+            </span>
+          </button>
+        )}
 
         {onOpenSettings && (
           <button

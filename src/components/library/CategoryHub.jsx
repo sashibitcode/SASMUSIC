@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Play, Sparkles, ChevronRight, Mic2, Music, Shuffle } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Play, Sparkles, ChevronRight, ChevronUp, Mic2, Music, Shuffle } from 'lucide-react';
 import { MUSIC_CATEGORIES, getCategoryCounts, extractTopArtists, isSongInCategory } from '../../utils/categoryExtractor';
 import { FOLDER_COVERS } from '../../services/coverArtService';
 import { ArtistAvatar } from '../common/ArtistAvatar';
@@ -34,6 +34,10 @@ export function CategoryHub({
     playSong(catSongs[startIndex], catSongs, startIndex);
   };
 
+  const [isExpanded, setIsExpanded] = useState(false);
+  const visibleCategories = isExpanded ? MUSIC_CATEGORIES : MUSIC_CATEGORIES.slice(0, 4);
+  const hasMore = MUSIC_CATEGORIES.length > 4;
+
   return (
     <section className="mb-6 space-y-5 animate-in fade-in duration-200">
       {/* Section 1: Browse Categories Header */}
@@ -46,11 +50,26 @@ export function CategoryHub({
             </span>
           </h2>
         </div>
+
+        {hasMore && (
+          <button
+            onClick={() => setIsExpanded((prev) => !prev)}
+            className="flex items-center gap-1 text-xs font-semibold text-slate-300 hover:text-white transition-colors px-2.5 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] active:scale-95"
+            aria-label={isExpanded ? 'Show Less' : 'View All'}
+          >
+            <span>{isExpanded ? 'Show Less' : 'View All'}</span>
+            {isExpanded ? (
+              <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+            ) : (
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            )}
+          </button>
+        )}
       </div>
 
-      {/* Section 2: Visual Category Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-        {MUSIC_CATEGORIES.map((cat) => {
+      {/* Section 2: Visual Category Cards Grid (4 upfront, expands on View All) */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {visibleCategories.map((cat) => {
           const count = categoryCounts[cat.id] || 0;
           const bgCover = FOLDER_COVERS[cat.id] || FOLDER_COVERS.default;
 

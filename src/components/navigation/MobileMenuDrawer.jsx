@@ -187,10 +187,6 @@ export function MobileMenuDrawer({
                     <p className="text-[11px] text-slate-400 truncate mt-0.5">
                       {user?.primaryEmailAddress?.emailAddress || 'Signed In'}
                     </p>
-                    <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-emerald-400 mt-1 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                      <Cloud className="w-2.5 h-2.5" />
-                      <span>Cloud Sync Active</span>
-                    </span>
                   </div>
                 </div>
 
@@ -215,7 +211,6 @@ export function MobileMenuDrawer({
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-white">Sign In to Save Favorites</h4>
-                      <p className="text-[10px] text-slate-400">Sync songs across all your devices</p>
                     </div>
                   </div>
 
@@ -248,16 +243,13 @@ export function MobileMenuDrawer({
           {onOpenUpload && (
             <button
               onClick={handleUploadClick}
-              className="w-full min-h-[46px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group border border-[#A31C1B]/25 bg-gradient-to-r from-[#A31C1B]/15 to-transparent shadow-sm"
+              className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group border border-[#A31C1B]/25 bg-gradient-to-r from-[#A31C1B]/15 to-transparent shadow-sm"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-[#A31C1B]/25 border border-[#A31C1B]/40 text-[#fca5a5] flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
                   <Upload className="w-4 h-4 text-[#fca5a5]" />
                 </div>
-                <div className="text-left">
-                  <span className="block font-bold text-white">Upload Song</span>
-                  <span className="block text-[10px] text-slate-400 font-normal">Add tracks to Cloud Library</span>
-                </div>
+                <span className="font-bold text-white">Upload Song</span>
               </div>
               <span className="text-[10px] text-rose-300 font-semibold bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/25">Admin</span>
             </button>
@@ -272,10 +264,7 @@ export function MobileMenuDrawer({
               <div className="w-8 h-8 rounded-lg bg-[#A31C1B]/20 border border-[#A31C1B]/35 text-[#fca5a5] flex items-center justify-center group-hover:scale-105 transition-transform">
                 <Settings className="w-4 h-4 text-[#A31C1B] group-hover:rotate-45 transition-transform" />
               </div>
-              <div className="text-left">
-                <span className="block font-bold">Settings</span>
-                <span className="block text-[10px] text-slate-400 font-normal">Drive API, folders & cache</span>
-              </div>
+              <span className="font-bold">Settings</span>
             </div>
             <span className="text-[10px] text-slate-400 font-mono">›</span>
           </button>
@@ -289,10 +278,7 @@ export function MobileMenuDrawer({
               <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/35 text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform">
                 <Users className="w-4 h-4 text-emerald-400" />
               </div>
-              <div className="text-left">
-                <span className="block font-bold">Listen Together</span>
-                <span className="block text-[10px] text-slate-400 font-normal">Sync music with friends</span>
-              </div>
+              <span className="font-bold">Listen Together</span>
             </div>
             <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/25">Live</span>
           </button>

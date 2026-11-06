@@ -8,6 +8,7 @@ import { SearchBar } from './components/header/SearchBar';
 import { CategoryPills } from './components/navigation/CategoryPills';
 import { SongList } from './components/library/SongList';
 import { CategoryHub } from './components/library/CategoryHub';
+import { RecommendedSection } from './components/library/RecommendedSection';
 import { CategoryBanner } from './components/library/CategoryBanner';
 import { MiniPlayer } from './components/player/MiniPlayer';
 import { ErrorState } from './components/common/ErrorState';
@@ -255,6 +256,11 @@ export function AppContent() {
                     }
                   }}
                 />
+              )}
+
+              {/* Personalized Recommended Section (User's Regular Tracks - 4 up front + View All) */}
+              {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                <RecommendedSection songs={songs} />
               )}
 
               {/* Visual Category Hub (Cards Grid & Top Singers) shown on Home when not searching and no filter active */}

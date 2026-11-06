@@ -7,6 +7,7 @@ const LibraryContext = createContext(null);
 const STORAGE_FAVORITES = 'sas_favorites';
 const STORAGE_RECENTS = 'sas_recently_played';
 const STORAGE_PLAYLISTS = 'sas_local_playlists';
+const STORAGE_PLAY_COUNTS = 'sas_song_play_counts';
 
 /**
  * Bridge component that securely connects to Clerk's useUser hook
@@ -53,6 +54,16 @@ export function LibraryProvider({ children }) {
     }
   });
 
+  // 4. Play Counts: Map of { [songId]: number }
+  const [playCounts, setPlayCounts] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_PLAY_COUNTS);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
   // Active logged-in user state & cloud sync status
   const [currentUser, setCurrentUser] = useState(null);
   const [isCloudSynced, setIsCloudSynced] = useState(false);
@@ -61,7 +72,7 @@ export function LibraryProvider({ children }) {
   /**
    * Pushes latest state to Clerk Cloud user.unsafeMetadata
    */
-  const pushToClerkCloud = useCallback((updatedFavs, updatedPlaylists) => {
+  const pushToClerkCloud = useCallback((updatedFavs, updatedPlaylists, updatedPlayCounts) => {
     if (!currentUser || typeof currentUser.update !== 'function') return;
 
     if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
@@ -71,6 +82,7 @@ export function LibraryProvider({ children }) {
       };
       if (updatedFavs !== undefined) metadataPayload.favorites = updatedFavs;
       if (updatedPlaylists !== undefined) metadataPayload.playlists = updatedPlaylists;
+      if (updatedPlayCounts !== undefined) metadataPayload.playCounts = updatedPlayCounts;
 
       currentUser.update({
         unsafeMetadata: metadataPayload
@@ -115,14 +127,38 @@ export function LibraryProvider({ children }) {
         if (savedPl) localUserPlaylists = JSON.parse(savedPl);
       } catch (_) {}
 
-      // C. Pull guest items (to merge if user liked songs before logging in)
+      // C. Pull guest items & counts (to merge if user liked/played songs before logging in)
       let guestFavs = [];
       let guestPlaylists = [];
+      let guestPlayCounts = {};
       try {
         const savedGuestFavs = localStorage.getItem(STORAGE_FAVORITES);
         if (savedGuestFavs) guestFavs = JSON.parse(savedGuestFavs);
         const savedGuestPl = localStorage.getItem(STORAGE_PLAYLISTS);
         if (savedGuestPl) guestPlaylists = JSON.parse(savedGuestPl);
+        const savedGuestCounts = localStorage.getItem(STORAGE_PLAY_COUNTS);
+        if (savedGuestCounts) guestPlayCounts = JSON.parse(savedGuestCounts);
+      } catch (_) {}
+
+      // D. Merge play counts
+      const userCountsKey = `sas_play_counts_${userId}`;
+      let localUserCounts = {};
+      try {
+        const savedCounts = localStorage.getItem(userCountsKey);
+        if (savedCounts) localUserCounts = JSON.parse(savedCounts);
+      } catch (_) {}
+
+      const cloudPlayCounts = (user.unsafeMetadata?.playCounts && typeof user.unsafeMetadata.playCounts === 'object')
+        ? user.unsafeMetadata.playCounts
+        : {};
+
+      const mergedCounts = { ...guestPlayCounts, ...localUserCounts, ...cloudPlayCounts };
+      for (const [sId, c] of Object.entries(localUserCounts)) {
+        if (cloudPlayCounts[sId]) mergedCounts[sId] = Math.max(cloudPlayCounts[sId], c);
+      }
+      setPlayCounts(mergedCounts);
+      try {
+        localStorage.setItem(userCountsKey, JSON.stringify(mergedCounts));
       } catch (_) {}
 
       // Merge favorites without duplicates
@@ -151,7 +187,8 @@ export function LibraryProvider({ children }) {
           unsafeMetadata: {
             ...user.unsafeMetadata,
             favorites: mergedFavs,
-            playlists: mergedPlaylists
+            playlists: mergedPlaylists,
+            playCounts: mergedCounts
           }
         }).catch((e) => console.warn('Initial cloud merge sync warning:', e));
       }
@@ -192,6 +229,8 @@ export function LibraryProvider({ children }) {
         setFavorites(savedFavs ? JSON.parse(savedFavs) : []);
         const savedPl = localStorage.getItem(STORAGE_PLAYLISTS);
         setLocalPlaylists(savedPl ? JSON.parse(savedPl) : []);
+        const savedCounts = localStorage.getItem(STORAGE_PLAY_COUNTS);
+        setPlayCounts(savedCounts ? JSON.parse(savedCounts) : {});
       } catch (_) {}
     }
   }, []);
@@ -227,7 +266,7 @@ export function LibraryProvider({ children }) {
 
   const isFavorite = (songId) => favorites.includes(songId);
 
-  // Recently played action
+  // Recently played action & play count tracking
   const addToRecentlyPlayed = (song) => {
     if (!song || !song.id) return;
     setRecentlyPlayed((prev) => {
@@ -245,7 +284,68 @@ export function LibraryProvider({ children }) {
         ...filtered
       ].slice(0, 50);
     });
+
+    // Increment play count for regular tracking
+    setPlayCounts((prev) => {
+      const updated = {
+        ...prev,
+        [song.id]: (prev[song.id] || 0) + 1
+      };
+
+      const storageKey = currentUser ? `sas_play_counts_${currentUser.id}` : STORAGE_PLAY_COUNTS;
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(updated));
+      } catch (_) {}
+
+      // Push updated playCounts to Clerk Cloud
+      pushToClerkCloud(undefined, undefined, updated);
+      return updated;
+    });
   };
+
+  /**
+   * Computes user's top regular / frequent songs
+   */
+  const getRegularSongs = useCallback((allSongs = [], limit = 12) => {
+    if (!Array.isArray(allSongs) || allSongs.length === 0) return [];
+
+    const songMap = new Map();
+    allSongs.forEach((s) => s && s.id && songMap.set(s.id, s));
+
+    const scored = new Map();
+
+    // 1. Count score: 10 pts per play
+    Object.entries(playCounts).forEach(([sId, count]) => {
+      if (songMap.has(sId)) {
+        scored.set(sId, (count || 1) * 10);
+      }
+    });
+
+    // 2. Recency bonus: up to 20 pts for recent playback
+    recentlyPlayed.forEach((rec, idx) => {
+      if (rec && rec.id && songMap.has(rec.id)) {
+        const cur = scored.get(rec.id) || 0;
+        const bonus = Math.max(0, 20 - idx * 2);
+        scored.set(rec.id, cur + bonus);
+      }
+    });
+
+    // 3. Favorite bonus: 8 pts
+    favorites.forEach((favId) => {
+      if (songMap.has(favId)) {
+        const cur = scored.get(favId) || 0;
+        scored.set(favId, cur + 8);
+      }
+    });
+
+    if (scored.size === 0) return [];
+
+    return Array.from(scored.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([sId]) => songMap.get(sId))
+      .filter(Boolean)
+      .slice(0, limit);
+  }, [playCounts, recentlyPlayed, favorites]);
 
   const clearRecentlyPlayed = () => {
     setRecentlyPlayed([]);
@@ -360,7 +460,9 @@ export function LibraryProvider({ children }) {
         addSongToPlaylist,
         removeSongFromPlaylist,
         isCloudSynced,
-        currentUser
+        currentUser,
+        playCounts,
+        getRegularSongs
       }}
     >
       {/* Clerk Sync Bridge mounts safely inside ClerkProvider */}

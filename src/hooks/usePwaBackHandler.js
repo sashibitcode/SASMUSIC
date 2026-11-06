@@ -21,6 +21,8 @@ export function usePwaBackHandler({
   setIsUploadOpen,
   isSyncModalOpen,
   setIsSyncModalOpen,
+  isMobileMenuOpen,
+  setIsMobileMenuOpen,
   isPlaying
 }) {
   const lastExitPressRef = useRef(0);
@@ -34,6 +36,7 @@ export function usePwaBackHandler({
     isSettingsOpen,
     isUploadOpen,
     isSyncModalOpen,
+    isMobileMenuOpen,
     isPlaying
   });
 
@@ -45,9 +48,10 @@ export function usePwaBackHandler({
       isSettingsOpen,
       isUploadOpen,
       isSyncModalOpen,
+      isMobileMenuOpen,
       isPlaying
     };
-  }, [activeTab, isFullPlayerOpen, isQueueOpen, isSettingsOpen, isUploadOpen, isSyncModalOpen, isPlaying]);
+  }, [activeTab, isFullPlayerOpen, isQueueOpen, isSettingsOpen, isUploadOpen, isSyncModalOpen, isMobileMenuOpen, isPlaying]);
 
   // Initial history sentinel setup so there's always a history state to pop
   useEffect(() => {
@@ -105,6 +109,15 @@ export function usePwaBackHandler({
     }
   }, [isSyncModalOpen]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (isHandlingPopRef.current) return;
+
+    if (isMobileMenuOpen) {
+      window.history.pushState({ sasApp: true, layer: 'mobilemenu' }, '');
+    }
+  }, [isMobileMenuOpen]);
+
   // Handle popstate (Back button / swipe-back)
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -117,8 +130,17 @@ export function usePwaBackHandler({
         isQueueOpen,
         isSettingsOpen,
         isUploadOpen,
+        isSyncModalOpen,
+        isMobileMenuOpen,
         isPlaying
       } = stateRef.current;
+
+      // 0. If Mobile Menu Drawer is open: close drawer
+      if (isMobileMenuOpen) {
+        setIsMobileMenuOpen?.(false);
+        setTimeout(() => { isHandlingPopRef.current = false; }, 80);
+        return;
+      }
 
       // 1. If Full Player is open: collapse to mini-player, keep music playing
       if (isFullPlayerOpen) {
@@ -189,6 +211,8 @@ export function usePwaBackHandler({
     setIsQueueOpen,
     setIsSettingsOpen,
     setIsUploadOpen,
+    setIsSyncModalOpen,
+    setIsMobileMenuOpen,
     setActiveTab
   ]);
 }

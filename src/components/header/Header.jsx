@@ -4,8 +4,16 @@ import { Logo } from '../common/Logo';
 import { useSyncPlay } from '../../contexts/SyncPlayContext';
 import { AuthHeaderButton } from '../auth/AuthControls';
 
-export function Header({ onLogoClick, onOpenSettings }) {
+export function Header({ onLogoClick, onOpenSettings, onOpenMenu }) {
   const { isInRoom, roomCode, setIsSyncModalOpen } = useSyncPlay();
+
+  const handleMenuClick = () => {
+    if (onOpenMenu) {
+      onOpenMenu();
+    } else if (onOpenSettings) {
+      onOpenSettings();
+    }
+  };
 
   return (
     <header className="sticky top-0 z-20 bg-[#06110c]/85 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.7)] px-4 sm:px-6 py-3 pt-safe">
@@ -47,14 +55,20 @@ export function Header({ onLogoClick, onOpenSettings }) {
           {/* Clerk Auth Button / Avatar */}
           <AuthHeaderButton />
 
-          {/* Settings Trigger Button */}
-          {onOpenSettings && (
+          {/* Mobile 3-line Hamburger Menu Button (replaces settings icon) */}
+          {(onOpenMenu || onOpenSettings) && (
             <button
-              onClick={onOpenSettings}
-              className="min-w-[38px] min-h-[38px] flex items-center justify-center rounded-full glass-card hover:border-[#A31C1B]/50 text-slate-300 hover:text-white transition-all active:scale-95 shadow-sm group select-none"
-              aria-label="Settings"
+              onClick={handleMenuClick}
+              className="min-w-[40px] min-h-[40px] w-10 h-10 flex items-center justify-center rounded-2xl glass-card hover:border-[#A31C1B]/50 hover:bg-white/[0.08] active:scale-95 transition-all shadow-sm group select-none relative"
+              aria-label="Open Navigation Menu"
+              title="Menu & Settings"
             >
-              <Settings className="w-4 h-4 text-slate-300 group-hover:text-white transition-transform group-hover:rotate-45" />
+              {/* Custom 3-line hamburger icon matching user design: short top, full middle, medium bottom */}
+              <div className="flex flex-col justify-center items-start gap-1.5 w-5 h-5 pointer-events-none">
+                <span className="h-[2.5px] w-3.5 bg-slate-200 group-hover:bg-[#fca5a5] rounded-full transition-all group-hover:w-5" />
+                <span className="h-[2.5px] w-5 bg-white group-hover:bg-[#fca5a5] rounded-full transition-all shadow-sm" />
+                <span className="h-[2.5px] w-2.5 bg-slate-200 group-hover:bg-[#fca5a5] rounded-full transition-all group-hover:w-4" />
+              </div>
             </button>
           )}
         </div>

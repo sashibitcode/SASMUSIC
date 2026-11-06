@@ -29,6 +29,7 @@ const QueueDrawer = lazy(() => import('./components/player/QueueDrawer').then(m 
 const UploadModal = lazy(() => import('./components/upload/UploadModal').then(m => ({ default: m.UploadModal })));
 const SettingsModal = lazy(() => import('./components/settings/SettingsModal').then(m => ({ default: m.SettingsModal })));
 const SyncPlayModal = lazy(() => import('./components/syncplay/SyncPlayModal').then(m => ({ default: m.SyncPlayModal })));
+const MobileMenuDrawer = lazy(() => import('./components/navigation/MobileMenuDrawer').then(m => ({ default: m.MobileMenuDrawer })));
 
 export function AppContent() {
   const { songs, drivePlaylists, isLoading, error, refreshLibrary } = useDrive();
@@ -52,6 +53,7 @@ export function AppContent() {
   const [activeFilter, setActiveFilter] = useState({ type: 'all', value: null });
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { isSyncModalOpen, setIsSyncModalOpen, isInRoom } = useSyncPlay();
 
@@ -80,6 +82,8 @@ export function AppContent() {
     setIsUploadOpen,
     isSyncModalOpen,
     setIsSyncModalOpen,
+    isMobileMenuOpen,
+    setIsMobileMenuOpen,
     isPlaying
   });
 
@@ -180,6 +184,7 @@ export function AppContent() {
           <Header
             onLogoClick={() => handleTabChange('songs')}
             onOpenSettings={() => setIsSettingsOpen(true)}
+            onOpenMenu={() => setIsMobileMenuOpen(true)}
           />
         </div>
 
@@ -312,6 +317,22 @@ export function AppContent() {
       <Suspense fallback={null}>
         <FullPlayerModal />
         <QueueDrawer />
+        <MobileMenuDrawer
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          onOpenSettings={() => {
+            setIsMobileMenuOpen(false);
+            setIsSettingsOpen(true);
+          }}
+          onOpenSync={() => {
+            setIsMobileMenuOpen(false);
+            setIsSyncModalOpen(true);
+          }}
+          onSelectCategory={(catId) => {
+            setActiveTab('songs');
+            setActiveFilter({ type: 'category', value: catId });
+          }}
+        />
         <UploadModal
           isOpen={isUploadOpen}
           onClose={() => setIsUploadOpen(false)}

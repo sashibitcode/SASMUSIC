@@ -45,9 +45,6 @@ export function CategoryHub({
               Collections
             </span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Tap any category card to listen or view songs
-          </p>
         </div>
       </div>
 
@@ -61,7 +58,7 @@ export function CategoryHub({
             <div
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
-              className={`group relative overflow-hidden rounded-2xl p-4 sm:p-4.5 bg-gradient-to-br ${cat.gradient} border ${cat.borderColor} hover:border-white/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg hover:shadow-2xl flex flex-col justify-between min-h-[125px] sm:min-h-[140px]`}
+              className={`group relative overflow-hidden rounded-2xl p-4 sm:p-4.5 bg-gradient-to-br ${cat.gradient} border ${cat.borderColor} hover:border-white/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg hover:shadow-2xl flex flex-col justify-between min-h-[100px] sm:min-h-[110px]`}
             >
               {/* Cover image background with darkening overlay */}
               {bgCover && (
@@ -91,9 +88,6 @@ export function CategoryHub({
                   <h3 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate group-hover:text-[#fca5a5] transition-colors">
                     {cat.label}
                   </h3>
-                  <p className="text-[10px] sm:text-[11px] text-slate-400 truncate font-medium">
-                    {cat.desc}
-                  </p>
                 </div>
 
                 {/* 1-Click Play Mix Button */}
@@ -148,9 +142,6 @@ export function CategoryHub({
 
                   <span className="text-[11px] font-semibold text-slate-300 group-hover:text-white mt-1.5 max-w-[76px] truncate text-center transition-colors">
                     {artist.name}
-                  </span>
-                  <span className="text-[9px] text-[#fca5a5] font-mono">
-                    {artist.count} song{artist.count === 1 ? '' : 's'}
                   </span>
                 </button>
               );

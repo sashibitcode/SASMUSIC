@@ -1,0 +1,33 @@
+{
+  "name": "sas-music",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/generate-all-favicons.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "indexnow": "node scripts/indexnow.mjs",
+    "postbuild": "node scripts/indexnow.mjs"
+  },
+  "dependencies": {
+    "@clerk/clerk-react": "^5.61.11",
+    "@clerk/themes": "^2.4.57",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.16.0",
+    "paho-mqtt": "^1.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.0.7",
+    "vite-plugin-pwa": "^0.21.1"
+  }
+}

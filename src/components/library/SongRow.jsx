@@ -1,0 +1,251 @@
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Play,
+  Pause,
+  Heart,
+  MoreVertical,
+  Plus,
+  ListPlus,
+  Music2,
+  Folder,
+  Disc
+} from 'lucide-react';
+import { useAudio } from '../../contexts/AudioContext';
+import { useLibrary } from '../../contexts/LibraryContext';
+import { getSongGradientStyle } from '../../utils/artGenerator';
+import { VisualizerBars } from '../player/VisualizerBars';
+import { formatFileSize } from '../../utils/formatters';
+import { SongCoverArt } from '../common/SongCoverArt';
+
+export function SongRow({ song, index, playlist = null }) {
+  const { currentSong, isPlaying, isLoadingAudio, playSong, togglePlay, addToQueue, playNextInQueue } = useAudio();
+  const { isFavorite, toggleFavorite, localPlaylists, addSongToPlaylist } = useLibrary();
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
+  const menuRef = useRef(null);
+
+  const isCurrent = currentSong && currentSong.id === song.id;
+  const isFav = isFavorite(song.id);
+
+  // Close context menu when clicking or tapping outside
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside, { passive: true });
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
+  const toggleMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isMenuOpen && menuRef.current) {
+      const rect = menuRef.current.getBoundingClientRect();
+      // If within 230px of bottom of screen, open upwards so it's fully visible
+      setOpenUpward(rect.bottom + 230 > window.innerHeight);
+    }
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const handlePlayClick = () => {
+    if (isCurrent) {
+      togglePlay();
+    } else {
+      playSong(song, playlist);
+    }
+  };
+
+  return (
+    <div
+      onClick={handlePlayClick}
+      className={`group relative flex items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer border ${isMenuOpen ? 'z-40' : 'z-0'
+        } ${isCurrent
+          ? 'bg-[#06110c] border-[#A31C1B] shadow-[0_6px_28px_rgba(6,17,12,0.95),_0_0_15px_rgba(163,28,27,0.35)] ring-1 ring-[#A31C1B]/80'
+          : 'glass-card hover:translate-x-0.5'
+        }`}
+    >
+      {/* Left: Thumbnail & Info */}
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        {/* Track Index or Visualizer */}
+        <span className="w-5 text-center text-xs font-semibold text-slate-500 group-hover:text-slate-300 hidden sm:block">
+          {isCurrent ? (
+            <VisualizerBars isPlaying={isPlaying} className="h-3 w-3 mx-auto" />
+          ) : (
+            index !== undefined ? index + 1 : <Music2 className="w-3.5 h-3.5 mx-auto" />
+          )}
+        </span>
+
+        {/* Real Cover Art with Play State */}
+        <div className="relative group/art flex-shrink-0">
+          <SongCoverArt
+            song={song}
+            size="sm"
+            isPlaying={isCurrent && isPlaying}
+            className={`shadow-sm group-hover:shadow-md transition-all ${isCurrent ? 'ring-2 ring-[#A31C1B] ring-offset-2 ring-offset-[#06110c]' : ''
+              }`}
+          />
+
+          {/* Hover play icon overlay */}
+          <div className="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+            {isCurrent && isLoadingAudio ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : isCurrent && isPlaying ? (
+              <Pause className="w-4 h-4 text-white fill-white" />
+            ) : (
+              <Play className="w-4 h-4 text-white fill-white ml-0.5" />
+            )}
+          </div>
+        </div>
+
+        {/* Title and Artist */}
+        <div className="min-w-0 flex-1 pr-2">
+          <p
+            className={`text-xs sm:text-sm font-semibold truncate transition-colors ${isCurrent ? 'text-white' : 'text-slate-200 group-hover:text-white'
+              }`}
+          >
+            {song.title}
+          </p>
+          <p
+            className={`text-xs truncate mt-0.5 ${isCurrent ? 'text-emerald-300 font-medium' : 'text-slate-400'
+              }`}
+          >
+            {song.artist}
+          </p>
+        </div>
+      </div>
+
+      {/* Right: Actions */}
+      <div
+        className="flex items-center gap-1 sm:gap-2 flex-shrink-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Favorite Heart - 44x44px touch target */}
+        <button
+          onClick={() => toggleFavorite(song.id)}
+          className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-transform active:scale-90 ${isFav
+              ? 'text-[#A31C1B] hover:text-[#e2403f]'
+              : 'text-slate-500 hover:text-slate-300'
+            }`}
+          aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A31C1B]' : ''}`} />
+        </button>
+
+        {/* More Options Context Menu - 44x44px touch target */}
+        <div className="relative" ref={menuRef}>
+          <button
+            type="button"
+            onClick={toggleMenu}
+            className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-colors active:scale-90 ${isMenuOpen ? 'text-white bg-[#222222]' : 'text-slate-400 hover:text-white hover:bg-[#222222]'
+              }`}
+            aria-label="More options"
+            aria-expanded={isMenuOpen}
+          >
+            <MoreVertical className="w-4 h-4" />
+          </button>
+
+          {isMenuOpen && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className={`absolute right-0 ${openUpward ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
+                } w-52 rounded-2xl bg-[#171717] border border-[#282f2b] shadow-[0_12px_40px_rgba(0,0,0,0.85)] py-2 z-50 text-xs backdrop-blur-xl animate-in fade-in duration-150`}
+            >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playSong(song, playlist);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
+              >
+                <Play className="w-4 h-4 text-[#A31C1B] fill-[#A31C1B]" />
+                <span>Play Now</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playNextInQueue(song);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
+              >
+                <ListPlus className="w-4 h-4 text-[#A31C1B]" />
+                <span>Play Next</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToQueue(song);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
+              >
+                <Plus className="w-4 h-4 text-[#A31C1B]" />
+                <span>Add to Queue</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(song.id);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
+              >
+                <Heart className={`w-4 h-4 ${isFav ? 'text-[#A31C1B] fill-[#A31C1B]' : 'text-slate-400'}`} />
+                <span>{isFav ? 'Remove from Favorites' : 'Add to Favorites'}</span>
+              </button>
+
+              {/* Add to Playlist section */}
+              <div className="border-t border-[#282f2b] my-1 pt-1.5">
+                <p className="px-4 py-1 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                  Add to Playlist:
+                </p>
+                {localPlaylists.length > 0 ? (
+                  localPlaylists.map((pl) => (
+                    <button
+                      key={pl.id}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addSongToPlaylist(pl.id, song.id);
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2 text-slate-300 hover:bg-[#222222] hover:text-[#fca5a5] text-left truncate transition-colors text-xs"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-[#A31C1B] flex-shrink-0" />
+                      <span className="truncate">{pl.name}</span>
+                    </button>
+                  ))
+                ) : (
+                  <p className="px-4 py-1.5 text-[11px] text-slate-500 italic">
+                    No playlists created yet
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+

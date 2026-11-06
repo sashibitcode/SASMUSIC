@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
-import { Heart, Play, Shuffle } from 'lucide-react';
+import { Heart, Play, Shuffle, Cloud } from 'lucide-react';
 import { useLibrary } from '../../contexts/LibraryContext';
 import { useDrive } from '../../contexts/DriveContext';
 import { useAudio } from '../../contexts/AudioContext';
 import { SongRow } from './SongRow';
 
 export function FavoritesView() {
-  const { favorites } = useLibrary();
+  const { favorites, currentUser, isCloudSynced } = useLibrary();
   const { songs } = useDrive();
   const { playSong } = useAudio();
 
@@ -43,6 +43,12 @@ export function FavoritesView() {
         <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
           Tap the heart icon on any song while listening or browsing to save it to your Favorites.
         </p>
+        {currentUser && (
+          <p className="text-[11px] text-emerald-400 font-medium mt-2 flex items-center justify-center gap-1">
+            <Cloud className="w-3 h-3" />
+            <span>Cloud sync active for {currentUser.primaryEmailAddress?.emailAddress || 'Google Account'}</span>
+          </p>
+        )}
       </div>
     );
   }
@@ -57,9 +63,21 @@ export function FavoritesView() {
           </div>
           <div>
             <h3 className="text-base sm:text-lg font-bold text-white">Liked Songs</h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              {favSongs.length} {favSongs.length === 1 ? 'favorite track' : 'favorite tracks'}
-            </p>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-xs text-slate-400">
+                {favSongs.length} {favSongs.length === 1 ? 'favorite track' : 'favorite tracks'}
+              </span>
+              {currentUser ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full" title={`Synced with ${currentUser.primaryEmailAddress?.emailAddress}`}>
+                  <Cloud className="w-3 h-3 text-emerald-400" />
+                  <span>Cloud Synced</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full" title="Sign in to sync your favorites across all devices">
+                  <span>Local Only</span>
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

@@ -8,7 +8,8 @@ import {
   Trash2,
   ChevronLeft,
   FolderPlus,
-  ListMusic
+  ListMusic,
+  Cloud
 } from 'lucide-react';
 import { useDrive } from '../../contexts/DriveContext';
 import { useLibrary } from '../../contexts/LibraryContext';
@@ -18,7 +19,7 @@ import { getFolderCoverArt } from '../../services/coverArtService';
 
 export function PlaylistsView() {
   const { drivePlaylists, songs } = useDrive();
-  const { localPlaylists, createPlaylist, deletePlaylist } = useLibrary();
+  const { localPlaylists, createPlaylist, deletePlaylist, currentUser } = useLibrary();
   const { playSong } = useAudio();
 
   const [activePlaylist, setActivePlaylist] = useState(null);
@@ -243,6 +244,12 @@ export function PlaylistsView() {
             <h3 className="text-sm font-bold text-white uppercase tracking-wider">
               My Playlists ({localPlaylists.length})
             </h3>
+            {currentUser && (
+              <span className="text-[10px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full flex items-center gap-1" title="Synced across all devices with your Google account">
+                <Cloud className="w-2.5 h-2.5 text-emerald-400" />
+                <span>Cloud</span>
+              </span>
+            )}
           </div>
 
           <button

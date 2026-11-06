@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Play, Shuffle, Music, SearchX, RotateCw } from 'lucide-react';
 import { SongRow } from './SongRow';
+import { SongRequestCard } from './SongRequestCard';
 import { useAudio } from '../../contexts/AudioContext';
 import { useDrive } from '../../contexts/DriveContext';
 import { usePullToRefresh } from '../../hooks/usePullToRefresh';
@@ -123,9 +124,9 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'newest' }) {
 
   if (filteredSongs.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-[#171717] border border-[#282f2b] flex items-center justify-center text-slate-500 mb-3 shadow-lg">
-          <SearchX className="w-8 h-8 text-[#A31C1B]" />
+      <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
+        <div className="w-14 h-14 rounded-2xl bg-[#171717] border border-[#282f2b] flex items-center justify-center text-slate-500 mb-2 shadow-lg">
+          <SearchX className="w-7 h-7 text-[#A31C1B]" />
         </div>
         <h4 className="text-base font-bold text-white">No songs found</h4>
         <p className="text-xs text-slate-400 mt-1 max-w-sm">
@@ -133,6 +134,13 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'newest' }) {
             ? `No songs matched "${searchQuery}". Try searching with another song title or artist.`
             : 'No audio tracks found in this folder.'}
         </p>
+
+        {/* 10-Minute Song Request & Telegram Alert Card */}
+        {searchQuery && (
+          <div className="w-full mt-4">
+            <SongRequestCard searchQuery={searchQuery} />
+          </div>
+        )}
       </div>
     );
   }

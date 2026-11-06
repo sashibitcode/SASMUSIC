@@ -167,3 +167,29 @@ export function clearAttempts(ip) {
   attemptsMap.delete(ip);
 }
 
+/**
+ * Sliding rate limiter for song requests
+ * Max 8 requests per 10 minutes per IP
+ */
+const requestLimiterMap = new Map();
+
+export function checkRequestRateLimit(ip) {
+  const now = Date.now();
+  const record = requestLimiterMap.get(ip) || { count: 0, windowStart: now };
+
+  // Reset window every 10 minutes
+  if (now - record.windowStart > 10 * 60 * 1000) {
+    record.count = 0;
+    record.windowStart = now;
+  }
+
+  if (record.count >= 8) {
+    const minutesLeft = Math.ceil((10 * 60 * 1000 - (now - record.windowStart)) / 60000);
+    return { allowed: false, minutesLeft: Math.max(1, minutesLeft) };
+  }
+
+  record.count += 1;
+  requestLimiterMap.set(ip, record);
+  return { allowed: true };
+}
+

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import { Search, X, SearchX, Music2, ArrowUpDown } from 'lucide-react';
 import { SongRow } from './SongRow';
+import { SongRequestCard } from './SongRequestCard';
 import { useDebounce } from '../../hooks/useDebounce';
 
 export function SearchView({
@@ -157,7 +158,7 @@ export function SearchView({
         </div>
       ) : (
         /* Empty search results state */
-        <div className="flex flex-col items-center justify-center p-8 rounded-2xl glass-card text-center my-6 space-y-3">
+        <div className="flex flex-col items-center justify-center p-6 rounded-3xl glass-card text-center my-6 space-y-4">
           <div className="w-12 h-12 rounded-full bg-[#1c1414] border border-[#A31C1B]/30 flex items-center justify-center text-[#A31C1B]">
             <SearchX className="w-6 h-6" />
           </div>
@@ -167,9 +168,18 @@ export function SearchView({
               No matching tracks found for &ldquo;<span className="text-slate-200 font-medium">{searchQuery}</span>&rdquo;
             </p>
           </div>
+
+          {/* 10-Minute Song Request & Telegram Alert Card */}
+          <div className="w-full">
+            <SongRequestCard
+              searchQuery={searchQuery}
+              onClearSearch={() => onSearchChange?.('')}
+            />
+          </div>
+
           <button
             onClick={() => onSearchChange('')}
-            className="px-4 py-2 rounded-xl glass-card hover:border-[#A31C1B]/50 text-xs font-semibold text-slate-200 transition-colors"
+            className="px-4 py-2 rounded-xl glass-card hover:border-[#A31C1B]/50 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
           >
             Clear Search
           </button>

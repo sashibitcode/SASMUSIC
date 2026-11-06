@@ -5,10 +5,10 @@
  */
 
 export const DRIVE_FOLDER_ID = 
-  import.meta.env.VITE_DRIVE_FOLDER_ID || "";
+  import.meta.env.VITE_DRIVE_FOLDER_ID || "1wwE5DAW14eGatZmEWiW05rj4TvZvdgWz";
 
 export const DRIVE_API_KEY = 
-  import.meta.env.VITE_DRIVE_API_KEY || "";
+  import.meta.env.VITE_DRIVE_API_KEY || "AIzaSyBckQ6nDfCb98kQVoOguAG3rbOkdJWXzf8";
 
 /**
  * Returns active configuration with localStorage fallback.

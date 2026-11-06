@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Send, CheckCircle2, Clock, Music, AlertCircle, Loader2 } from 'lucide-react';
-import { useUser } from '@clerk/clerk-react';
+import {
+  Sparkles,
+  Send,
+  CheckCircle2,
+  Clock,
+  Music,
+  AlertCircle,
+  Loader2,
+  Lock,
+  LogIn,
+  ShieldCheck
+} from 'lucide-react';
+import { useUser, SignInButton } from '@clerk/clerk-react';
 import { showFloatingToast } from '../../utils/toast';
 
 export function SongRequestCard({ searchQuery = '', onClearSearch }) {
   const { user, isSignedIn } = useUser();
   const [songTitle, setSongTitle] = useState(searchQuery);
-  const [requesterName, setRequesterName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -18,13 +28,6 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
       setSongTitle(searchQuery);
     }
   }, [searchQuery, isSuccess]);
-
-  // Pre-fill requester name if signed in via Clerk
-  useEffect(() => {
-    if (isSignedIn && user) {
-      setRequesterName(user.fullName || user.firstName || 'Music Lover');
-    }
-  }, [isSignedIn, user]);
 
   // 10-Minute live timer after request is sent
   useEffect(() => {
@@ -45,6 +48,12 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
+
+    if (!isSignedIn) {
+      setErrorMessage('Kripya request bhejne ke liye pehle Sign In karein');
+      return;
+    }
+
     if (!songTitle || !songTitle.trim()) {
       setErrorMessage('Kripya gaane ka naam daalein');
       return;
@@ -59,8 +68,8 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           songName: songTitle.trim(),
-          userName: requesterName.trim() || (isSignedIn ? user?.fullName : 'Guest Listener'),
-          userEmail: isSignedIn ? user?.primaryEmailAddress?.emailAddress : 'Guest'
+          userName: user?.fullName || user?.firstName || 'Verified User',
+          userEmail: user?.primaryEmailAddress?.emailAddress || ''
         })
       });
 
@@ -126,8 +135,71 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
             </button>
           </div>
         </div>
+      ) : !isSignedIn ? (
+        /* Gated Authentication View (Guests cannot send without login) */
+        <div className="space-y-4 relative z-10">
+          {/* Card Header & 10-Min Promise */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#A31C1B]/20 border border-[#A31C1B]/35 text-[#fca5a5] flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Music className="w-5 h-5 text-[#fca5a5]" />
+              </div>
+              <div>
+                <h4 className="text-sm sm:text-base font-bold text-white tracking-wide">
+                  Song nahi mila? Request karein!
+                </h4>
+                <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">
+                  Request bhejte hi hum ise 10 minute me library me add kar denge.
+                </p>
+              </div>
+            </div>
+
+            <span className="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#A31C1B]/20 text-[#fca5a5] border border-[#A31C1B]/40 shadow-sm flex items-center gap-1 whitespace-nowrap">
+              <Sparkles className="w-2.5 h-2.5" />
+              <span>Within 10 Mins ⚡</span>
+            </span>
+          </div>
+
+          {/* Searched Song Name Preview */}
+          <div className="p-3 rounded-2xl bg-black/40 border border-white/10 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#fca5a5] flex-shrink-0">
+              <Music className="w-4 h-4 text-[#fca5a5]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold block">Requested Track:</span>
+              <span className="text-xs sm:text-sm font-bold text-white truncate block">
+                "{songTitle || searchQuery}"
+              </span>
+            </div>
+          </div>
+
+          {/* Anti-Spam Login Wall */}
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-[#171212] to-[#0c1611] border border-[#A31C1B]/30 space-y-3 text-center">
+            <div className="w-10 h-10 mx-auto rounded-full bg-[#A31C1B]/20 border border-[#A31C1B]/40 flex items-center justify-center text-[#fca5a5]">
+              <Lock className="w-5 h-5" />
+            </div>
+            <div>
+              <h5 className="text-xs sm:text-sm font-bold text-white">
+                Request Bhejne Ke Liye Sign In Karein
+              </h5>
+              <p className="text-[11px] text-slate-400 mt-1 max-w-xs mx-auto">
+                Spam rokne aur genuine users ko priority dene ke liye Google se 1-click login anivarya hai.
+              </p>
+            </div>
+
+            <SignInButton mode="modal">
+              <button
+                type="button"
+                className="w-full min-h-[44px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl crimson-glow-btn text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#A31C1B]/30 transition-all active:scale-95 cursor-pointer"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In with Google to Request</span>
+              </button>
+            </SignInButton>
+          </div>
+        </div>
       ) : (
-        /* Request Input Form View */
+        /* Logged-In Verified Form View */
         <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
           {/* Card Header & 10-Min Promise */}
           <div className="flex items-start justify-between gap-3">
@@ -136,8 +208,8 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
                 <Music className="w-5 h-5 text-[#fca5a5]" />
               </div>
               <div>
-                <h4 className="text-sm sm:text-base font-bold text-white tracking-wide flex items-center gap-1.5">
-                  <span>Song nahi mila? Request karein!</span>
+                <h4 className="text-sm sm:text-base font-bold text-white tracking-wide">
+                  Song nahi mila? Request karein!
                 </h4>
                 <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">
                   Request bhejte hi hum ise turant library me add kar denge.
@@ -148,6 +220,22 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
             <span className="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#A31C1B]/20 text-[#fca5a5] border border-[#A31C1B]/40 shadow-sm flex items-center gap-1 whitespace-nowrap">
               <Sparkles className="w-2.5 h-2.5" />
               <span>Within 10 Mins ⚡</span>
+            </span>
+          </div>
+
+          {/* Verified User Identity Chip */}
+          <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white/[0.04] border border-white/10 text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-6 h-6 rounded-full bg-[#A31C1B] text-white font-bold flex items-center justify-center text-[10px] flex-shrink-0">
+                {(user?.firstName?.[0] || 'U').toUpperCase()}
+              </div>
+              <span className="text-slate-200 truncate font-medium">
+                {user?.fullName || user?.firstName}
+              </span>
+            </div>
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex-shrink-0">
+              <ShieldCheck className="w-3 h-3" />
+              <span>Verified Account</span>
             </span>
           </div>
 
@@ -168,23 +256,6 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
               />
             </div>
           </div>
-
-          {/* User Name (Optional for guests, pre-filled for Clerk users) */}
-          {!isSignedIn && (
-            <div className="space-y-1">
-              <label className="block text-[11px] font-semibold text-slate-400">
-                Aapka Naam (Optional):
-              </label>
-              <input
-                type="text"
-                value={requesterName}
-                onChange={(e) => setRequesterName(e.target.value)}
-                placeholder="Aapka naam..."
-                className="w-full bg-[#06110c]/60 border border-white/10 focus:border-white/20 rounded-xl px-3 py-1.5 text-xs text-slate-200 placeholder-slate-600 outline-none"
-                maxLength={60}
-              />
-            </div>
-          )}
 
           {/* Error notice if any */}
           {errorMessage && (
@@ -217,4 +288,3 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
     </div>
   );
 }
-

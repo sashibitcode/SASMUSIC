@@ -46,9 +46,16 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Song title is required' });
     }
 
+    // Anti-spam requirement: must be a signed-in user with valid email
+    if (!userEmail || typeof userEmail !== 'string' || !userEmail.includes('@') || userEmail.toLowerCase() === 'guest' || userEmail === 'Not Provided') {
+      return res.status(401).json({
+        error: 'Song request bhejne ke liye Google se Sign In hona anivarya hai.'
+      });
+    }
+
     const cleanSongName = songName.trim().slice(0, 120);
-    const cleanUserName = (userName && typeof userName === 'string') ? userName.trim().slice(0, 60) : 'Guest Visitor';
-    const cleanUserEmail = (userEmail && typeof userEmail === 'string') ? userEmail.trim().slice(0, 100) : 'Not Provided';
+    const cleanUserName = (userName && typeof userName === 'string') ? userName.trim().slice(0, 60) : 'Verified User';
+    const cleanUserEmail = userEmail.trim().slice(0, 100);
 
     const now = new Date();
     const timeString = now.toLocaleString('en-IN', {
@@ -64,11 +71,12 @@ export default async function handler(req, res) {
 
     if (botToken && chatId) {
       const messageText = [
-        `🎵 <b>NEW SONG REQUEST • SAS MUSIC</b> 🎵`,
+        `🎵 <b>NEW VERIFIED SONG REQUEST • SAS MUSIC</b> 🎵`,
         `──────────────────────────────`,
         `🎧 <b>Song:</b> <code>${escapeHtml(cleanSongName)}</code>`,
         `👤 <b>Requested By:</b> ${escapeHtml(cleanUserName)}`,
-        `📧 <b>Email:</b> ${escapeHtml(cleanUserEmail)}`,
+        `📧 <b>Verified Email:</b> ${escapeHtml(cleanUserEmail)}`,
+        `🔒 <b>Status:</b> ✅ Logged-in & Verified`,
         `⏰ <b>Time:</b> ${timeString} (IST)`,
         `⚡ <b>Commitment:</b> <i>Within 10 Minutes!</i>`,
         `──────────────────────────────`,

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Play, Pause, ChevronRight, ChevronUp, Sparkles, Music } from 'lucide-react';
+import { Play, Pause, ChevronRight, ChevronUp } from 'lucide-react';
 import { useLibrary } from '../../contexts/LibraryContext';
 import { useAudio } from '../../contexts/AudioContext';
 import { SongCoverArt } from '../common/SongCoverArt';
@@ -10,12 +10,21 @@ export function RecommendedSection({ songs = [] }) {
   const { currentSong, isPlaying, playSong, togglePlay } = useAudio();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Compute regular / frequent songs from full library
+  // Compute regular songs, supplementing with library tracks if fewer than 4 exist yet
   const regularSongs = useMemo(() => {
-    return getRegularSongs(songs, 12);
+    if (!songs || songs.length === 0) return [];
+    const userRegulars = typeof getRegularSongs === 'function' ? getRegularSongs(songs, 12) : [];
+
+    if (userRegulars.length >= 4) {
+      return userRegulars;
+    }
+
+    // Fill up to 12 with popular songs from the library so 4 are ALWAYS visible upfront
+    const existingIds = new Set(userRegulars.map((s) => s.id));
+    const fillers = songs.filter((s) => s && s.id && !existingIds.has(s.id)).slice(0, 12 - userRegulars.length);
+    return [...userRegulars, ...fillers].slice(0, 12);
   }, [getRegularSongs, songs]);
 
-  // If user hasn't played or repeated any songs yet, hide section to keep UI clean
   if (!regularSongs || regularSongs.length === 0) {
     return null;
   }
@@ -32,6 +41,12 @@ export function RecommendedSection({ songs = [] }) {
     }
   };
 
+  const handlePlayAll = () => {
+    if (regularSongs.length > 0) {
+      playSong(regularSongs[0], regularSongs, 0);
+    }
+  };
+
   return (
     <section className="mb-6 space-y-3 animate-in fade-in duration-300">
       {/* Section Header */}
@@ -43,20 +58,33 @@ export function RecommendedSection({ songs = [] }) {
           </h2>
         </div>
 
-        {hasMore && (
+        <div className="flex items-center gap-2">
+          {/* Play All Button */}
           <button
-            onClick={() => setIsExpanded((prev) => !prev)}
-            className="flex items-center gap-1 text-xs font-semibold text-slate-300 hover:text-white transition-colors px-2.5 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08]"
-            aria-label={isExpanded ? 'Show Less' : 'View All'}
+            onClick={handlePlayAll}
+            className="flex items-center gap-1.5 text-xs font-semibold text-white bg-[#A31C1B] hover:bg-[#851615] px-3 py-1 rounded-full shadow-sm active:scale-95 transition-all"
+            title="Play All Recommended Songs"
           >
-            <span>{isExpanded ? 'Show Less' : 'View All'}</span>
-            {isExpanded ? (
-              <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
-            ) : (
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            )}
+            <Play className="w-3 h-3 fill-current" />
+            <span>Play All</span>
           </button>
-        )}
+
+          {/* View All / Show Less Toggle */}
+          {hasMore && (
+            <button
+              onClick={() => setIsExpanded((prev) => !prev)}
+              className="flex items-center gap-1 text-xs font-semibold text-slate-300 hover:text-white transition-colors px-2.5 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] active:scale-95"
+              aria-label={isExpanded ? 'Show Less' : 'View All'}
+            >
+              <span>{isExpanded ? 'Show Less' : 'View All'}</span>
+              {isExpanded ? (
+                <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+              ) : (
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+              )}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Responsive Grid: 2 columns on mobile, 4 columns on large screens */}

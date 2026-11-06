@@ -50,12 +50,12 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
     e?.preventDefault();
 
     if (!isSignedIn) {
-      setErrorMessage('Kripya request bhejne ke liye pehle Sign In karein');
+      setErrorMessage('Please sign in to submit a song request');
       return;
     }
 
     if (!songTitle || !songTitle.trim()) {
-      setErrorMessage('Kripya gaane ka naam daalein');
+      setErrorMessage('Please enter the song title');
       return;
     }
 
@@ -76,13 +76,13 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Request bhejne me dikkat aayi');
+        throw new Error(data.error || 'Failed to submit song request');
       }
 
       setIsSuccess(true);
-      showFloatingToast('Song request bhej diya gaya hai! ⚡', 'success');
+      showFloatingToast('Song request sent! We will add it soon ⚡', 'success');
     } catch (err) {
-      setErrorMessage(err.message || 'Server error. Kripya thodi der me dobara try karein.');
+      setErrorMessage(err.message || 'Server error. Please try again shortly.');
       showFloatingToast(err.message || 'Request failed', 'error');
     } finally {
       setIsSubmitting(false);
@@ -103,10 +103,10 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
 
           <div>
             <h4 className="text-base sm:text-lg font-bold text-white tracking-wide">
-              Request Bhej Diya Gaya Hai! 🎉
+              Request Received! 🎉
             </h4>
             <p className="text-xs text-slate-300 mt-1 max-w-sm mx-auto">
-              Aapka request <span className="text-[#fca5a5] font-semibold font-mono">"{songTitle}"</span> Shashikant ji (Admin) ko Telegram par mil gaya hai.
+              We've received your request for <span className="text-[#fca5a5] font-semibold font-mono">"{songTitle}"</span>. Enjoy it soon!
             </p>
           </div>
 
@@ -131,14 +131,14 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
               }}
               className="px-4 py-2 rounded-xl glass-card hover:border-[#A31C1B]/40 text-xs font-medium text-slate-300 hover:text-white transition-all active:scale-95"
             >
-              Doosra gaana search karein
+              Search another song
             </button>
           </div>
         </div>
       ) : !isSignedIn ? (
         /* Gated Authentication View (Guests cannot send without login) */
         <div className="space-y-4 relative z-10">
-          {/* Card Header & 10-Min Promise */}
+          {/* Card Header */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-[#A31C1B]/20 border border-[#A31C1B]/35 text-[#fca5a5] flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -146,10 +146,10 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
               </div>
               <div>
                 <h4 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                  Song nahi mila? Request karein!
+                  Missing Your Favourite Song?
                 </h4>
                 <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">
-                  Request bhejte hi hum ise 10 minute me library me add kar denge.
+                  Send a request and enjoy it soon!
                 </p>
               </div>
             </div>
@@ -180,10 +180,10 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
             </div>
             <div>
               <h5 className="text-xs sm:text-sm font-bold text-white">
-                Request Bhejne Ke Liye Sign In Karein
+                Sign In to Request This Song
               </h5>
               <p className="text-[11px] text-slate-400 mt-1 max-w-xs mx-auto">
-                Spam rokne aur genuine users ko priority dene ke liye Google se 1-click login anivarya hai.
+                Sign in with Google in 1 click to send your song request directly to the library.
               </p>
             </div>
 
@@ -193,7 +193,7 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
                 className="w-full min-h-[44px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl crimson-glow-btn text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#A31C1B]/30 transition-all active:scale-95 cursor-pointer"
               >
                 <LogIn className="w-4 h-4" />
-                <span>Sign In with Google to Request</span>
+                <span>Sign In to Request Now</span>
               </button>
             </SignInButton>
           </div>
@@ -201,7 +201,7 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
       ) : (
         /* Logged-In Verified Form View */
         <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-          {/* Card Header & 10-Min Promise */}
+          {/* Card Header */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-[#A31C1B]/20 border border-[#A31C1B]/35 text-[#fca5a5] flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -209,10 +209,10 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
               </div>
               <div>
                 <h4 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                  Song nahi mila? Request karein!
+                  Missing Your Favourite Song?
                 </h4>
                 <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">
-                  Request bhejte hi hum ise turant library me add kar denge.
+                  Send a request and enjoy it soon!
                 </p>
               </div>
             </div>
@@ -242,14 +242,14 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
           {/* Song Title Input */}
           <div className="space-y-1.5">
             <label className="block text-[11px] font-semibold text-slate-300">
-              Gaane ka Naam / Movie / Singer:
+              Song Title / Artist / Movie:
             </label>
             <div className="relative">
               <input
                 type="text"
                 value={songTitle}
                 onChange={(e) => setSongTitle(e.target.value)}
-                placeholder="Jaise: Chaleya - Jawan ya Pawan Singh..."
+                placeholder="e.g. Chaleya - Jawan, Kesariya, Pawan Singh..."
                 className="w-full bg-[#06110c]/80 border border-white/15 focus:border-[#A31C1B] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none transition-all focus:ring-1 focus:ring-[#A31C1B]/50"
                 maxLength={120}
                 required
@@ -265,7 +265,7 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
             </div>
           )}
 
-          {/* Send Request Button */}
+          {/* Request Now Button */}
           <button
             type="submit"
             disabled={isSubmitting || !songTitle.trim()}
@@ -274,12 +274,12 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Admin ko bhej rahe hain...</span>
+                <span>Submitting Request...</span>
               </>
             ) : (
               <>
                 <Send className="w-4 h-4" />
-                <span>Send Request (Add within 10 Mins)</span>
+                <span>Request Now</span>
               </>
             )}
           </button>

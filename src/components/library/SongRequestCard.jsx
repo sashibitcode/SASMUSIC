@@ -8,8 +8,7 @@ import {
   AlertCircle,
   Loader2,
   Lock,
-  LogIn,
-  ShieldCheck
+  LogIn
 } from 'lucide-react';
 import { useUser, SignInButton } from '@clerk/clerk-react';
 import { showFloatingToast } from '../../utils/toast';
@@ -220,22 +219,6 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
             <span className="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#A31C1B]/20 text-[#fca5a5] border border-[#A31C1B]/40 shadow-sm flex items-center gap-1 whitespace-nowrap">
               <Sparkles className="w-2.5 h-2.5" />
               <span>Within 10 Mins ⚡</span>
-            </span>
-          </div>
-
-          {/* Verified User Identity Chip */}
-          <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white/[0.04] border border-white/10 text-xs">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 rounded-full bg-[#A31C1B] text-white font-bold flex items-center justify-center text-[10px] flex-shrink-0">
-                {(user?.firstName?.[0] || 'U').toUpperCase()}
-              </div>
-              <span className="text-slate-200 truncate font-medium">
-                {user?.fullName || user?.firstName}
-              </span>
-            </div>
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex-shrink-0">
-              <ShieldCheck className="w-3 h-3" />
-              <span>Verified Account</span>
             </span>
           </div>
 

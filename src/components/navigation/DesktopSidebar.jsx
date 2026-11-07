@@ -127,6 +127,7 @@ export function DesktopSidebar({
             {[
               { id: 'hindi', label: 'Hindi Bollywood', emoji: '🇮🇳' },
               { id: 'bhojpuri', label: 'Bhojpuri Dhamaka', emoji: '🌾' },
+              { id: 'chhath', label: 'Chhath Special', emoji: '🌅' },
               { id: 'gym', label: 'Gym & Workout', emoji: '🏋️' },
               { id: 'retro', label: '90s Retro Gold', emoji: '📻' },
               { id: 'romantic', label: 'Romantic & Love', emoji: '💖' },

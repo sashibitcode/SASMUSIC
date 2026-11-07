@@ -35,8 +35,8 @@ export function CategoryHub({
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const visibleCategories = isExpanded ? MUSIC_CATEGORIES : MUSIC_CATEGORIES.slice(0, 4);
-  const hasMore = MUSIC_CATEGORIES.length > 4;
+  const visibleCategories = isExpanded ? MUSIC_CATEGORIES : MUSIC_CATEGORIES.slice(0, 6);
+  const hasMore = MUSIC_CATEGORIES.length > 6;
 
   return (
     <section className="mb-8 sm:mb-9 space-y-5 animate-in fade-in duration-200">

@@ -338,9 +338,11 @@ export function MobileMenuDrawer({
             {[
               { id: 'hindi', label: 'Hindi Bollywood', emoji: '🇮🇳' },
               { id: 'bhojpuri', label: 'Bhojpuri Dhamaka', emoji: '🌾' },
+              { id: 'chhath', label: 'Chhath Special', emoji: '🌅' },
               { id: 'gym', label: 'Gym & Workout', emoji: '🏋️' },
-              { id: 'romantic', label: 'Love & Romantic', emoji: '💖' },
               { id: 'retro', label: '90s Retro Gold', emoji: '📻' },
+              { id: 'romantic', label: 'Love & Romantic', emoji: '💖' },
+              { id: 'sad', label: 'Sad & Broken', emoji: '💔' },
               { id: 'punjabi', label: 'Punjabi Beats', emoji: '🔥' }
             ].map((col) => (
               <button

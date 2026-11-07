@@ -34,6 +34,18 @@ export const MUSIC_CATEGORIES = [
     accentColor: '#f59e0b'
   },
   {
+    id: 'chhath',
+    label: 'Chhath Special',
+    shortLabel: 'Chhath',
+    emoji: '🌅',
+    icon: 'Sun',
+    badge: 'Special',
+    desc: 'Bhojpuri Chhath Geet, Sharda Sinha, Pawan Singh & Arghya Bhajans',
+    gradient: 'from-amber-600/90 via-orange-950/65 to-[#06110c]/90',
+    borderColor: 'border-amber-500/40',
+    accentColor: '#f59e0b'
+  },
+  {
     id: 'gym',
     label: 'Gym & Workout',
     shortLabel: 'Gym / ZYM',
@@ -154,6 +166,37 @@ export function isSongInCategory(song, categoryId) {
         fullText.includes('badhiya') ||
         fullText.includes('lach lach') ||
         fullText.includes('lat lag')
+      );
+
+    case 'chhath':
+      return (
+        folder.includes('chhath') ||
+        folder.includes('chhat') ||
+        folder.includes('puja') ||
+        fullText.includes('chhath') ||
+        fullText.includes('chhat') ||
+        fullText.includes('chhathi') ||
+        fullText.includes('arghya') ||
+        fullText.includes('aragh') ||
+        fullText.includes('suruj') ||
+        fullText.includes('surya') ||
+        fullText.includes('sooraj') ||
+        fullText.includes('dina nath') ||
+        fullText.includes('dinanath') ||
+        fullText.includes('sharda sinha') ||
+        fullText.includes('anuradha paudwal') ||
+        fullText.includes('kelwa ke paat') ||
+        fullText.includes('kaanch hi baans') ||
+        fullText.includes('ug ho suruj') ||
+        fullText.includes('pahile pahil') ||
+        fullText.includes('bahangi') ||
+        fullText.includes('daura') ||
+        fullText.includes('soop') ||
+        fullText.includes('thekua') ||
+        fullText.includes('ghat') ||
+        fullText.includes('mahaparv') ||
+        (song.category && song.category.toLowerCase().includes('chhath')) ||
+        (song.genre && song.genre.toLowerCase().includes('chhath'))
       );
 
     case 'gym':

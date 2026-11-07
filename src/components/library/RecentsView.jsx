@@ -29,7 +29,7 @@ export function RecentsView() {
   }
 
   return (
-    <div className="space-y-4 pb-36 md:pb-28">
+    <div className="space-y-4 pb-4">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#06110c] via-[#171717] to-[#171717] border border-[#282f2b] shadow-xl">
         <div className="flex items-center gap-3.5">

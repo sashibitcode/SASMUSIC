@@ -70,7 +70,7 @@ export function PlaylistsView() {
     };
 
     return (
-      <div className="space-y-4 pb-36 md:pb-28">
+      <div className="space-y-4 pb-4">
         {/* Back navigation */}
         <button
           onClick={() => setActivePlaylist(null)}
@@ -173,7 +173,7 @@ export function PlaylistsView() {
   }
 
   return (
-    <div className="space-y-6 pb-36 md:pb-28">
+    <div className="space-y-6 pb-4">
       {/* Featured Playlists Section */}
       <div>
         <div className="flex items-center justify-between mb-3">

@@ -159,7 +159,7 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
       onTouchStart={(e) => handleTouchStart(e, containerRef.current)}
       onTouchMove={(e) => handleTouchMove(e, containerRef.current)}
       onTouchEnd={handleTouchEnd}
-      className="space-y-3 pb-36 md:pb-28 relative touch-pan-y"
+      className="space-y-3 pb-4 relative touch-pan-y"
     >
       {/* Pull to refresh visual indicator */}
       {(pullDistance > 0 || isRefreshing) && (

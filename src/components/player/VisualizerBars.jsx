@@ -4,24 +4,20 @@ export function VisualizerBars({ isPlaying = false, className = "h-4 w-4" }) {
   return (
     <div className={`flex items-end justify-between gap-[2px] ${className}`}>
       <span
-        className={`w-[3px] rounded-full bg-emerald-400 transition-all duration-300 ${
-          isPlaying ? 'animate-equalizer-1' : 'h-[30%]'
-        }`}
+        className={`w-[3px] rounded-full bg-emerald-400 transition-all duration-300 ${isPlaying ? 'animate-equalizer-1' : 'h-[30%]'
+          }`}
       />
       <span
-        className={`w-[3px] rounded-full bg-emerald-300 transition-all duration-300 ${
-          isPlaying ? 'animate-equalizer-2' : 'h-[60%]'
-        }`}
+        className={`w-[3px] rounded-full bg-emerald-300 transition-all duration-300 ${isPlaying ? 'animate-equalizer-2' : 'h-[60%]'
+          }`}
       />
       <span
-        className={`w-[3px] rounded-full bg-emerald-400 transition-all duration-300 ${
-          isPlaying ? 'animate-equalizer-3' : 'h-[40%]'
-        }`}
+        className={`w-[3px] rounded-full bg-emerald-400 transition-all duration-300 ${isPlaying ? 'animate-equalizer-3' : 'h-[40%]'
+          }`}
       />
       <span
-        className={`w-[3px] rounded-full bg-emerald-300 transition-all duration-300 ${
-          isPlaying ? 'animate-equalizer-4' : 'h-[20%]'
-        }`}
+        className={`w-[3px] rounded-full bg-emerald-300 transition-all duration-300 ${isPlaying ? 'animate-equalizer-4' : 'h-[20%]'
+          }`}
       />
     </div>
   );

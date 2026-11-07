@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, SkipForward, Heart, Music2, Disc } from 'lucide-react';
+import { Play, Pause, SkipForward, Heart, Music2, Disc, ChevronUp } from 'lucide-react';
 import { useAudio } from '../../contexts/AudioContext';
 import { useLibrary } from '../../contexts/LibraryContext';
 import { getSongGradientStyle } from '../../utils/artGenerator';
@@ -37,9 +37,9 @@ export function MiniPlayer() {
     <div
       {...miniSwipe}
       onClick={() => setIsFullPlayerOpen(true)}
-      className="fixed bottom-[calc(3.75rem+env(safe-area-inset-bottom,0px))] md:bottom-3 left-0 right-0 z-30 px-2.5 sm:px-6 pointer-events-none transition-all select-none"
+      className="fixed bottom-[calc(3.5rem+max(0.75rem,env(safe-area-inset-bottom,0px)))] md:bottom-0 left-0 right-0 z-30 transition-all select-none"
     >
-      <div className="max-w-4xl mx-auto rounded-2xl bg-[#06110c] border border-white/10 hover:border-white/20 shadow-[0_12px_45px_rgba(0,0,0,0.9)] overflow-hidden pointer-events-auto cursor-pointer transition-all group">
+      <div className="w-full bg-[#06110c]/98 backdrop-blur-2xl border-t border-white/[0.12] shadow-[0_-8px_32px_rgba(0,0,0,0.85)] cursor-pointer transition-all group">
         {/* Real-time thin progress line at the very top */}
         <div className="w-full h-1 bg-[#171717] overflow-hidden">
           <div
@@ -49,9 +49,9 @@ export function MiniPlayer() {
         </div>
 
         {/* Content row */}
-        <div className="flex items-center justify-between p-2 sm:p-3 gap-2 sm:gap-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-3.5 sm:px-6 py-2 sm:py-2.5 gap-2 sm:gap-3">
           {/* Left: Thumbnail & Song Info */}
-          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
             <SongCoverArt
               song={currentSong}
               size="md"
@@ -77,7 +77,7 @@ export function MiniPlayer() {
               </div>
               <p
                 title={currentSong.artist}
-                className="text-[11px] sm:text-xs text-slate-400 truncate mt-1"
+                className="text-[11px] sm:text-xs text-slate-400 truncate mt-0.5 sm:mt-1"
               >
                 {currentSong.artist}
               </p>
@@ -123,6 +123,16 @@ export function MiniPlayer() {
               aria-label="Next track"
             >
               <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+
+            {/* Expand player button (desktop/tablet) */}
+            <button
+              onClick={() => setIsFullPlayerOpen(true)}
+              className="hidden md:flex min-w-[44px] min-h-[44px] items-center justify-center rounded-full text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors active:scale-90"
+              aria-label="Expand player"
+              title="Expand player"
+            >
+              <ChevronUp className="w-5 h-5" />
             </button>
           </div>
         </div>

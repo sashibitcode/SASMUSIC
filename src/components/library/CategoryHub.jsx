@@ -39,7 +39,7 @@ export function CategoryHub({
   const hasMore = MUSIC_CATEGORIES.length > 4;
 
   return (
-    <section className="mb-6 space-y-5 animate-in fade-in duration-200">
+    <section className="mb-8 sm:mb-9 space-y-5 animate-in fade-in duration-200">
       {/* Section 1: Browse Categories Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -127,43 +127,41 @@ export function CategoryHub({
 
       {/* Section 3: Popular Artists / Singers Circular Row */}
       {topArtists.length > 0 && (
-        <div className="pt-2 space-y-3">
+        <div className="mt-8 sm:mt-9 pt-6 sm:pt-7 border-t border-white/[0.08] space-y-3.5">
           <div className="flex items-center justify-between">
             <h3 className="text-xs sm:text-sm font-bold text-slate-200 flex items-center gap-1.5">
               <Mic2 className="w-3.5 h-3.5 text-slate-400" />
               <span>Popular Singers</span>
             </h3>
-            <span className="text-[10px] text-slate-400">
+            <span className="text-[10px] text-slate-400 font-mono bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
               {topArtists.length} artists
             </span>
           </div>
 
-          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1 pt-1 -mx-1 px-1">
+          <div className="flex items-start gap-3.5 sm:gap-4 overflow-x-auto no-scrollbar scroll-smooth touch-pan-x pt-2 pb-3.5 px-1 -mx-1">
             {topArtists.map((artist) => {
-              // Generate unique hue from artist name for vibrant ring
-              const hash = artist.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-              const hue = hash % 360;
-
               return (
                 <button
                   key={artist.name}
                   onClick={() => onSelectArtist(artist.name)}
-                  className="flex flex-col items-center flex-shrink-0 group focus:outline-none"
+                  className="flex flex-col items-center flex-shrink-0 w-[74px] sm:w-[82px] group focus:outline-none transition-transform active:scale-95"
                   title={`View songs by ${artist.name}`}
                 >
                   <ArtistAvatar
                     artistName={artist.name}
                     size="md"
                     showRing={true}
-                    className="group-hover:scale-105 active:scale-95 transition-transform"
+                    className="group-hover:scale-105 active:scale-95 transition-transform shadow-md"
                   />
 
-                  <span className="text-[11px] font-semibold text-slate-300 group-hover:text-white mt-1.5 max-w-[76px] truncate text-center transition-colors">
+                  <span className="text-[11px] sm:text-xs font-medium text-slate-300 group-hover:text-white mt-2 max-w-[72px] sm:max-w-[80px] truncate text-center transition-colors leading-tight drop-shadow-sm">
                     {artist.name}
                   </span>
                 </button>
               );
             })}
+            {/* End spacer to ensure last singer is never partially clipped against screen edge */}
+            <div className="w-3 sm:w-4 flex-shrink-0" aria-hidden="true" />
           </div>
         </div>
       )}

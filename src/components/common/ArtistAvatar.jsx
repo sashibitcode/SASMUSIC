@@ -67,7 +67,7 @@ export function ArtistAvatar({
     <div
       className={`relative rounded-full flex-shrink-0 select-none overflow-hidden ${sizeClass} ${
         showRing
-          ? 'p-0.5 border border-white/10 group-hover:border-[#A31C1B] group-hover:shadow-[0_0_15px_rgba(163,28,27,0.5)] transition-all duration-300'
+          ? 'p-0.5 border border-white/15 group-hover:border-white/40 group-hover:shadow-[0_0_12px_rgba(255,255,255,0.25)] transition-all duration-300'
           : ''
       } ${className}`}
       style={

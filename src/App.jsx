@@ -344,7 +344,7 @@ export function AppContent() {
               {(activeTab === 'songs' || activeTab === 'search') && (
                 <div>
                   {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                    <div className="flex items-center justify-between mb-3 pt-3 border-t border-white/[0.08]">
+                    <div className="flex items-center justify-between mb-3.5 pt-6 sm:pt-7 border-t border-white/[0.08]">
                       <div>
                         <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
                           All Songs

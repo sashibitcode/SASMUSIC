@@ -48,7 +48,7 @@ export function RecommendedSection({ songs = [] }) {
   };
 
   return (
-    <section className="mb-6 space-y-3 animate-in fade-in duration-300">
+    <section className="mb-8 sm:mb-9 space-y-3.5 animate-in fade-in duration-300">
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">

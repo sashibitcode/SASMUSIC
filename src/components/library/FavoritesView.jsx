@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import { Heart, Play, Shuffle, Cloud } from 'lucide-react';
+import { Heart, Play, Shuffle, Cloud, ArrowLeft } from 'lucide-react';
 import { useLibrary } from '../../contexts/LibraryContext';
 import { useDrive } from '../../contexts/DriveContext';
 import { useAudio } from '../../contexts/AudioContext';
 import { SongRow } from './SongRow';
 
-export function FavoritesView() {
+export function FavoritesView({ onClose }) {
   const { favorites, currentUser, isCloudSynced } = useLibrary();
   const { songs } = useDrive();
   const { playSong } = useAudio();
@@ -43,6 +43,15 @@ export function FavoritesView() {
         <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
           Tap the heart icon on any song while listening or browsing to save it to your Favorites.
         </p>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="mt-4 px-4 py-2 rounded-xl bg-[#A31C1B] hover:bg-[#be2524] text-white text-xs font-semibold transition-all shadow-md active:scale-95 inline-flex items-center gap-1.5"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Songs</span>
+          </button>
+        )}
       </div>
     );
   }
@@ -76,6 +85,17 @@ export function FavoritesView() {
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="min-h-[44px] flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] text-slate-200 text-xs font-semibold transition-all active:scale-95 flex-shrink-0"
+              aria-label="Back to previous page"
+              title="Close Favorites"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back</span>
+            </button>
+          )}
           <button
             onClick={handleShufflePlay}
             className="flex-1 sm:flex-none min-h-[44px] flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] text-slate-200 text-xs font-semibold transition-all active:scale-95"

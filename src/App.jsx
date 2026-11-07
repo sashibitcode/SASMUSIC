@@ -150,12 +150,30 @@ export function AppContent() {
     };
   }, []);
 
+  const previousTabRef = useRef('songs');
+
   // When switching to search tab, scroll to top and focus input
   const handleTabChange = (tabId) => {
+    if (activeTab !== tabId && activeTab !== 'favorites') {
+      previousTabRef.current = activeTab;
+    }
     setActiveTab(tabId);
     if (tabId === 'search') {
       mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => searchInputRef.current?.focus(), 80);
+    }
+  };
+
+  // Toggle favorites: opens if not active, closes and returns to previous tab if already active
+  const handleToggleFavorites = () => {
+    if (activeTab === 'favorites') {
+      const returnTab = previousTabRef.current && previousTabRef.current !== 'favorites'
+        ? previousTabRef.current
+        : 'songs';
+      handleTabChange(returnTab);
+    } else {
+      previousTabRef.current = activeTab;
+      handleTabChange('favorites');
     }
   };
 
@@ -164,7 +182,13 @@ export function AppContent() {
       {/* Desktop & Tablet Sidebar (>= 768px) */}
       <DesktopSidebar
         activeTab={activeTab}
-        onTabChange={handleTabChange}
+        onTabChange={(tabId) => {
+          if (tabId === 'favorites' && activeTab === 'favorites') {
+            handleToggleFavorites();
+          } else {
+            handleTabChange(tabId);
+          }
+        }}
         favoritesCount={favorites?.length || 0}
         recentsCount={recentlyPlayed?.length || 0}
         onOpenSettings={() => setIsSettingsOpen(true)}
@@ -187,7 +211,8 @@ export function AppContent() {
             onLogoClick={() => handleTabChange('songs')}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenMenu={() => setIsMobileMenuOpen(true)}
-            onOpenFavorites={() => handleTabChange('favorites')}
+            onOpenFavorites={handleToggleFavorites}
+            isFavoritesActive={activeTab === 'favorites'}
             favoritesCount={favorites?.length || 0}
           />
         </div>
@@ -303,7 +328,7 @@ export function AppContent() {
 
               <Suspense fallback={<SongListSkeleton count={6} />}>
                 {activeTab === 'playlists' && <PlaylistsView />}
-                {activeTab === 'favorites' && <FavoritesView />}
+                {activeTab === 'favorites' && <FavoritesView onClose={handleToggleFavorites} />}
                 {activeTab === 'recents' && <RecentsView />}
               </Suspense>
             </div>

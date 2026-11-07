@@ -3,7 +3,14 @@ import { Heart } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { AuthHeaderButton } from '../auth/AuthControls';
 
-export function Header({ onLogoClick, onOpenSettings, onOpenMenu, onOpenFavorites, favoritesCount = 0 }) {
+export function Header({
+  onLogoClick,
+  onOpenSettings,
+  onOpenMenu,
+  onOpenFavorites,
+  isFavoritesActive = false,
+  favoritesCount = 0
+}) {
 
   const handleMenuClick = () => {
     if (onOpenMenu) {
@@ -30,16 +37,29 @@ export function Header({ onLogoClick, onOpenSettings, onOpenMenu, onOpenFavorite
 
         {/* Right Actions: Favorites, Clerk Avatar & 3-Line Menu */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-          {/* Favorites Button in Header (Heart icon with count badge) */}
+          {/* Favorites Button in Header (Heart icon with count badge & toggle close support) */}
           <button
             onClick={onOpenFavorites}
-            className="w-8.5 h-8.5 sm:w-9 sm:h-9 min-w-[34px] min-h-[34px] flex items-center justify-center rounded-full glass-card hover:border-[#A31C1B]/50 hover:bg-white/[0.08] active:scale-95 transition-all shadow-sm group select-none relative flex-shrink-0"
-            aria-label="View Favorites"
-            title="Favorites"
+            className={`w-8.5 h-8.5 sm:w-9 sm:h-9 min-w-[34px] min-h-[34px] flex items-center justify-center rounded-full active:scale-95 transition-all shadow-sm group select-none relative flex-shrink-0 border ${
+              isFavoritesActive
+                ? 'bg-[#A31C1B]/30 border-[#A31C1B] text-white shadow-[0_0_12px_rgba(163,28,27,0.5)] ring-1 ring-[#A31C1B]/60'
+                : 'glass-card hover:border-[#A31C1B]/50 hover:bg-white/[0.08] text-slate-200'
+            }`}
+            aria-label={isFavoritesActive ? 'Close Favorites and return' : 'View Favorites'}
+            aria-pressed={isFavoritesActive}
+            title={isFavoritesActive ? 'Close Favorites' : 'Favorites'}
           >
-            <Heart className="w-4 h-4 text-rose-400 group-hover:scale-110 group-hover:text-rose-300 transition-all fill-rose-500/20" />
+            <Heart
+              className={`w-4 h-4 transition-all ${
+                isFavoritesActive
+                  ? 'text-rose-400 fill-rose-500 scale-110 drop-shadow-[0_0_8px_rgba(244,63,94,0.7)]'
+                  : 'text-rose-400 group-hover:scale-110 group-hover:text-rose-300 fill-rose-500/20'
+              }`}
+            />
             {favoritesCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[14px] h-[14px] px-1 bg-[#A31C1B] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-[#06110c]">
+              <span className={`absolute -top-1 -right-1 min-w-[14px] h-[14px] px-1 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-[#06110c] ${
+                isFavoritesActive ? 'bg-rose-500' : 'bg-[#A31C1B]'
+              }`}>
                 {favoritesCount > 99 ? '99+' : favoritesCount}
               </span>
             )}

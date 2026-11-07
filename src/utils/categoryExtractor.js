@@ -17,9 +17,9 @@ export const MUSIC_CATEGORIES = [
     icon: 'Sparkles',
     badge: 'Popular',
     desc: 'Bollywood, Melodies & Acoustic Love',
-    gradient: 'from-[#A31C1B]/30 via-[#2a0e0e] to-[#121614]',
-    borderColor: 'border-[#A31C1B]/40',
-    accentColor: '#A31C1B'
+    gradient: 'from-rose-600/85 via-red-950/60 to-[#06110c]/90',
+    borderColor: 'border-rose-500/40',
+    accentColor: '#e11d48'
   },
   {
     id: 'bhojpuri',
@@ -29,7 +29,7 @@ export const MUSIC_CATEGORIES = [
     icon: 'Radio',
     badge: 'Trending',
     desc: 'Desi Tadka, Pawan Singh, Khesari & Party Hits',
-    gradient: 'from-amber-600/25 via-[#2b1f0c] to-[#121614]',
+    gradient: 'from-amber-500/85 via-amber-950/60 to-[#06110c]/90',
     borderColor: 'border-amber-500/40',
     accentColor: '#f59e0b'
   },
@@ -41,7 +41,7 @@ export const MUSIC_CATEGORIES = [
     icon: 'Dumbbell',
     badge: 'Hype',
     desc: 'High BPM, Bass Boosted & Workout Power',
-    gradient: 'from-emerald-600/25 via-[#0e2417] to-[#121614]',
+    gradient: 'from-emerald-500/85 via-emerald-950/60 to-[#06110c]/90',
     borderColor: 'border-emerald-500/40',
     accentColor: '#10b981'
   },
@@ -53,7 +53,7 @@ export const MUSIC_CATEGORIES = [
     icon: 'History',
     badge: 'Classics',
     desc: 'Kishore Kumar, Lata, Mukesh & 90s Vintage',
-    gradient: 'from-purple-600/25 via-[#1e1329] to-[#121614]',
+    gradient: 'from-purple-500/85 via-purple-950/60 to-[#06110c]/90',
     borderColor: 'border-purple-500/40',
     accentColor: '#a855f7'
   },
@@ -65,9 +65,9 @@ export const MUSIC_CATEGORIES = [
     icon: 'Heart',
     badge: 'Feelings',
     desc: 'Arijit, Ishq, Dil ki Baatein & Slow Melodies',
-    gradient: 'from-rose-600/25 via-[#290f19] to-[#121614]',
-    borderColor: 'border-rose-500/40',
-    accentColor: '#f43f5e'
+    gradient: 'from-pink-500/85 via-rose-950/60 to-[#06110c]/90',
+    borderColor: 'border-pink-500/40',
+    accentColor: '#ec4899'
   },
   {
     id: 'sad',
@@ -77,7 +77,7 @@ export const MUSIC_CATEGORIES = [
     icon: 'CloudRain',
     badge: 'Emotional',
     desc: 'Dard, Tanhai, Judai & Soulful Ballads',
-    gradient: 'from-blue-600/25 via-[#0f1b2b] to-[#121614]',
+    gradient: 'from-blue-500/85 via-slate-900/70 to-[#06110c]/90',
     borderColor: 'border-blue-500/40',
     accentColor: '#3b82f6'
   },
@@ -89,7 +89,7 @@ export const MUSIC_CATEGORIES = [
     icon: 'Flame',
     badge: 'Banger',
     desc: 'B Praak, Jaani, Sidhu & Urban Punjabi',
-    gradient: 'from-orange-600/25 via-[#2b180a] to-[#121614]',
+    gradient: 'from-orange-500/85 via-amber-950/60 to-[#06110c]/90',
     borderColor: 'border-orange-500/40',
     accentColor: '#f97316'
   }

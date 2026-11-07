@@ -77,30 +77,33 @@ export function CategoryHub({
             <div
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
-              className={`group relative overflow-hidden rounded-2xl p-4 sm:p-4.5 bg-gradient-to-br ${cat.gradient} border ${cat.borderColor} hover:border-white/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg hover:shadow-2xl flex flex-col justify-between min-h-[100px] sm:min-h-[110px]`}
+              className={`group relative overflow-hidden rounded-2xl p-4 sm:p-4.5 bg-gradient-to-br ${cat.gradient} border ${cat.borderColor} hover:border-white/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg hover:shadow-2xl flex flex-col justify-between min-h-[108px] sm:min-h-[116px]`}
             >
-              {/* Cover image background with darkening overlay */}
+              {/* High-definition cover photo background with vibrant visibility */}
               {bgCover && (
                 <div
-                  className="absolute inset-0 bg-cover bg-center opacity-15 group-hover:opacity-25 group-hover:scale-105 transition-all duration-500 pointer-events-none"
+                  className="absolute inset-0 bg-cover bg-center opacity-35 sm:opacity-40 group-hover:opacity-55 group-hover:scale-105 transition-all duration-500 pointer-events-none"
                   style={{ backgroundImage: `url(${bgCover})` }}
                 />
               )}
 
+              {/* Protective bottom gradient scrim for 100% crystal-clear title & badge contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#06110c]/90 via-[#06110c]/25 to-transparent pointer-events-none" />
+
               {/* Top ambient highlight */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform" />
+              <div className="absolute top-0 right-0 w-28 h-28 bg-white/10 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform" />
 
               {/* Card Header: Live Badge */}
               <div className="flex items-start justify-end relative z-10">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/40 text-slate-200 border border-white/10 backdrop-blur-sm">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/50 text-slate-100 border border-white/15 backdrop-blur-md shadow-sm">
                   {count > 0 ? `${count} songs` : 'Browse'}
                 </span>
               </div>
 
               {/* Card Footer: Title & Quick Play Button */}
               <div className="relative z-10 pt-2 flex items-end justify-between gap-2">
-                <div className="min-w-0">
-                  <h3 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate group-hover:text-white transition-colors">
+                <div className="min-w-0 pr-1">
+                  <h3 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
                     {cat.label}
                   </h3>
                 </div>
@@ -109,7 +112,7 @@ export function CategoryHub({
                 {count > 0 && (
                   <button
                     onClick={(e) => handlePlayCategoryMix(e, cat.id)}
-                    className="w-8 h-8 rounded-full crimson-glow-btn text-white flex items-center justify-center flex-shrink-0 shadow-md transition-transform active:scale-90 group/btn"
+                    className="w-8 h-8 rounded-full crimson-glow-btn text-white flex items-center justify-center flex-shrink-0 shadow-lg transition-transform active:scale-90 group/btn"
                     title={`Play ${cat.label} Mix`}
                     aria-label={`Play ${cat.label} Mix`}
                   >

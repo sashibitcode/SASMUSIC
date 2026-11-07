@@ -54,14 +54,17 @@ export function CategoryBanner({
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-3xl p-5 sm:p-6 mb-4 bg-gradient-to-br ${gradient} border border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200`}>
-      {/* Cover image background with subtle overlay */}
+    <div className={`relative overflow-hidden rounded-3xl p-5 sm:p-6 mb-4 bg-gradient-to-br ${gradient} border border-white/15 shadow-2xl animate-in fade-in zoom-in-95 duration-200`}>
+      {/* Cover image background with clear visibility */}
       {bgImage && (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none"
+          className="absolute inset-0 bg-cover bg-center opacity-35 pointer-events-none"
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
+
+      {/* Protective gradient scrim for text contrast */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#06110c]/80 via-transparent to-transparent pointer-events-none" />
 
       {/* Ambient background glow */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />

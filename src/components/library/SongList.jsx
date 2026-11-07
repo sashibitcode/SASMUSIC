@@ -169,9 +169,8 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
         >
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#171717] border border-white/15 shadow-md text-xs text-white">
             <RotateCw
-              className={`w-3.5 h-3.5 text-slate-300 ${
-                isRefreshing ? 'animate-spin' : ''
-              }`}
+              className={`w-3.5 h-3.5 text-slate-300 ${isRefreshing ? 'animate-spin' : ''
+                }`}
               style={{
                 transform: !isRefreshing ? `rotate(${pullDistance * 4}deg)` : undefined
               }}
@@ -180,8 +179,8 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
               {isRefreshing
                 ? 'Syncing library...'
                 : pullDistance >= 65
-                ? 'Release to refresh'
-                : 'Pull down to refresh'}
+                  ? 'Release to refresh'
+                  : 'Pull down to refresh'}
             </span>
           </div>
         </div>

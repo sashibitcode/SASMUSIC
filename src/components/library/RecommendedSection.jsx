@@ -105,7 +105,7 @@ export function RecommendedSection({ songs = [] }) {
               title={`Play ${song.title || song.name}`}
             >
               {/* Left: Cover Art + Title/Artist */}
-              <div className="flex items-center gap-2.5 min-w-0 pr-1.5">
+              <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-1.5">
                 <div className="relative flex-shrink-0">
                   <SongCoverArt
                     song={song}
@@ -120,15 +120,19 @@ export function RecommendedSection({ songs = [] }) {
                   )}
                 </div>
 
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <h3
-                    className={`text-xs sm:text-sm font-bold truncate leading-tight ${
+                    title={song.title || song.name}
+                    className={`text-xs sm:text-sm font-bold line-clamp-2 leading-snug break-words ${
                       isCurrent ? 'text-[#fca5a5]' : 'text-white group-hover:text-[#fca5a5]'
                     } transition-colors`}
                   >
                     {song.title || song.name}
                   </h3>
-                  <p className="text-[10px] sm:text-[11px] text-slate-400 truncate mt-0.5 font-medium">
+                  <p
+                    title={song.artist || 'Unknown Artist'}
+                    className="text-[10px] sm:text-[11px] text-slate-400 truncate mt-1 font-medium"
+                  >
                     {song.artist || 'Unknown Artist'}
                   </p>
                 </div>

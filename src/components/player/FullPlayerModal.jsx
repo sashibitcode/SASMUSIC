@@ -129,10 +129,16 @@ export function FullPlayerModal() {
         {/* Title, Artist & Favorite */}
         <div className="w-full mt-6 flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h2 className="text-lg sm:text-xl font-bold text-white truncate tracking-tight">
+            <h2
+              title={currentSong.title}
+              className="text-lg sm:text-xl font-bold text-white line-clamp-2 leading-snug sm:leading-tight break-words tracking-tight"
+            >
               {currentSong.title}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium truncate mt-0.5">
+            <p
+              title={currentSong.artist}
+              className="text-xs sm:text-sm text-slate-300 font-medium truncate mt-1"
+            >
               {currentSong.artist}
             </p>
           </div>

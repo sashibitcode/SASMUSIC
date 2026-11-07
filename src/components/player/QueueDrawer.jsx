@@ -53,12 +53,17 @@ function QueueItem({
       {/* Info */}
       <div
         onClick={onPlay}
-        className="flex-1 min-w-0 cursor-pointer"
+        className="flex-1 min-w-0 cursor-pointer pr-1"
       >
-        <p className="text-xs font-semibold text-slate-100 group-hover:text-[#fca5a5] truncate transition-colors">
+        <p
+          title={song.title}
+          className="text-xs font-semibold text-slate-100 group-hover:text-[#fca5a5] line-clamp-2 leading-snug break-words transition-colors"
+        >
           {song.title}
         </p>
-        <p className="text-[11px] text-slate-400 truncate">{song.artist}</p>
+        <p title={song.artist} className="text-[11px] text-slate-400 truncate mt-1">
+          {song.artist}
+        </p>
       </div>
 
       {/* Controls: Reorder Up / Down & Remove with 44px touch targets */}

@@ -110,15 +110,17 @@ export function SongRow({ song, index, playlist = null }) {
         </div>
 
         {/* Title and Artist */}
-        <div className="min-w-0 flex-1 pr-2">
+        <div className="min-w-0 flex-1 pr-1.5 sm:pr-2">
           <p
-            className={`text-xs sm:text-sm font-semibold truncate transition-colors ${isCurrent ? 'text-white' : 'text-slate-200 group-hover:text-white'
+            title={song.title}
+            className={`text-xs sm:text-sm font-semibold line-clamp-2 leading-snug sm:leading-normal break-words transition-colors ${isCurrent ? 'text-white font-bold' : 'text-slate-200 group-hover:text-white'
               }`}
           >
             {song.title}
           </p>
           <p
-            className={`text-xs truncate mt-0.5 ${isCurrent ? 'text-emerald-300 font-medium' : 'text-slate-400'
+            title={song.artist}
+            className={`text-[11px] sm:text-xs truncate mt-1 transition-colors ${isCurrent ? 'text-emerald-300 font-medium' : 'text-slate-400 group-hover:text-slate-300'
               }`}
           >
             {song.artist}
@@ -128,13 +130,13 @@ export function SongRow({ song, index, playlist = null }) {
 
       {/* Right: Actions */}
       <div
-        className="flex items-center gap-1 sm:gap-2 flex-shrink-0"
+        className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Favorite Heart - 44x44px touch target */}
+        {/* Favorite Heart */}
         <button
           onClick={() => toggleFavorite(song.id)}
-          className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-transform active:scale-90 ${isFav
+          className={`w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full transition-transform active:scale-90 ${isFav
               ? 'text-[#A31C1B] hover:text-[#e2403f]'
               : 'text-slate-500 hover:text-slate-300'
             }`}
@@ -143,12 +145,12 @@ export function SongRow({ song, index, playlist = null }) {
           <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A31C1B]' : ''}`} />
         </button>
 
-        {/* More Options Context Menu - 44x44px touch target */}
+        {/* More Options Context Menu */}
         <div className="relative" ref={menuRef}>
           <button
             type="button"
             onClick={toggleMenu}
-            className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-colors active:scale-90 ${isMenuOpen ? 'text-white bg-[#222222]' : 'text-slate-400 hover:text-white hover:bg-[#222222]'
+            className={`w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full transition-colors active:scale-90 ${isMenuOpen ? 'text-white bg-[#222222]' : 'text-slate-400 hover:text-white hover:bg-[#222222]'
               }`}
             aria-label="More options"
             aria-expanded={isMenuOpen}

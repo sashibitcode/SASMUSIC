@@ -137,8 +137,8 @@ export function SongRow({ song, index, playlist = null }) {
         <button
           onClick={() => toggleFavorite(song.id)}
           className={`w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full transition-transform active:scale-90 ${isFav
-              ? 'text-[#A31C1B] hover:text-[#e2403f]'
-              : 'text-slate-500 hover:text-slate-300'
+            ? 'text-[#A31C1B] hover:text-[#e2403f]'
+            : 'text-slate-500 hover:text-slate-300'
             }`}
           aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
         >

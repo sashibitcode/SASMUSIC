@@ -196,7 +196,7 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
         <div className="flex items-center gap-2">
           <button
             onClick={handleShufflePlay}
-            className="min-h-[38px] flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card hover:border-[#A31C1B]/50 text-slate-200 text-xs font-medium transition-all active:scale-95 shadow-sm"
+            className="min-h-[34px] sm:min-h-[36px] flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl glass-card hover:border-[#A31C1B]/50 text-slate-200 text-xs font-medium transition-all active:scale-95 shadow-sm"
             aria-label="Shuffle play all songs"
           >
             <Shuffle className="w-3.5 h-3.5 text-[#A31C1B]" />
@@ -205,7 +205,7 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
 
           <button
             onClick={handlePlayAll}
-            className="min-h-[38px] flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl crimson-glow-btn text-white text-xs font-semibold transition-all active:scale-95"
+            className="min-h-[34px] sm:min-h-[36px] flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-xl crimson-glow-btn text-white text-xs font-semibold transition-all active:scale-95"
             aria-label="Play all songs in order"
           >
             <Play className="w-3.5 h-3.5 fill-white" />

@@ -206,6 +206,14 @@ export function AppContent() {
     mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Handle sort change from dropdown (generate fresh seed if shuffle selected)
+  const handleSortChange = (newSort) => {
+    setSortBy(newSort);
+    if (newSort === 'shuffle') {
+      setShuffleSeed(Date.now());
+    }
+  };
+
   return (
     <div className="h-[100dvh] w-full flex flex-col md:flex-row bg-ambient-forest text-slate-100 font-sans antialiased selection:bg-[#A31C1B] selection:text-white relative overflow-hidden">
       {/* Desktop & Tablet Sidebar (>= 768px) */}
@@ -251,7 +259,7 @@ export function AppContent() {
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
               sortBy={sortBy}
-              onSortChange={setSortBy}
+              onSortChange={handleSortChange}
             />
             {isLoading ? (
               <div className="flex gap-2 py-1 overflow-x-hidden">

@@ -37,7 +37,7 @@ export function MiniPlayer() {
     <div
       {...miniSwipe}
       onClick={() => setIsFullPlayerOpen(true)}
-      className="fixed bottom-[calc(3.5rem+max(0.75rem,env(safe-area-inset-bottom,0px)))] md:bottom-0 left-0 right-0 z-30 transition-all select-none"
+      className="fixed bottom-[calc(3rem+max(0.25rem,env(safe-area-inset-bottom,0px)))] md:bottom-0 left-0 right-0 z-30 transition-all select-none"
     >
       <div className="w-full bg-[#06110c]/98 backdrop-blur-2xl border-t border-white/[0.12] shadow-[0_-8px_32px_rgba(0,0,0,0.85)] cursor-pointer transition-all group">
         {/* Real-time thin progress line at the very top */}

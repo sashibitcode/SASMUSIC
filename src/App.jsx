@@ -288,8 +288,8 @@ export function AppContent() {
           ref={mainScrollRef}
           className={`flex-1 overflow-y-auto no-scrollbar touch-pan-y px-3.5 sm:px-6 pt-3 max-w-6xl w-full mx-auto transition-all ${
             currentSong
-              ? 'pb-[calc(8.5rem+max(0.75rem,env(safe-area-inset-bottom,0px)))] md:pb-24'
-              : 'pb-[calc(4.5rem+max(0.75rem,env(safe-area-inset-bottom,0px)))] md:pb-8'
+              ? 'pb-[calc(7.25rem+max(0.25rem,env(safe-area-inset-bottom,0px)))] md:pb-24'
+              : 'pb-[calc(3.5rem+max(0.25rem,env(safe-area-inset-bottom,0px)))] md:pb-8'
           }`}
         >
           {/* Dynamic Content Views */}

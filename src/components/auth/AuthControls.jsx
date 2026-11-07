@@ -21,7 +21,7 @@ export function AuthHeaderButton() {
         onClick={() => {
           showFloatingToast('Add VITE_CLERK_PUBLISHABLE_KEY in .env to enable login', 'info');
         }}
-        className="h-9 px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B]/80 hover:bg-[#A31C1B] text-white text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/40"
+        className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B]/80 hover:bg-[#A31C1B] text-white text-[11px] sm:text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/40"
         title="Clerk Authentication Setup"
       >
         <LogIn className="w-3.5 h-3.5" />
@@ -35,7 +35,7 @@ export function AuthHeaderButton() {
       <SignedOut>
         <SignInButton mode="modal">
           <button
-            className="h-9 px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B] hover:bg-[#851615] text-white text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/50"
+            className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B] hover:bg-[#851615] text-white text-[11px] sm:text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/50"
             aria-label="Sign In"
           >
             <LogIn className="w-3.5 h-3.5" />
@@ -46,7 +46,7 @@ export function AuthHeaderButton() {
 
       <SignedIn>
         {/* Profile Avatar with Popover Profile Menu (Exit icon removed from top header) */}
-        <div className="w-9 h-9 rounded-full flex items-center justify-center border border-white/20 hover:border-[#A31C1B]/60 transition-all bg-[#06110c] shadow-sm flex-shrink-0">
+        <div className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border border-white/20 hover:border-[#A31C1B]/60 transition-all bg-[#06110c] shadow-sm flex-shrink-0">
           <UserButton
             afterSignOutUrl="/"
             appearance={{

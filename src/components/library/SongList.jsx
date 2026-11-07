@@ -131,7 +131,7 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
     return (
       <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
         <div className="w-14 h-14 rounded-2xl bg-[#171717] border border-[#282f2b] flex items-center justify-center text-slate-500 mb-2 shadow-lg">
-          <SearchX className="w-7 h-7 text-[#A31C1B]" />
+          <SearchX className="w-7 h-7 text-slate-400" />
         </div>
         <h4 className="text-base font-bold text-white">No songs found</h4>
         <p className="text-xs text-slate-400 mt-1 max-w-sm">
@@ -167,9 +167,9 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
           className="flex items-center justify-center overflow-hidden transition-all duration-150 py-2"
           style={{ height: `${isRefreshing ? 50 : Math.min(pullDistance, 70)}px` }}
         >
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#171717] border border-[#A31C1B]/50 shadow-md text-xs text-white">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#171717] border border-white/15 shadow-md text-xs text-white">
             <RotateCw
-              className={`w-3.5 h-3.5 text-[#A31C1B] ${
+              className={`w-3.5 h-3.5 text-slate-300 ${
                 isRefreshing ? 'animate-spin' : ''
               }`}
               style={{
@@ -196,10 +196,10 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
         <div className="flex items-center gap-2">
           <button
             onClick={handleShufflePlay}
-            className="min-h-[34px] sm:min-h-[36px] flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl glass-card hover:border-[#A31C1B]/50 text-slate-200 text-xs font-medium transition-all active:scale-95 shadow-sm"
+            className="min-h-[34px] sm:min-h-[36px] flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl glass-card hover:border-white/20 text-slate-200 text-xs font-medium transition-all active:scale-95 shadow-sm"
             aria-label="Shuffle play all songs"
           >
-            <Shuffle className="w-3.5 h-3.5 text-[#A31C1B]" />
+            <Shuffle className="w-3.5 h-3.5 text-slate-300" />
             <span>Shuffle</span>
           </button>
 
@@ -233,7 +233,7 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shu
           className="h-14 flex items-center justify-center text-xs text-slate-500 py-3"
         >
           <div className="flex items-center gap-2">
-            <div className="w-3.5 h-3.5 border-2 border-[#A31C1B]/40 border-t-[#A31C1B] rounded-full animate-spin" />
+            <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
             <span>Loading more tracks ({visibleCount} of {filteredSongs.length})...</span>
           </div>
         </div>

@@ -39,7 +39,7 @@ export function MiniPlayer() {
       onClick={() => setIsFullPlayerOpen(true)}
       className="fixed bottom-[calc(3.75rem+env(safe-area-inset-bottom,0px))] md:bottom-3 left-0 right-0 z-30 px-2.5 sm:px-6 pointer-events-none transition-all select-none"
     >
-      <div className="max-w-4xl mx-auto rounded-2xl bg-[#06110c] border border-[#A31C1B]/80 hover:border-[#A31C1B] shadow-[0_12px_45px_rgba(6,17,12,0.95),_0_0_20px_rgba(163,28,27,0.3)] ring-1 ring-[#A31C1B]/40 overflow-hidden pointer-events-auto cursor-pointer transition-all group">
+      <div className="max-w-4xl mx-auto rounded-2xl bg-[#06110c] border border-white/10 hover:border-white/20 shadow-[0_12px_45px_rgba(0,0,0,0.9)] overflow-hidden pointer-events-auto cursor-pointer transition-all group">
         {/* Real-time thin progress line at the very top */}
         <div className="w-full h-1 bg-[#171717] overflow-hidden">
           <div
@@ -56,7 +56,7 @@ export function MiniPlayer() {
               song={currentSong}
               size="md"
               isPlaying={isPlaying}
-              className={`transition-transform group-hover:scale-105 ${isPlaying ? 'ring-2 ring-[#A31C1B] ring-offset-2 ring-offset-[#06110c] shadow-[0_0_15px_rgba(163,28,27,0.6)]' : ''
+              className={`transition-transform group-hover:scale-105 ${isPlaying ? 'ring-2 ring-white/30 ring-offset-2 ring-offset-[#06110c]' : ''
                 }`}
             />
 
@@ -64,7 +64,7 @@ export function MiniPlayer() {
               <div className="flex items-center gap-1.5">
                 <p
                   title={currentSong.title}
-                  className="text-xs sm:text-sm font-semibold text-white truncate group-hover:text-[#fca5a5] transition-colors"
+                  className="text-xs sm:text-sm font-semibold text-white truncate transition-colors"
                 >
                   {currentSong.title}
                 </p>
@@ -93,12 +93,12 @@ export function MiniPlayer() {
             <button
               onClick={() => toggleFavorite(currentSong.id)}
               className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-transform active:scale-90 ${isFav
-                  ? 'text-[#A31C1B] hover:text-[#e2403f]'
+                  ? 'text-rose-500 hover:text-rose-400'
                   : 'text-slate-400 hover:text-white'
                 }`}
               aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
             >
-              <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A31C1B]' : ''}`} />
+              <Heart className={`w-4 h-4 ${isFav ? 'fill-rose-500' : ''}`} />
             </button>
 
             {/* Play / Pause button - 44x44px touch target */}

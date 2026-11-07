@@ -91,14 +91,14 @@ export function PwaInstallPrompt() {
       {showIosGuide && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-2xl bg-[#171717] border border-[#282f2b] p-5 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-[#06110c] border border-[#A31C1B]/40 text-[#A31C1B] mx-auto flex items-center justify-center mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#06110c] border border-white/20 text-white mx-auto flex items-center justify-center mb-3">
               <Share className="w-6 h-6" />
             </div>
             <h4 className="text-base font-bold text-white mb-2">Install on iOS</h4>
             <p className="text-xs text-slate-300 leading-relaxed mb-4">
-              1. Tap the <strong className="text-[#fca5a5]">Share</strong> icon at the bottom of Safari.<br />
-              2. Scroll down and tap <strong className="text-[#fca5a5]">"Add to Home Screen"</strong>.<br />
-              3. Tap <strong className="text-[#fca5a5]">"Add"</strong> in the top right.
+              1. Tap the <strong className="text-white">Share</strong> icon at the bottom of Safari.<br />
+              2. Scroll down and tap <strong className="text-white">"Add to Home Screen"</strong>.<br />
+              3. Tap <strong className="text-white">"Add"</strong> in the top right.
             </p>
             <button
               onClick={() => {

@@ -92,20 +92,20 @@ export function SyncPlayModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-xl animate-fadeIn select-none">
-      <div className="relative w-full max-w-lg rounded-3xl bg-[#06110c] border border-[#A31C1B]/60 shadow-[0_20px_70px_rgba(0,0,0,0.9),_0_0_30px_rgba(163,28,27,0.3)] overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg rounded-3xl bg-[#06110c] border border-white/15 shadow-[0_20px_70px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col max-h-[90vh]">
         {/* Top Header Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-[#A31C1B]/20 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-emerald-500/10 blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
         <div className="relative z-10 flex items-center justify-between p-4 sm:p-5 border-b border-white/[0.08]">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#A31C1B]/20 border border-[#A31C1B]/60 flex items-center justify-center shadow-sm">
-              <Users className="w-5 h-5 text-[#fca5a5]" />
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shadow-sm">
+              <Users className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base sm:text-lg font-bold text-white tracking-wide flex items-center gap-1.5">
-                  Listen Together <span className="text-[#fca5a5]">With Friends</span>
+                  Listen Together <span className="text-emerald-400">With Friends</span>
                 </h2>
                 {isInRoom && (
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
@@ -238,9 +238,9 @@ export function SyncPlayModal() {
             /* ACTIVE ROOM VIEW */
             <div className="space-y-4">
               {/* Room Code & Invite Card */}
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#171717] to-[#0d2217] border border-[#A31C1B]/40 shadow-sm flex items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#171717] to-[#0d2217] border border-white/10 shadow-sm flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-[#fca5a5] tracking-wider">
+                  <p className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">
                     Room Code
                   </p>
                   <p className="text-2xl font-black text-white tracking-widest font-mono mt-0.5">
@@ -276,7 +276,7 @@ export function SyncPlayModal() {
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md relative overflow-hidden ${
-                        isPlaying ? 'ring-2 ring-[#A31C1B]' : ''
+                        isPlaying ? 'ring-2 ring-emerald-400' : ''
                       }`}
                       style={getSongGradientStyle(currentSong.title, currentSong.artist)}
                     >
@@ -302,7 +302,7 @@ export function SyncPlayModal() {
 
                   {/* Scheduled Start Countdown Notification */}
                   {scheduledCountdownMs > 0 && (
-                    <div className="px-3 py-1.5 rounded-xl bg-[#A31C1B]/20 border border-[#A31C1B]/50 flex items-center justify-between text-xs text-[#fca5a5] animate-pulse">
+                    <div className="px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-between text-xs text-emerald-300 animate-pulse">
                       <span>Syncing buffer...</span>
                       <span className="font-mono">{scheduledCountdownMs}ms</span>
                     </div>

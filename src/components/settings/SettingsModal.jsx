@@ -82,15 +82,15 @@ export function SettingsModal({ isOpen, onClose }) {
           </div>
 
           {/* Section 4: Developer & Brand */}
-          <div className="rounded-2xl p-4 bg-gradient-to-br from-[#121614] to-[#1a1111] border border-[#A31C1B]/40 space-y-3">
+          <div className="rounded-2xl p-4 bg-gradient-to-br from-[#121614] to-[#161a18] border border-white/10 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#A31C1B]" />
+                <Sparkles className="w-4 h-4 text-slate-300" />
                 <h4 className="text-xs font-semibold text-slate-200">
                   Developer & Brand
                 </h4>
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#A31C1B]/20 text-[#fca5a5] border border-[#A31C1B]/40">
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/10 text-slate-300 border border-white/15">
                 @sashibitcode
               </span>
             </div>
@@ -110,10 +110,10 @@ export function SettingsModal({ isOpen, onClose }) {
                 href="https://sashibitcode.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl bg-black/40 hover:bg-[#A31C1B]/20 border border-white/10 hover:border-[#A31C1B]/40 text-xs font-medium text-slate-200 transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl bg-black/40 hover:bg-white/10 border border-white/10 hover:border-white/20 text-xs font-medium text-slate-200 transition-colors"
               >
                 <span>Portfolio</span>
-                <ExternalLink className="w-3.5 h-3.5 text-[#A31C1B]" />
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </a>
               <a
                 href="https://github.com/sashibitcode"
@@ -166,8 +166,8 @@ export function SettingsModal({ isOpen, onClose }) {
             rel="noopener noreferrer"
             className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 font-medium"
           >
-            <span>By Shashikant Raj (<span className="text-[#fca5a5] font-mono">@sashibitcode</span>)</span>
-            <ExternalLink className="w-3 h-3 text-[#A31C1B]" />
+            <span>By Shashikant Raj (<span className="text-slate-300 font-mono">@sashibitcode</span>)</span>
+            <ExternalLink className="w-3 h-3 text-slate-400" />
           </a>
         </div>
       </div>

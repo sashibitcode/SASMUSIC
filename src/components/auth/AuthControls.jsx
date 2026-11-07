@@ -59,7 +59,7 @@ export function AuthHeaderButton() {
 
       <SignedIn>
         {/* Profile Avatar with Popover Profile Menu (Exit icon removed from top header) */}
-        <div className="w-7.5 h-7.5 sm:w-8 sm:h-8 min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center border border-white/20 hover:border-[#A31C1B]/60 transition-all bg-[#06110c] shadow-sm flex-shrink-0">
+        <div className="w-7.5 h-7.5 sm:w-8 sm:h-8 min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center border border-white/20 hover:border-white/40 transition-all bg-[#06110c] shadow-sm flex-shrink-0">
           <UserButton
             afterSignOutUrl="/"
             appearance={{
@@ -88,7 +88,7 @@ function SidebarUserProfile() {
           afterSignOutUrl="/"
           appearance={{
             elements: {
-              avatarBox: 'w-8 h-8 rounded-full border border-[#A31C1B]/40',
+              avatarBox: 'w-8 h-8 rounded-full border border-white/20',
               userButtonPopoverCard: 'bg-[#121614] border border-[#282f2b] text-white shadow-2xl',
               userButtonPopoverFooter: 'hidden'
             }
@@ -130,10 +130,10 @@ export function AuthSidebarProfile() {
         onClick={() => {
           showFloatingToast('Add VITE_CLERK_PUBLISHABLE_KEY in .env to enable login', 'info');
         }}
-        className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.08] hover:border-[#A31C1B]/50 transition-all group text-left"
+        className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.08] hover:border-white/20 transition-all group text-left"
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-[#A31C1B]/20 flex items-center justify-center text-[#fca5a5] border border-[#A31C1B]/30">
+          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300 border border-white/15">
             <User className="w-4 h-4" />
           </div>
           <div className="flex flex-col">
@@ -145,7 +145,7 @@ export function AuthSidebarProfile() {
             </span>
           </div>
         </div>
-        <LogIn className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#A31C1B] transition-colors" />
+        <LogIn className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
       </button>
     );
   }
@@ -160,10 +160,10 @@ export function AuthSidebarProfile() {
         <SignInButton mode="modal">
           <button
             onClick={markSignInAction}
-            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.08] hover:border-[#A31C1B]/50 transition-all group text-left cursor-pointer"
+            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.08] hover:border-white/20 transition-all group text-left cursor-pointer"
           >
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-[#A31C1B]/20 flex items-center justify-center text-[#fca5a5] border border-[#A31C1B]/30">
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300 border border-white/15">
                 <User className="w-4 h-4" />
               </div>
               <div className="flex flex-col">
@@ -175,7 +175,7 @@ export function AuthSidebarProfile() {
                 </span>
               </div>
             </div>
-            <LogIn className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#A31C1B] transition-colors" />
+            <LogIn className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
           </button>
         </SignInButton>
       </SignedOut>
@@ -243,17 +243,17 @@ export function AuthSettingsSection() {
           </span>
         </div>
         <p className="text-xs text-slate-400 leading-relaxed">
-          Add <code className="text-[#fca5a5] bg-black/40 px-1 py-0.5 rounded">VITE_CLERK_PUBLISHABLE_KEY</code> in your <code className="text-white">.env</code> file from <a href="https://dashboard.clerk.com" target="_blank" rel="noreferrer" className="text-white underline hover:text-[#fca5a5]">clerk.com</a>.
+          Add <code className="text-white bg-black/40 px-1 py-0.5 rounded font-mono">VITE_CLERK_PUBLISHABLE_KEY</code> in your <code className="text-white font-mono">.env</code> file from <a href="https://dashboard.clerk.com" target="_blank" rel="noreferrer" className="text-white underline hover:text-slate-300">clerk.com</a>.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl p-4 bg-gradient-to-br from-[#1c1414] via-[#171717] to-[#0c1611] border border-[#A31C1B]/30 shadow-sm space-y-3">
+    <div className="rounded-2xl p-4 bg-gradient-to-br from-[#121614] via-[#171717] to-[#161a18] border border-white/10 shadow-sm space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#A31C1B]/20 flex items-center justify-center text-[#fca5a5] flex-shrink-0 border border-[#A31C1B]/30">
+          <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-slate-300 flex-shrink-0 border border-white/15">
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div>

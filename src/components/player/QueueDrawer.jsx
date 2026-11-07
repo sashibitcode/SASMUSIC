@@ -57,7 +57,7 @@ function QueueItem({
       >
         <p
           title={song.title}
-          className="text-xs font-semibold text-slate-100 group-hover:text-[#fca5a5] line-clamp-2 leading-snug break-words transition-colors"
+          className="text-xs font-semibold text-slate-100 group-hover:text-white line-clamp-2 leading-snug break-words transition-colors"
         >
           {song.title}
         </p>
@@ -134,7 +134,7 @@ export function QueueDrawer() {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-[#282f2b]">
           <div className="flex items-center gap-2">
-            <ListMusic className="w-5 h-5 text-[#A31C1B]" />
+            <ListMusic className="w-5 h-5 text-slate-300" />
             <h3 className="text-base font-bold text-white">Playback Queue</h3>
             <span className="text-xs px-2 py-0.5 rounded-full bg-[#222222] text-slate-400 border border-white/[0.06]">
               {queue.length}
@@ -169,20 +169,20 @@ export function QueueDrawer() {
           {currentSong && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-[11px] font-bold text-[#fca5a5] uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#A31C1B] animate-pulse" />
+                <p className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   Now Playing
                 </p>
                 <span className="text-[9px] uppercase font-extrabold text-emerald-400 bg-[#06110c] px-2 py-0.5 rounded-full border border-emerald-800/60">
                   Forest Green
                 </span>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#06110c] border-2 border-[#A31C1B] shadow-[0_6px_28px_rgba(6,17,12,0.95),_0_0_15px_rgba(163,28,27,0.35)] ring-1 ring-[#A31C1B]/80">
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#06110c] border border-white/20 shadow-lg">
                 <SongCoverArt
                   song={currentSong}
                   size="sm"
                   isPlaying={isPlaying}
-                  className="ring-2 ring-[#A31C1B] ring-offset-2 ring-offset-[#06110c]"
+                  className="ring-2 ring-white/30 ring-offset-2 ring-offset-[#06110c]"
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-white truncate">{currentSong.title}</p>

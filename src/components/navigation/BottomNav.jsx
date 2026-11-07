@@ -72,10 +72,10 @@ export function BottomNav({
                 <Icon
                   className={`w-5 h-5 transition-all duration-200 ${
                     isActive
-                      ? 'text-[#A31C1B] scale-110 drop-shadow-[0_0_10px_rgba(163,28,27,0.7)]'
+                      ? 'text-white scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]'
                       : isTogether
                       ? isInRoom
-                        ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]'
+                        ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.7)]'
                         : 'text-emerald-400 group-hover:text-emerald-300'
                       : 'text-slate-400 group-hover:text-slate-200'
                   }`}
@@ -85,18 +85,18 @@ export function BottomNav({
                 {isTogether && (
                   <span className="absolute -top-1 -right-1.5 flex h-2 w-2">
                     {isInRoom && (
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     )}
                     <span
                       className={`relative inline-flex rounded-full h-2 w-2 ${
-                        isInRoom ? 'bg-[#A31C1B]' : 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]'
+                        isInRoom ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]' : 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]'
                       }`}
                     />
                   </span>
                 )}
 
                 {item.badge > 0 && (
-                  <span className="absolute -top-1.5 -right-2 min-w-[14px] h-[14px] px-1 bg-[#A31C1B] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-[#06110c]">
+                  <span className="absolute -top-1.5 -right-2 min-w-[14px] h-[14px] px-1 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-[#06110c]">
                     {item.badge > 99 ? '99+' : item.badge}
                   </span>
                 )}
@@ -108,7 +108,7 @@ export function BottomNav({
                     ? 'text-white font-bold'
                     : isTogether
                     ? isInRoom
-                      ? 'text-red-400 font-bold'
+                      ? 'text-emerald-400 font-bold'
                       : 'text-emerald-400 font-bold'
                     : 'text-slate-400 group-hover:text-slate-300'
                 }`}
@@ -116,9 +116,9 @@ export function BottomNav({
                 {item.label}
               </span>
 
-              {/* Active bottom glow indicator */}
+              {/* Active bottom indicator */}
               {isActive && (
-                <span className="absolute bottom-0 w-6 h-0.5 bg-[#A31C1B] rounded-full shadow-[0_0_8px_rgba(163,28,27,0.9)]" />
+                <span className="absolute bottom-0 w-6 h-0.5 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.7)]" />
               )}
             </button>
           );

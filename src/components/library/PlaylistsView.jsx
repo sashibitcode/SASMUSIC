@@ -74,16 +74,16 @@ export function PlaylistsView() {
         {/* Back navigation */}
         <button
           onClick={() => setActivePlaylist(null)}
-          className="min-h-[44px] flex items-center gap-1.5 text-xs font-semibold text-[#fca5a5] hover:text-white transition-colors active:scale-95"
+          className="min-h-[44px] flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-white transition-colors active:scale-95"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Back to all playlists</span>
         </button>
 
         {/* Playlist Header Card */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-[#A31C1B]/30 via-[#171717] to-[#171717] border border-[#A31C1B]/40 shadow-xl overflow-hidden relative">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-[#171717] to-[#171717] border border-white/10 shadow-xl overflow-hidden relative">
           <div className="flex items-center gap-3.5 relative z-10">
-            <div className="w-16 h-16 rounded-2xl overflow-hidden border border-[#A31C1B]/40 flex-shrink-0 shadow-lg shadow-[#A31C1B]/25 relative bg-[#06110c]">
+            <div className="w-16 h-16 rounded-2xl overflow-hidden border border-white/15 flex-shrink-0 shadow-lg relative bg-[#06110c]">
               <img
                 src={getFolderCoverArt(activePlaylist.name)}
                 alt={activePlaylist.name}
@@ -99,7 +99,7 @@ export function PlaylistsView() {
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-bold text-white">{activePlaylist.name}</h3>
                 {activePlaylist.isDriveFolder && (
-                  <span className="text-[10px] uppercase font-semibold text-[#fca5a5] px-2 py-0.5 rounded-full bg-[#06110c] border border-[#A31C1B]/40">
+                  <span className="text-[10px] uppercase font-semibold text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25">
                     Drive Folder
                   </span>
                 )}
@@ -115,14 +115,14 @@ export function PlaylistsView() {
               <>
                 <button
                   onClick={handleShufflePlay}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] text-slate-200 text-xs font-medium transition-all active:scale-95"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl glass-card hover:border-white/20 text-slate-200 text-xs font-medium transition-all active:scale-95"
                 >
-                  <Shuffle className="w-3.5 h-3.5 text-[#A31C1B]" />
+                  <Shuffle className="w-3.5 h-3.5 text-slate-300" />
                   <span>Shuffle</span>
                 </button>
                 <button
                   onClick={handlePlayAll}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#A31C1B] hover:bg-[#be2524] text-white text-xs font-semibold shadow-md shadow-[#A31C1B]/40 transition-all active:scale-95"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl crimson-glow-btn text-white text-xs font-semibold shadow-md transition-all active:scale-95"
                 >
                   <Play className="w-3.5 h-3.5 fill-white" />
                   <span>Play All</span>
@@ -201,10 +201,10 @@ export function PlaylistsView() {
                 <div
                   key={folder.id}
                   onClick={() => setActivePlaylist({ ...folder, isDriveFolder: true })}
-                  className="group p-3.5 rounded-2xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] hover:border-[#A31C1B]/60 transition-all cursor-pointer shadow-md flex items-center justify-between"
+                  className="group p-3.5 rounded-2xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] hover:border-white/20 transition-all cursor-pointer shadow-md flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-13 h-13 w-[52px] h-[52px] rounded-xl overflow-hidden border border-[#A31C1B]/35 text-[#A31C1B] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative bg-[#06110c] shadow-md">
+                    <div className="w-13 h-13 w-[52px] h-[52px] rounded-xl overflow-hidden border border-white/15 text-slate-300 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative bg-[#06110c] shadow-md">
                       <img
                         src={coverImg}
                         alt={folder.name}
@@ -217,7 +217,7 @@ export function PlaylistsView() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-[#fca5a5] transition-colors">
+                      <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-white transition-colors">
                         {folder.name}
                       </h4>
                       <p className="text-[11px] text-slate-400 mt-0.5">
@@ -226,7 +226,7 @@ export function PlaylistsView() {
                     </div>
                   </div>
 
-                  <div className="w-8 h-8 rounded-full bg-[#222222] group-hover:bg-[#A31C1B] text-slate-300 group-hover:text-white flex items-center justify-center transition-colors flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[#222222] group-hover:bg-white text-slate-300 group-hover:text-slate-900 flex items-center justify-center transition-colors flex-shrink-0">
                     <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                   </div>
                 </div>
@@ -240,7 +240,7 @@ export function PlaylistsView() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <ListMusic className="w-4 h-4 text-[#A31C1B]" />
+            <ListMusic className="w-4 h-4 text-slate-300" />
             <h3 className="text-sm font-bold text-white uppercase tracking-wider">
               My Playlists ({localPlaylists.length})
             </h3>
@@ -310,10 +310,10 @@ export function PlaylistsView() {
                 <div
                   key={pl.id}
                   onClick={() => setActivePlaylist({ ...pl, isDriveFolder: false })}
-                  className="group p-3.5 rounded-2xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] hover:border-[#A31C1B]/60 transition-all cursor-pointer shadow-md flex items-center justify-between"
+                  className="group p-3.5 rounded-2xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] hover:border-white/20 transition-all cursor-pointer shadow-md flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-[52px] h-[52px] rounded-xl overflow-hidden border border-[#A31C1B]/35 text-[#A31C1B] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative bg-[#06110c] shadow-md">
+                    <div className="w-[52px] h-[52px] rounded-xl overflow-hidden border border-white/15 text-slate-300 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative bg-[#06110c] shadow-md">
                       <img
                         src={coverImg}
                         alt={pl.name}
@@ -326,7 +326,7 @@ export function PlaylistsView() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-[#fca5a5] transition-colors">
+                      <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-white transition-colors">
                         {pl.name}
                       </h4>
                       <p className="text-[11px] text-slate-400 mt-0.5">
@@ -335,7 +335,7 @@ export function PlaylistsView() {
                     </div>
                   </div>
 
-                  <div className="w-8 h-8 rounded-full bg-[#222222] group-hover:bg-[#A31C1B] text-slate-300 group-hover:text-white flex items-center justify-center transition-colors flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[#222222] group-hover:bg-white text-slate-300 group-hover:text-slate-900 flex items-center justify-center transition-colors flex-shrink-0">
                     <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                   </div>
                 </div>

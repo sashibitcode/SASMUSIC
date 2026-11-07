@@ -94,7 +94,7 @@ export function CategoryBanner({
               />
             ) : (
               <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Music2 className="w-5 h-5 sm:w-6 sm:h-6 text-[#fca5a5]" />
+                <Music2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
             )}
             <div>
@@ -122,7 +122,7 @@ export function CategoryBanner({
 
             <button
               onClick={onShuffle}
-              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full glass-card hover:border-[#A31C1B]/50 text-slate-200 hover:text-white text-xs font-semibold transition-all active:scale-95 shadow-sm"
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full glass-card hover:border-white/20 text-slate-200 hover:text-white text-xs font-semibold transition-all active:scale-95 shadow-sm"
               title="Shuffle Collection"
             >
               <Shuffle className="w-3.5 h-3.5" />

@@ -33,8 +33,8 @@ export function RecentsView() {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#06110c] via-[#171717] to-[#171717] border border-[#282f2b] shadow-xl">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-[#A31C1B]/20 border border-[#A31C1B]/40 text-[#fca5a5] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#A31C1B]/20">
-            <History className="w-6 h-6 text-[#A31C1B]" />
+          <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/10 text-slate-300 flex items-center justify-center flex-shrink-0 shadow-lg">
+            <History className="w-6 h-6 text-slate-300" />
           </div>
           <div>
             <h3 className="text-base sm:text-lg font-bold text-white">Recently Played</h3>
@@ -55,7 +55,7 @@ export function RecentsView() {
           </button>
           <button
             onClick={handlePlayAll}
-            className="flex-1 sm:flex-none min-h-[44px] flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl bg-[#A31C1B] hover:bg-[#be2524] text-white text-xs font-bold shadow-md shadow-[#A31C1B]/40 transition-all active:scale-95"
+            className="flex-1 sm:flex-none min-h-[44px] flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl crimson-glow-btn text-white text-xs font-bold shadow-md transition-all active:scale-95"
             aria-label="Play all recently played"
           >
             <Play className="w-3.5 h-3.5 fill-white" />

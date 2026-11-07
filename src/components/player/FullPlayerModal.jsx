@@ -107,7 +107,7 @@ export function FullPlayerModal() {
           className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-slate-300 hover:text-white hover:bg-[#222222] transition-colors active:scale-90"
           aria-label="Open queue"
         >
-          <ListMusic className="w-5 h-5 text-[#fca5a5]" />
+          <ListMusic className="w-5 h-5 text-slate-300" />
         </button>
       </header>
 
@@ -148,7 +148,7 @@ export function FullPlayerModal() {
             className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-transform active:scale-90"
             aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
           >
-            <Heart className={`w-6 h-6 ${isFav ? 'fill-[#A31C1B] text-[#A31C1B]' : 'text-slate-400'}`} />
+            <Heart className={`w-6 h-6 ${isFav ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`} />
           </button>
         </div>
 
@@ -169,14 +169,14 @@ export function FullPlayerModal() {
             onClick={toggleShuffle}
             className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-all relative ${
               shuffleMode
-                ? 'text-[#A31C1B]'
+                ? 'text-white'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
             aria-label="Toggle shuffle"
           >
             <Shuffle className="w-5 h-5" />
             {shuffleMode && (
-              <span className="absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#A31C1B]" />
+              <span className="absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
             )}
           </button>
 
@@ -189,7 +189,7 @@ export function FullPlayerModal() {
             <SkipBack className="w-6 h-6 fill-slate-200" />
           </button>
 
-          {/* Big Play / Pause Button */}
+          {/* Big Play / Pause Button (Primary Action) */}
           <button
             onClick={togglePlay}
             className="w-16 h-16 sm:w-18 sm:h-18 rounded-full crimson-glow-btn text-white flex items-center justify-center shadow-[0_0_35px_rgba(163,28,27,0.85)] transition-transform active:scale-95"
@@ -218,7 +218,7 @@ export function FullPlayerModal() {
             onClick={toggleRepeat}
             className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-all relative ${
               repeatMode !== 'off'
-                ? 'text-[#A31C1B]'
+                ? 'text-white'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
             aria-label="Toggle repeat"
@@ -229,7 +229,7 @@ export function FullPlayerModal() {
               <Repeat className="w-5 h-5" />
             )}
             {repeatMode !== 'off' && (
-              <span className="absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#A31C1B]" />
+              <span className="absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
             )}
           </button>
         </div>

@@ -72,8 +72,8 @@ export function SongRow({ song, index, playlist = null }) {
       onClick={handlePlayClick}
       className={`group relative flex items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer border ${isMenuOpen ? 'z-40' : 'z-0'
         } ${isCurrent
-          ? 'bg-[#06110c] border-[#A31C1B] shadow-[0_6px_28px_rgba(6,17,12,0.95),_0_0_15px_rgba(163,28,27,0.35)] ring-1 ring-[#A31C1B]/80'
-          : 'glass-card hover:translate-x-0.5'
+          ? 'bg-[#06110c] border-[#A31C1B]/80 shadow-[0_6px_28px_rgba(6,17,12,0.95)] ring-1 ring-[#A31C1B]/50'
+          : 'glass-card hover:translate-x-0.5 hover:border-white/20'
         }`}
     >
       {/* Left: Thumbnail & Info */}
@@ -137,12 +137,12 @@ export function SongRow({ song, index, playlist = null }) {
         <button
           onClick={() => toggleFavorite(song.id)}
           className={`w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full transition-transform active:scale-90 ${isFav
-            ? 'text-[#A31C1B] hover:text-[#e2403f]'
+            ? 'text-rose-500 hover:text-rose-400'
             : 'text-slate-500 hover:text-slate-300'
             }`}
           aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
         >
-          <Heart className={`w-4 h-4 ${isFav ? 'fill-[#A31C1B]' : ''}`} />
+          <Heart className={`w-4 h-4 ${isFav ? 'fill-rose-500' : ''}`} />
         </button>
 
         {/* More Options Context Menu */}
@@ -173,7 +173,7 @@ export function SongRow({ song, index, playlist = null }) {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
               >
-                <Play className="w-4 h-4 text-[#A31C1B] fill-[#A31C1B]" />
+                <Play className="w-4 h-4 text-white fill-white" />
                 <span>Play Now</span>
               </button>
 
@@ -186,7 +186,7 @@ export function SongRow({ song, index, playlist = null }) {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
               >
-                <ListPlus className="w-4 h-4 text-[#A31C1B]" />
+                <ListPlus className="w-4 h-4 text-slate-400" />
                 <span>Play Next</span>
               </button>
 
@@ -199,7 +199,7 @@ export function SongRow({ song, index, playlist = null }) {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
               >
-                <Plus className="w-4 h-4 text-[#A31C1B]" />
+                <Plus className="w-4 h-4 text-slate-400" />
                 <span>Add to Queue</span>
               </button>
 
@@ -212,7 +212,7 @@ export function SongRow({ song, index, playlist = null }) {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium"
               >
-                <Heart className={`w-4 h-4 ${isFav ? 'text-[#A31C1B] fill-[#A31C1B]' : 'text-slate-400'}`} />
+                <Heart className={`w-4 h-4 ${isFav ? 'text-rose-500 fill-rose-500' : 'text-slate-400'}`} />
                 <span>{isFav ? 'Remove from Favorites' : 'Add to Favorites'}</span>
               </button>
 
@@ -231,9 +231,9 @@ export function SongRow({ song, index, playlist = null }) {
                         addSongToPlaylist(pl.id, song.id);
                         setIsMenuOpen(false);
                       }}
-                      className="w-full flex items-center gap-2.5 px-4 py-2 text-slate-300 hover:bg-[#222222] hover:text-[#fca5a5] text-left truncate transition-colors text-xs"
+                      className="w-full flex items-center gap-2.5 px-4 py-2 text-slate-300 hover:bg-[#222222] hover:text-white text-left truncate transition-colors text-xs"
                     >
-                      <span className="w-2 h-2 rounded-full bg-[#A31C1B] flex-shrink-0" />
+                      <span className="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0" />
                       <span className="truncate">{pl.name}</span>
                     </button>
                   ))

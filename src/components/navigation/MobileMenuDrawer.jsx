@@ -147,7 +147,7 @@ export function MobileMenuDrawer({
         <div className="flex items-center justify-between p-4 border-b border-white/[0.08] bg-[#06110c]/80 sticky top-0 z-10 pt-safe">
           <div className="flex items-center gap-2">
             <Logo className="h-7 w-auto" />
-            <span className="text-[10px] font-bold text-[#fca5a5] px-2 py-0.5 rounded-full bg-[#A31C1B]/20 border border-[#A31C1B]/40">
+            <span className="text-[10px] font-bold text-slate-300 px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/10">
               Menu
             </span>
           </div>
@@ -167,7 +167,7 @@ export function MobileMenuDrawer({
             <>
               <SignedIn>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#A31C1B] flex-shrink-0 bg-[#06110c] shadow-md">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border border-white/20 flex-shrink-0 bg-[#06110c] shadow-md">
                     {user?.imageUrl ? (
                       <img
                         src={user.imageUrl}
@@ -175,7 +175,7 @@ export function MobileMenuDrawer({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white font-bold text-base bg-[#A31C1B]">
+                      <div className="w-full h-full flex items-center justify-center text-white font-bold text-base bg-white/10">
                         {(user?.firstName?.[0] || 'U').toUpperCase()}
                       </div>
                     )}
@@ -207,7 +207,7 @@ export function MobileMenuDrawer({
               <SignedOut>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-full bg-[#A31C1B]/20 border border-[#A31C1B]/40 flex items-center justify-center text-[#fca5a5]">
+                    <div className="w-10 h-10 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center text-slate-300">
                       <LogIn className="w-5 h-5" />
                     </div>
                     <div>
@@ -221,7 +221,7 @@ export function MobileMenuDrawer({
                         markSignInAction();
                         onClose();
                       }}
-                      className="w-full min-h-[38px] mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#A31C1B] hover:bg-[#851615] text-white text-xs font-bold shadow-md transition-all active:scale-95"
+                      className="w-full min-h-[38px] mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-xl crimson-glow-btn text-white text-xs font-bold shadow-md transition-all active:scale-95"
                     >
                       <LogIn className="w-3.5 h-3.5" />
                       <span>Sign In with Google</span>
@@ -247,15 +247,15 @@ export function MobileMenuDrawer({
           {onOpenUpload && (
             <button
               onClick={handleUploadClick}
-              className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group border border-[#A31C1B]/25 bg-gradient-to-r from-[#A31C1B]/15 to-transparent shadow-sm"
+              className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group border border-white/10 bg-white/[0.03] shadow-sm"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#A31C1B]/25 border border-[#A31C1B]/40 text-[#fca5a5] flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
-                  <Upload className="w-4 h-4 text-[#fca5a5]" />
+                <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 text-slate-300 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
+                  <Upload className="w-4 h-4 text-slate-300" />
                 </div>
                 <span className="font-bold text-white">Upload Song</span>
               </div>
-              <span className="text-[10px] text-rose-300 font-semibold bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/25">Admin</span>
+              <span className="text-[10px] text-slate-300 font-semibold bg-white/10 px-2 py-0.5 rounded-full border border-white/15">Admin</span>
             </button>
           )}
 
@@ -265,8 +265,8 @@ export function MobileMenuDrawer({
             className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#A31C1B]/20 border border-[#A31C1B]/35 text-[#fca5a5] flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Settings className="w-4 h-4 text-[#A31C1B] group-hover:rotate-45 transition-transform" />
+              <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 text-slate-300 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Settings className="w-4 h-4 text-slate-300 group-hover:rotate-45 transition-transform" />
               </div>
               <span className="font-bold">Settings</span>
             </div>
@@ -291,11 +291,11 @@ export function MobileMenuDrawer({
           <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-2 mt-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5 text-[#fca5a5]" />
+                <Clock className="w-3.5 h-3.5 text-slate-400" />
                 <span className="text-xs font-bold text-white">Sleep Timer</span>
               </div>
               {remainingSeconds > 0 && (
-                <span className="text-[11px] font-mono font-bold text-[#fca5a5] bg-[#A31C1B]/20 border border-[#A31C1B]/40 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-mono font-bold text-white bg-white/15 border border-white/20 px-2 py-0.5 rounded-full">
                   {formatRemainingTime(remainingSeconds)}
                 </span>
               )}
@@ -316,7 +316,7 @@ export function MobileMenuDrawer({
                       }
                     }}
                     className={`py-1.5 rounded-lg text-[10px] font-semibold transition-all active:scale-90 ${isActive
-                        ? 'bg-[#A31C1B] text-white shadow-sm font-bold'
+                        ? 'bg-white text-slate-900 font-bold shadow-sm'
                         : 'bg-white/[0.05] text-slate-300 hover:bg-white/10'
                       }`}
                   >
@@ -348,7 +348,7 @@ export function MobileMenuDrawer({
                 onClick={() => handleCategoryClick(col.id)}
                 className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.05] text-xs text-slate-300 hover:text-white transition-colors text-left"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#A31C1B]/70 flex-shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 flex-shrink-0" />
                 <span className="truncate text-[11px] font-medium">{col.label}</span>
               </button>
             ))}
@@ -361,17 +361,17 @@ export function MobileMenuDrawer({
             href="https://sashibitcode.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-[#A31C1B]/50 transition-all group"
+            className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/20 transition-all group"
           >
             <div className="flex flex-col">
               <span className="text-xs font-semibold text-slate-200 group-hover:text-white">
                 Shashikant Raj
               </span>
-              <span className="text-[10px] text-[#fca5a5] font-mono">
+              <span className="text-[10px] text-slate-400 font-mono">
                 @sashibitcode • Full Stack Dev
               </span>
             </div>
-            <Sparkles className="w-3.5 h-3.5 text-[#A31C1B] group-hover:scale-110 transition-transform" />
+            <Sparkles className="w-3.5 h-3.5 text-slate-400 group-hover:scale-110 transition-transform" />
           </a>
 
           <div className="text-center text-[10px] text-slate-500 pt-1">

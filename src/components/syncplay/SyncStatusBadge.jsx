@@ -19,24 +19,24 @@ export function SyncStatusBadge({ className = '', showDetails = true }) {
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all select-none border ${
         isReconnecting
           ? 'bg-amber-950/80 border-amber-500/50 text-amber-200 animate-pulse'
-          : 'bg-[#A31C1B]/20 hover:bg-[#A31C1B]/30 border-[#A31C1B]/60 text-white shadow-[0_0_12px_rgba(163,28,27,0.35)]'
+          : 'bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/50 text-white shadow-[0_0_12px_rgba(52,211,153,0.3)]'
       } ${className}`}
       title="Click to open group session controls"
     >
       <span className="relative flex h-2 w-2">
         <span
           className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-            isReconnecting ? 'bg-amber-400' : 'bg-red-400'
+            isReconnecting ? 'bg-amber-400' : 'bg-emerald-400'
           }`}
         />
         <span
           className={`relative inline-flex rounded-full h-2 w-2 ${
-            isReconnecting ? 'bg-amber-500' : 'bg-[#A31C1B]'
+            isReconnecting ? 'bg-amber-500' : 'bg-emerald-400'
           }`}
         />
       </span>
 
-      <Users className="w-3.5 h-3.5 text-[#fca5a5]" />
+      <Users className="w-3.5 h-3.5 text-emerald-300" />
 
       <span className="tracking-wide">
         With Friends #{roomCode}

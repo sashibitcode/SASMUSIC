@@ -10,9 +10,9 @@ export function SearchBar({
 }) {
   return (
     <div className="flex items-center gap-2 w-full">
-      {/* Search Input Field - Glass Capsule with Crimson Focus */}
+      {/* Search Input Field - Glass Capsule with Clean Focus */}
       <div className="relative flex-1 min-w-0 group">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#A31C1B] transition-colors pointer-events-none" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-white transition-colors pointer-events-none" />
         <input
           ref={inputRef}
           type="text"
@@ -20,7 +20,7 @@ export function SearchBar({
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search songs, artists..."
           aria-label="Search songs, artists, and playlists"
-          className="w-full pl-9 pr-9 h-8.5 sm:h-9 min-h-[34px] sm:min-h-[36px] text-xs sm:text-sm rounded-xl glass-panel text-white placeholder-slate-500 focus:outline-none focus:border-[#A31C1B] focus:ring-2 focus:ring-[#A31C1B]/30 transition-all shadow-inner"
+          className="w-full pl-9 pr-9 h-8.5 sm:h-9 min-h-[34px] sm:min-h-[36px] text-xs sm:text-sm rounded-xl glass-panel text-white placeholder-slate-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/15 transition-all shadow-inner"
         />
         {searchQuery && (
           <button
@@ -36,11 +36,11 @@ export function SearchBar({
       {/* Compact Sort / Shuffle Dropdown */}
       {onSortChange && (
         <div className="relative flex-shrink-0 flex items-center">
-          <div className="relative flex items-center gap-1.5 px-2.5 h-8.5 sm:h-9 min-h-[34px] sm:min-h-[36px] rounded-xl glass-panel border border-white/10 hover:border-[#A31C1B]/50 transition-colors shadow-sm cursor-pointer group">
+          <div className="relative flex items-center gap-1.5 px-2.5 h-8.5 sm:h-9 min-h-[34px] sm:min-h-[36px] rounded-xl glass-panel border border-white/10 hover:border-white/20 transition-colors shadow-sm cursor-pointer group">
             {sortBy === 'shuffle' ? (
-              <Shuffle className="w-3.5 h-3.5 text-[#A31C1B] flex-shrink-0 group-hover:rotate-12 transition-transform" />
+              <Shuffle className="w-3.5 h-3.5 text-slate-300 flex-shrink-0 group-hover:rotate-12 transition-transform" />
             ) : (
-              <ArrowUpDown className="w-3.5 h-3.5 text-[#A31C1B] flex-shrink-0" />
+              <ArrowUpDown className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
             )}
             <select
               value={sortBy}

@@ -265,7 +265,7 @@ export function UploadModal({ isOpen, onClose }) {
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[#06110c] border border-[#A31C1B]/40 flex items-center justify-center text-[#A31C1B]">
+            <div className="w-8 h-8 rounded-xl bg-[#06110c] border border-white/20 flex items-center justify-center text-slate-300">
               <Upload className="w-4 h-4" />
             </div>
             <div>
@@ -286,7 +286,7 @@ export function UploadModal({ isOpen, onClose }) {
           <form onSubmit={handleVerifyPassword} className="mt-5 space-y-4">
             <div className="text-center py-2">
               <div className="w-11 h-11 mx-auto rounded-full bg-[#06110c] border border-white/[0.08] flex items-center justify-center text-slate-300 mb-2 shadow-md">
-                <Lock className="w-4 h-4 text-[#A31C1B]" />
+                <Lock className="w-4 h-4 text-slate-300" />
               </div>
               <h4 className="text-sm font-semibold text-white">Passkey Required</h4>
               <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
@@ -303,7 +303,7 @@ export function UploadModal({ isOpen, onClose }) {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter passkey..."
                   autoFocus
-                  className="w-full pl-9 pr-10 py-2.5 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:border-[#A31C1B] focus:ring-1 focus:ring-[#A31C1B]"
+                  className="w-full pl-9 pr-10 py-2.5 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10"
                 />
                 <button
                   type="button"
@@ -364,16 +364,16 @@ export function UploadModal({ isOpen, onClose }) {
               {!file ? (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="cursor-pointer border-2 border-dashed border-white/[0.12] hover:border-[#A31C1B]/60 rounded-2xl p-5 text-center transition-all bg-[#222222]/50 hover:bg-[#222222] group"
+                  className="cursor-pointer border-2 border-dashed border-white/[0.12] hover:border-white/30 rounded-2xl p-5 text-center transition-all bg-[#222222]/50 hover:bg-[#222222] group"
                 >
-                  <FileAudio className="w-9 h-9 mx-auto text-slate-400 group-hover:text-[#A31C1B] transition-colors mb-2" />
+                  <FileAudio className="w-9 h-9 mx-auto text-slate-400 group-hover:text-white transition-colors mb-2" />
                   <p className="text-xs font-semibold text-white">Tap to select an audio file</p>
                   <p className="text-[11px] text-slate-400 mt-0.5">MP3, M4A, AAC, WAV (Max 50 MB)</p>
                 </div>
               ) : (
                 <div className="flex items-center justify-between p-3 rounded-xl bg-[#06110c] border border-white/[0.08]">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <Music className="w-4 h-4 text-[#A31C1B] flex-shrink-0" />
+                    <Music className="w-4 h-4 text-slate-300 flex-shrink-0" />
                     <div className="truncate">
                       <p className="text-xs font-semibold text-white truncate">{file.name}</p>
                       <p className="text-[10px] text-slate-400">{formatBytes(file.size)}</p>
@@ -407,7 +407,7 @@ export function UploadModal({ isOpen, onClose }) {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Blinding Lights"
                     required
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:border-[#A31C1B] focus:ring-1 focus:ring-[#A31C1B]"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10"
                   />
                 </div>
 
@@ -421,7 +421,7 @@ export function UploadModal({ isOpen, onClose }) {
                     onChange={(e) => setArtist(e.target.value)}
                     placeholder="e.g. The Weeknd"
                     required
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:border-[#A31C1B] focus:ring-1 focus:ring-[#A31C1B]"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10"
                   />
                 </div>
 

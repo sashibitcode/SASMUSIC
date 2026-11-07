@@ -57,16 +57,16 @@ export function DesktopSidebar({
           onClick={() => setIsSyncModalOpen(true)}
           className={`w-full min-h-[46px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
             isInRoom
-              ? 'bg-[#A31C1B]/25 border-[#A31C1B] text-white shadow-[0_0_15px_rgba(163,28,27,0.4)]'
-              : 'glass-card hover:border-[#A31C1B]/50 text-slate-200 hover:text-white'
+              ? 'bg-emerald-500/20 border-emerald-500/50 text-white shadow-[0_0_15px_rgba(52,211,153,0.3)]'
+              : 'glass-card hover:border-white/20 text-slate-200 hover:text-white'
           }`}
         >
           <div className="flex items-center gap-2.5">
-            <Users className="w-4 h-4 text-[#fca5a5]" />
+            <Users className="w-4 h-4 text-emerald-400" />
             <span className="tracking-wide">Listen Together</span>
           </div>
           <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-            isInRoom ? 'bg-[#A31C1B] text-white animate-pulse' : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+            isInRoom ? 'bg-emerald-500 text-white animate-pulse' : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
           }`}>
             {isInRoom ? `Room #${roomCode}` : 'Friends'}
           </span>
@@ -88,14 +88,14 @@ export function DesktopSidebar({
               onClick={() => onTabChange(link.id)}
               className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
                 isActive
-                  ? 'crimson-glow-btn text-white shadow-md'
+                  ? 'bg-white text-slate-900 font-bold shadow-md'
                   : 'text-slate-300 hover:text-white hover:bg-white/[0.06]'
               }`}
             >
               <div className="flex items-center gap-3">
                 <Icon
                   className={`w-4 h-4 ${
-                    isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'
+                    isActive ? 'text-slate-900' : 'text-slate-400 group-hover:text-white'
                   }`}
                 />
                 <span className="tracking-wide">{link.label}</span>
@@ -138,7 +138,7 @@ export function DesktopSidebar({
                 onClick={() => onSelectCategory?.(col.id)}
                 className="w-full min-h-[36px] flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-white/[0.06] transition-colors truncate text-left group"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#A31C1B]/70 group-hover:bg-[#A31C1B] transition-colors flex-shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 group-hover:bg-white transition-colors flex-shrink-0" />
                 <span className="truncate">{col.label}</span>
               </button>
             ))}
@@ -162,7 +162,7 @@ export function DesktopSidebar({
                   }}
                   className="w-full min-h-[36px] flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] transition-colors truncate text-left"
                 >
-                  <Music className="w-3.5 h-3.5 text-[#A31C1B] flex-shrink-0" />
+                  <Music className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                   <span className="truncate">{folder.name}</span>
                 </button>
               ))}
@@ -179,10 +179,10 @@ export function DesktopSidebar({
         {onOpenUpload && (
           <button
             onClick={onOpenUpload}
-            className="w-full min-h-[40px] flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-all group select-none border border-[#A31C1B]/20 bg-gradient-to-r from-[#A31C1B]/10 to-transparent"
+            className="w-full min-h-[40px] flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-all group select-none border border-white/10 bg-white/[0.04]"
           >
             <div className="flex items-center gap-3">
-              <Upload className="w-4 h-4 text-[#A31C1B] group-hover:scale-110 transition-transform" />
+              <Upload className="w-4 h-4 text-slate-300 group-hover:scale-110 transition-transform" />
               <span>Upload Song</span>
             </div>
             <span className="text-[9px] font-mono text-slate-400 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
@@ -205,18 +205,18 @@ export function DesktopSidebar({
           href="https://sashibitcode.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.08] hover:border-[#A31C1B]/50 transition-all group cursor-pointer shadow-sm"
+          className="flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.08] hover:border-white/20 transition-all group cursor-pointer shadow-sm"
           title="Shashikant Raj - Data Analyst & Full Stack Developer"
         >
           <div className="flex flex-col">
             <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">
               Shashikant Raj
             </span>
-            <span className="text-[10px] text-[#fca5a5] font-mono">
+            <span className="text-[10px] text-slate-400 font-mono">
               @sashibitcode • Developer
             </span>
           </div>
-          <Sparkles className="w-3.5 h-3.5 text-[#A31C1B] group-hover:scale-110 transition-transform" />
+          <Sparkles className="w-3.5 h-3.5 text-slate-400 group-hover:scale-110 transition-transform" />
         </a>
       </div>
     </aside>

@@ -36,8 +36,8 @@ export function FavoritesView({ onClose }) {
   if (favSongs.length === 0) {
     return (
       <div className="text-center py-20 px-4 rounded-2xl bg-[#171717] border border-dashed border-[#282f2b] max-w-md mx-auto my-6">
-        <div className="w-16 h-16 rounded-2xl bg-[#06110c] border border-[#A31C1B]/40 text-[#A31C1B] mx-auto flex items-center justify-center mb-3 shadow-lg">
-          <Heart className="w-8 h-8 fill-[#A31C1B]" />
+        <div className="w-16 h-16 rounded-2xl bg-[#06110c] border border-white/10 text-rose-500 mx-auto flex items-center justify-center mb-3 shadow-lg">
+          <Heart className="w-8 h-8 fill-rose-500" />
         </div>
         <h4 className="text-base font-bold text-white">No Favorite Songs Yet</h4>
         <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
@@ -46,7 +46,7 @@ export function FavoritesView({ onClose }) {
         {onClose && (
           <button
             onClick={onClose}
-            className="mt-4 px-4 py-2 rounded-xl bg-[#A31C1B] hover:bg-[#be2524] text-white text-xs font-semibold transition-all shadow-md active:scale-95 inline-flex items-center gap-1.5"
+            className="mt-4 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition-all shadow-md active:scale-95 inline-flex items-center gap-1.5"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Songs</span>
@@ -59,10 +59,10 @@ export function FavoritesView({ onClose }) {
   return (
     <div className="space-y-4 pb-36 md:pb-28">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#A31C1B]/35 via-[#171717] to-[#171717] border border-[#A31C1B]/40 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-rose-500/15 via-[#171717] to-[#171717] border border-white/10 shadow-xl">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-[#A31C1B]/20 border border-[#A31C1B]/40 text-[#fca5a5] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#A31C1B]/20">
-            <Heart className="w-6 h-6 fill-[#A31C1B] text-[#A31C1B]" />
+          <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center flex-shrink-0 shadow-lg shadow-rose-500/10">
+            <Heart className="w-6 h-6 fill-rose-500 text-rose-500" />
           </div>
           <div>
             <h3 className="text-base sm:text-lg font-bold text-white">Liked Songs</h3>
@@ -98,15 +98,15 @@ export function FavoritesView({ onClose }) {
           )}
           <button
             onClick={handleShufflePlay}
-            className="flex-1 sm:flex-none min-h-[44px] flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] text-slate-200 text-xs font-semibold transition-all active:scale-95"
+            className="flex-1 sm:flex-none min-h-[44px] flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl glass-card hover:border-white/20 text-slate-200 text-xs font-semibold transition-all active:scale-95"
             aria-label="Shuffle liked songs"
           >
-            <Shuffle className="w-3.5 h-3.5 text-[#A31C1B]" />
+            <Shuffle className="w-3.5 h-3.5 text-slate-300" />
             <span>Shuffle</span>
           </button>
           <button
             onClick={handlePlayAll}
-            className="flex-1 sm:flex-none min-h-[44px] flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl bg-[#A31C1B] hover:bg-[#be2524] text-white text-xs font-bold shadow-md shadow-[#A31C1B]/40 transition-all active:scale-95"
+            className="flex-1 sm:flex-none min-h-[44px] flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl crimson-glow-btn text-white text-xs font-bold shadow-md transition-all active:scale-95"
             aria-label="Play all liked songs"
           >
             <Play className="w-3.5 h-3.5 fill-white" />

@@ -28,7 +28,7 @@ export function Header({
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
         {/* Official Brand Logo */}
         <div className="relative group flex items-center flex-shrink-0">
-          <div className="absolute -inset-1 bg-[#A31C1B]/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute -inset-1 bg-white/[0.05] rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
           <Logo
             className="h-6 sm:h-7.5 w-auto relative z-10 cursor-pointer"
             onClick={onLogoClick}
@@ -42,8 +42,8 @@ export function Header({
             onClick={onOpenFavorites}
             className={`w-7.5 h-7.5 sm:w-8 sm:h-8 min-w-[30px] min-h-[30px] flex items-center justify-center rounded-full active:scale-95 transition-all shadow-sm group select-none relative flex-shrink-0 border ${
               isFavoritesActive
-                ? 'bg-[#A31C1B]/30 border-[#A31C1B] text-white shadow-[0_0_12px_rgba(163,28,27,0.5)] ring-1 ring-[#A31C1B]/60'
-                : 'glass-card hover:border-[#A31C1B]/50 hover:bg-white/[0.08] text-slate-200'
+                ? 'bg-rose-500/25 border-rose-500/60 text-white shadow-[0_0_12px_rgba(244,63,94,0.4)]'
+                : 'glass-card hover:border-white/20 hover:bg-white/[0.08] text-slate-200'
             }`}
             aria-label={isFavoritesActive ? 'Close Favorites and return' : 'View Favorites'}
             aria-pressed={isFavoritesActive}
@@ -57,9 +57,7 @@ export function Header({
               }`}
             />
             {favoritesCount > 0 && (
-              <span className={`absolute -top-1 -right-1 min-w-[13px] h-[13px] px-0.5 text-white text-[8.5px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-[#06110c] ${
-                isFavoritesActive ? 'bg-rose-500' : 'bg-[#A31C1B]'
-              }`}>
+              <span className="absolute -top-1 -right-1 min-w-[13px] h-[13px] px-0.5 text-white text-[8.5px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-[#06110c] bg-rose-500">
                 {favoritesCount > 99 ? '99+' : favoritesCount}
               </span>
             )}
@@ -72,15 +70,15 @@ export function Header({
           {(onOpenMenu || onOpenSettings) && (
             <button
               onClick={handleMenuClick}
-              className="w-7.5 h-7.5 sm:w-8 sm:h-8 min-w-[30px] min-h-[30px] flex items-center justify-center rounded-full glass-card hover:border-[#A31C1B]/50 hover:bg-white/[0.08] active:scale-95 transition-all shadow-sm group select-none relative flex-shrink-0"
+              className="w-7.5 h-7.5 sm:w-8 sm:h-8 min-w-[30px] min-h-[30px] flex items-center justify-center rounded-full glass-card hover:border-white/20 hover:bg-white/[0.08] active:scale-95 transition-all shadow-sm group select-none relative flex-shrink-0"
               aria-label="Open Navigation Menu"
               title="Menu & Settings"
             >
               {/* Custom 3-line hamburger icon: refined sleek proportions matching user request */}
               <div className="flex flex-col justify-center items-start gap-[2.5px] sm:gap-[3px] w-4 sm:w-4.5 h-4 sm:h-4.5 pointer-events-none pl-0.5">
-                <span className="h-[2px] w-3 bg-slate-200 group-hover:bg-[#fca5a5] rounded-full transition-all group-hover:w-4 shadow-sm" />
-                <span className="h-[2px] w-4 sm:w-4.5 bg-white group-hover:bg-[#fca5a5] rounded-full transition-all shadow-sm" />
-                <span className="h-[2px] w-2 bg-slate-200 group-hover:bg-[#fca5a5] rounded-full transition-all group-hover:w-3.5 shadow-sm" />
+                <span className="h-[2px] w-3 bg-slate-200 group-hover:bg-white rounded-full transition-all group-hover:w-4 shadow-sm" />
+                <span className="h-[2px] w-4 sm:w-4.5 bg-white group-hover:bg-white rounded-full transition-all shadow-sm" />
+                <span className="h-[2px] w-2 bg-slate-200 group-hover:bg-white rounded-full transition-all group-hover:w-3.5 shadow-sm" />
               </div>
             </button>
           )}

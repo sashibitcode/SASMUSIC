@@ -45,7 +45,7 @@ export function CategoryHub({
         <div>
           <h2 className="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
             <span>Browse Categories</span>
-            <span className="text-[11px] font-bold text-[#fca5a5] bg-[#A31C1B]/20 border border-[#A31C1B]/30 px-2 py-0.5 rounded-full">
+            <span className="text-[11px] font-bold text-slate-300 bg-white/10 border border-white/15 px-2 py-0.5 rounded-full">
               Collections
             </span>
           </h2>
@@ -100,16 +100,16 @@ export function CategoryHub({
               {/* Card Footer: Title & Quick Play Button */}
               <div className="relative z-10 pt-2 flex items-end justify-between gap-2">
                 <div className="min-w-0">
-                  <h3 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate group-hover:text-[#fca5a5] transition-colors">
+                  <h3 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate group-hover:text-white transition-colors">
                     {cat.label}
                   </h3>
                 </div>
 
-                {/* 1-Click Play Mix Button */}
+                {/* 1-Click Play Mix Button (Primary Action) */}
                 {count > 0 && (
                   <button
                     onClick={(e) => handlePlayCategoryMix(e, cat.id)}
-                    className="w-8 h-8 rounded-full bg-[#A31C1B] hover:bg-[#851615] text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-[#A31C1B]/40 transition-transform active:scale-90 group/btn"
+                    className="w-8 h-8 rounded-full crimson-glow-btn text-white flex items-center justify-center flex-shrink-0 shadow-md transition-transform active:scale-90 group/btn"
                     title={`Play ${cat.label} Mix`}
                     aria-label={`Play ${cat.label} Mix`}
                   >
@@ -127,7 +127,7 @@ export function CategoryHub({
         <div className="pt-2 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs sm:text-sm font-bold text-slate-200 flex items-center gap-1.5">
-              <Mic2 className="w-3.5 h-3.5 text-[#fca5a5]" />
+              <Mic2 className="w-3.5 h-3.5 text-slate-400" />
               <span>Popular Singers</span>
             </h3>
             <span className="text-[10px] text-slate-400">

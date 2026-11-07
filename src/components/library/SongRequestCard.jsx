@@ -105,16 +105,16 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
               Request Received! 🎉
             </h4>
             <p className="text-xs text-slate-300 mt-1 max-w-sm mx-auto">
-              We've received your request for <span className="text-[#fca5a5] font-semibold font-mono">"{songTitle}"</span>. Enjoy it soon!
+              We've received your request for <span className="text-white font-semibold font-mono">"{songTitle}"</span>. Enjoy it soon!
             </p>
           </div>
 
           {/* 10-Min Live Countdown Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-black/40 border border-[#A31C1B]/35 shadow-inner">
-            <Clock className="w-4 h-4 text-[#fca5a5] animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-black/40 border border-white/10 shadow-inner">
+            <Clock className="w-4 h-4 text-emerald-400 animate-pulse" />
             <span className="text-xs font-semibold text-slate-200">
               Expected addition in:{' '}
-              <span className="font-mono font-bold text-[#fca5a5]">
+              <span className="font-mono font-bold text-emerald-400">
                 ~{formatCountdown(countdown)}
               </span>
             </span>
@@ -128,7 +128,7 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
                 setCountdown(600);
                 onClearSearch?.();
               }}
-              className="px-4 py-2 rounded-xl glass-card hover:border-[#A31C1B]/40 text-xs font-medium text-slate-300 hover:text-white transition-all active:scale-95"
+              className="px-4 py-2 rounded-xl glass-card hover:border-white/20 text-xs font-medium text-slate-300 hover:text-white transition-all active:scale-95"
             >
               Search another song
             </button>
@@ -140,8 +140,8 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
           {/* Card Header */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#A31C1B]/20 border border-[#A31C1B]/35 text-[#fca5a5] flex items-center justify-center flex-shrink-0 shadow-sm">
-                <Music className="w-5 h-5 text-[#fca5a5]" />
+              <div className="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 text-slate-300 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Music className="w-5 h-5 text-slate-300" />
               </div>
               <div>
                 <h4 className="text-sm sm:text-base font-bold text-white tracking-wide">
@@ -153,7 +153,7 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
               </div>
             </div>
 
-            <span className="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#A31C1B]/20 text-[#fca5a5] border border-[#A31C1B]/40 shadow-sm flex items-center gap-1 whitespace-nowrap">
+            <span className="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm flex items-center gap-1 whitespace-nowrap">
               <Sparkles className="w-2.5 h-2.5" />
               <span>Within 10 Mins ⚡</span>
             </span>
@@ -161,8 +161,8 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
 
           {/* Searched Song Name Preview */}
           <div className="p-3 rounded-2xl bg-black/40 border border-white/10 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#fca5a5] flex-shrink-0">
-              <Music className="w-4 h-4 text-[#fca5a5]" />
+            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-slate-300 flex-shrink-0">
+              <Music className="w-4 h-4 text-slate-300" />
             </div>
             <div className="min-w-0 flex-1">
               <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold block">Requested Track:</span>
@@ -173,8 +173,8 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
           </div>
 
           {/* Anti-Spam Login Wall */}
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-[#171212] to-[#0c1611] border border-[#A31C1B]/30 space-y-3 text-center">
-            <div className="w-10 h-10 mx-auto rounded-full bg-[#A31C1B]/20 border border-[#A31C1B]/40 flex items-center justify-center text-[#fca5a5]">
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-[#121614] to-[#161a18] border border-white/10 space-y-3 text-center">
+            <div className="w-10 h-10 mx-auto rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-slate-300">
               <Lock className="w-5 h-5" />
             </div>
             <div>
@@ -203,8 +203,8 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
           {/* Card Header */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#A31C1B]/20 border border-[#A31C1B]/35 text-[#fca5a5] flex items-center justify-center flex-shrink-0 shadow-sm">
-                <Music className="w-5 h-5 text-[#fca5a5]" />
+              <div className="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 text-slate-300 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Music className="w-5 h-5 text-slate-300" />
               </div>
               <div>
                 <h4 className="text-sm sm:text-base font-bold text-white tracking-wide">
@@ -216,7 +216,7 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
               </div>
             </div>
 
-            <span className="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#A31C1B]/20 text-[#fca5a5] border border-[#A31C1B]/40 shadow-sm flex items-center gap-1 whitespace-nowrap">
+            <span className="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm flex items-center gap-1 whitespace-nowrap">
               <Sparkles className="w-2.5 h-2.5" />
               <span>Within 10 Mins ⚡</span>
             </span>

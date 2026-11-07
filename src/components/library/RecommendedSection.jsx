@@ -54,15 +54,15 @@ export function RecommendedSection({ songs = [] }) {
         <div className="flex items-center gap-2">
           <h2 className="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
             <span>Recommended</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#A31C1B]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
           </h2>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Play All Button */}
+          {/* Play All Button (Primary Action) */}
           <button
             onClick={handlePlayAll}
-            className="flex items-center gap-1.5 text-xs font-semibold text-white bg-[#A31C1B] hover:bg-[#851615] px-3 py-1 rounded-full shadow-sm active:scale-95 transition-all"
+            className="flex items-center gap-1.5 text-xs font-semibold text-white crimson-glow-btn px-3 py-1 rounded-full shadow-sm active:scale-95 transition-all"
             title="Play All Recommended Songs"
           >
             <Play className="w-3 h-3 fill-current" />
@@ -99,7 +99,7 @@ export function RecommendedSection({ songs = [] }) {
               onClick={() => handleSongClick(song, index)}
               className={`group flex items-center justify-between p-2 rounded-2xl transition-all duration-200 cursor-pointer shadow-sm min-h-[58px] sm:min-h-[64px] ${
                 isCurrent
-                  ? 'bg-[#A31C1B]/15 border border-[#A31C1B]/50 shadow-[#A31C1B]/10'
+                  ? 'bg-white/[0.08] border border-white/20 shadow-md'
                   : 'bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.06] hover:border-white/20'
               }`}
               title={`Play ${song.title || song.name}`}
@@ -124,7 +124,7 @@ export function RecommendedSection({ songs = [] }) {
                   <h3
                     title={song.title || song.name}
                     className={`text-xs sm:text-sm font-bold line-clamp-2 leading-snug break-words ${
-                      isCurrent ? 'text-[#fca5a5]' : 'text-white group-hover:text-[#fca5a5]'
+                      isCurrent ? 'text-white' : 'text-slate-100 group-hover:text-white'
                     } transition-colors`}
                   >
                     {song.title || song.name}

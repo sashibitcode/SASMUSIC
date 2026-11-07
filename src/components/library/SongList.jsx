@@ -5,11 +5,12 @@ import { SongRequestCard } from './SongRequestCard';
 import { useAudio } from '../../contexts/AudioContext';
 import { useDrive } from '../../contexts/DriveContext';
 import { usePullToRefresh } from '../../hooks/usePullToRefresh';
+import { shuffleArray } from '../../utils/shuffle';
 
 const INITIAL_BATCH_SIZE = 35;
 const BATCH_INCREMENT = 30;
 
-export function SongList({ songs = [], searchQuery = '', sortBy = 'newest' }) {
+export function SongList({ songs = [], searchQuery = '', sortBy = 'shuffle', shuffleSeed = 0 }) {
   const { playSong } = useAudio();
   const { refreshLibrary } = useDrive();
 
@@ -66,7 +67,11 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'newest' }) {
       );
     }
 
-    // Sort
+    // Sort / Shuffle
+    if (sortBy === 'shuffle') {
+      return shuffleArray(result, shuffleSeed);
+    }
+
     result.sort((a, b) => {
       if (sortBy === 'title-asc') {
         return (a.title || '').localeCompare(b.title || '');
@@ -82,12 +87,12 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'newest' }) {
     });
 
     return result;
-  }, [songs, searchQuery, sortBy]);
+  }, [songs, searchQuery, sortBy, shuffleSeed]);
 
-  // Reset visibleCount when search or sort changes
+  // Reset visibleCount when search, sort, or shuffleSeed changes
   useEffect(() => {
     setVisibleCount(INITIAL_BATCH_SIZE);
-  }, [searchQuery, sortBy]);
+  }, [searchQuery, sortBy, shuffleSeed]);
 
   // Sentinel IntersectionObserver: loads more songs as user scrolls down
   useEffect(() => {
@@ -117,7 +122,7 @@ export function SongList({ songs = [], searchQuery = '', sortBy = 'newest' }) {
 
   const handleShufflePlay = () => {
     if (filteredSongs.length > 0) {
-      const shuffled = [...filteredSongs].sort(() => Math.random() - 0.5);
+      const shuffled = shuffleArray(filteredSongs);
       playSong(shuffled[0], shuffled);
     }
   };

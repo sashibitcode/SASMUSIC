@@ -44,6 +44,7 @@ export function SearchBar({
             aria-label="Sort songs"
             className="bg-transparent text-white font-medium focus:outline-none cursor-pointer text-xs"
           >
+            <option value="shuffle" className="bg-[#171717] text-white">Shuffle (Random)</option>
             <option value="newest" className="bg-[#171717] text-white">Newest Added</option>
             <option value="oldest" className="bg-[#171717] text-white">Oldest</option>
             <option value="title-asc" className="bg-[#171717] text-white">Song Title (A-Z)</option>

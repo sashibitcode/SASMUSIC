@@ -16,7 +16,8 @@ export function CategoryPills({
   drivePlaylists = [],
   activeFilter = { type: 'all', value: null },
   onSelectFilter,
-  onClearFilter
+  onClearFilter,
+  onReshuffle
 }) {
   const [openDropdown, setOpenDropdown] = useState(null); // 'artists' | 'folders' | null
   const [artistSearch, setArtistSearch] = useState('');
@@ -81,48 +82,69 @@ export function CategoryPills({
     <div className="relative select-none" ref={containerRef}>
       {/* Horizontally scrolling pill rail */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 px-0.5">
-        {/* 'All' Reset Pill */}
+        {/* 'All' Reset Pill (Tapping again re-shuffles all songs) */}
         <button
           type="button"
-          onClick={() => onClearFilter()}
+          onClick={() => {
+            if (isAllActive && onReshuffle) {
+              onReshuffle('all');
+            } else {
+              onClearFilter();
+            }
+          }}
           className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95 ${isAllActive
               ? 'crimson-glow-btn text-white shadow-md'
               : 'glass-card hover:border-white/20 text-slate-300 hover:text-white'
             }`}
+          title={isAllActive ? 'Tap to re-shuffle All Songs' : 'All Songs'}
         >
           <Music2 className="w-3.5 h-3.5" />
           <span>All Songs</span>
         </button>
 
-        {/* Dynamic Category Pills */}
+        {/* Dynamic Category Pills (Tapping active category pill re-shuffles that category) */}
         {MUSIC_CATEGORIES.map((cat) => {
           const isActive =
             activeFilter?.type === 'category' &&
             activeFilter?.value?.toLowerCase() === cat.id;
 
+          const handleClick = () => {
+            if (isActive) {
+              if (onReshuffle) {
+                onReshuffle(cat.id);
+              } else {
+                handleSelect({ type: 'category', value: cat.id });
+              }
+            } else {
+              handleSelect({ type: 'category', value: cat.id });
+            }
+          };
+
           return (
             <button
               key={cat.id}
               type="button"
-              onClick={() =>
-                isActive
-                  ? onClearFilter()
-                  : handleSelect({ type: 'category', value: cat.id })
-              }
+              onClick={handleClick}
               className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95 ${isActive
                   ? 'crimson-glow-btn text-white shadow-md'
                   : 'glass-card hover:border-white/20 text-slate-300 hover:text-white'
                 }`}
+              title={isActive ? `Tap to re-shuffle ${cat.label}` : cat.label}
             >
               <span>{cat.shortLabel || cat.label}</span>
               {isActive && (
-                <X
-                  className="w-3 h-3 ml-0.5 text-white/80 hover:text-white"
+                <span
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Clear ${cat.label} filter`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onClearFilter();
                   }}
-                />
+                  className="ml-0.5 p-0.5 rounded-full hover:bg-white/20 text-white/80 hover:text-white transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </span>
               )}
             </button>
           );

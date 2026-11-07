@@ -17,6 +17,7 @@ import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { BottomNav } from './components/navigation/BottomNav';
 import { DesktopSidebar } from './components/navigation/DesktopSidebar';
 import { filterSongsByCategory } from './utils/categoryExtractor';
+import { shuffleArray } from './utils/shuffle';
 import { useAudio } from './contexts/AudioContext';
 import { useSyncPlay } from './contexts/SyncPlayContext';
 import { usePwaBackHandler } from './hooks/usePwaBackHandler';
@@ -50,7 +51,8 @@ export function AppContent() {
   // Navigation, search and category filter state
   const [activeTab, setActiveTab] = useState('songs'); // 'songs' | 'search' | 'playlists' | 'favorites' | 'recents'
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('newest');
+  const [sortBy, setSortBy] = useState('shuffle');
+  const [shuffleSeed, setShuffleSeed] = useState(() => Date.now());
   const [activeFilter, setActiveFilter] = useState({ type: 'all', value: null });
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -177,6 +179,33 @@ export function AppContent() {
     }
   };
 
+  // Select a category/artist/folder filter, switch to songs tab, reset sort to shuffle, and generate fresh seed
+  const handleSelectFilter = (filter) => {
+    setActiveTab('songs');
+    setActiveFilter(filter);
+    setSortBy('shuffle');
+    setShuffleSeed(Date.now());
+    mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Clear filter back to All Songs and generate fresh shuffle seed
+  const handleClearFilter = () => {
+    setActiveFilter({ type: 'all', value: null });
+    setSortBy('shuffle');
+    setShuffleSeed(Date.now());
+    mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Re-shuffle current category or All Songs on repeat tap
+  const handleReshuffle = (target) => {
+    if (target === 'all') {
+      setActiveFilter({ type: 'all', value: null });
+    }
+    setSortBy('shuffle');
+    setShuffleSeed(Date.now());
+    mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="h-[100dvh] w-full flex flex-col md:flex-row bg-ambient-forest text-slate-100 font-sans antialiased selection:bg-[#A31C1B] selection:text-white relative overflow-hidden">
       {/* Desktop & Tablet Sidebar (>= 768px) */}
@@ -193,14 +222,8 @@ export function AppContent() {
         recentsCount={recentlyPlayed?.length || 0}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenUpload={() => setIsUploadOpen(true)}
-        onSelectCategory={(catId) => {
-          setActiveTab('songs');
-          setActiveFilter({ type: 'category', value: catId });
-        }}
-        onSelectFolder={(folderName) => {
-          setActiveTab('songs');
-          setActiveFilter({ type: 'playlist', value: folderName });
-        }}
+        onSelectCategory={(catId) => handleSelectFilter({ type: 'category', value: catId })}
+        onSelectFolder={(folderName) => handleSelectFilter({ type: 'playlist', value: folderName })}
       />
 
       {/* Main Content Area */}
@@ -243,8 +266,9 @@ export function AppContent() {
                 songs={songs}
                 drivePlaylists={drivePlaylists}
                 activeFilter={activeFilter}
-                onSelectFilter={setActiveFilter}
-                onClearFilter={() => setActiveFilter({ type: 'all', value: null })}
+                onSelectFilter={handleSelectFilter}
+                onClearFilter={handleClearFilter}
+                onReshuffle={handleReshuffle}
               />
             )}
           </div>
@@ -270,7 +294,7 @@ export function AppContent() {
                 <CategoryBanner
                   activeFilter={activeFilter}
                   songCount={categorizedSongs.length}
-                  onClearFilter={() => setActiveFilter({ type: 'all', value: null })}
+                  onClearFilter={handleClearFilter}
                   onPlayAll={() => {
                     if (categorizedSongs.length > 0) {
                       playSong(categorizedSongs[0], categorizedSongs, 0);
@@ -278,7 +302,10 @@ export function AppContent() {
                   }}
                   onShuffle={() => {
                     if (categorizedSongs.length > 0) {
-                      const shuffled = [...categorizedSongs].sort(() => Math.random() - 0.5);
+                      setSortBy('shuffle');
+                      const newSeed = Date.now();
+                      setShuffleSeed(newSeed);
+                      const shuffled = shuffleArray(categorizedSongs, newSeed);
                       playSong(shuffled[0], shuffled, 0);
                     }
                   }}
@@ -295,8 +322,8 @@ export function AppContent() {
                 <CategoryHub
                   songs={songs}
                   drivePlaylists={drivePlaylists}
-                  onSelectCategory={(catId) => setActiveFilter({ type: 'category', value: catId })}
-                  onSelectArtist={(artistName) => setActiveFilter({ type: 'artist', value: artistName })}
+                  onSelectCategory={(catId) => handleSelectFilter({ type: 'category', value: catId })}
+                  onSelectArtist={(artistName) => handleSelectFilter({ type: 'artist', value: artistName })}
                 />
               )}
 
@@ -322,6 +349,7 @@ export function AppContent() {
                     songs={categorizedSongs}
                     searchQuery={debouncedSearch}
                     sortBy={sortBy}
+                    shuffleSeed={shuffleSeed}
                   />
                 </div>
               )}
@@ -369,8 +397,8 @@ export function AppContent() {
             setIsSyncModalOpen(true);
           }}
           onSelectCategory={(catId) => {
-            setActiveTab('songs');
-            setActiveFilter({ type: 'category', value: catId });
+            setIsMobileMenuOpen(false);
+            handleSelectFilter({ type: 'category', value: catId });
           }}
         />
         <UploadModal

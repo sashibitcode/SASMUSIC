@@ -12,6 +12,18 @@ import { IS_CLERK_CONFIGURED } from '../../config/clerkConfig';
 import { showFloatingToast } from '../../utils/toast';
 
 /**
+ * Record explicit user action clicking 'Sign In' button so login alerts
+ * only trigger on user-initiated sign-in, never on app open/reload.
+ */
+export function markSignInAction() {
+  try {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('sas_sign_in_initiated', String(Date.now()));
+    }
+  } catch (_) {}
+}
+
+/**
  * Header Authentication Trigger / User Avatar + Direct Log Out Button
  */
 export function AuthHeaderButton() {
@@ -35,6 +47,7 @@ export function AuthHeaderButton() {
       <SignedOut>
         <SignInButton mode="modal">
           <button
+            onClick={markSignInAction}
             className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B] hover:bg-[#851615] text-white text-[11px] sm:text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/50"
             aria-label="Sign In"
           >
@@ -145,7 +158,10 @@ export function AuthSidebarProfile() {
 
       <SignedOut>
         <SignInButton mode="modal">
-          <button className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.08] hover:border-[#A31C1B]/50 transition-all group text-left cursor-pointer">
+          <button
+            onClick={markSignInAction}
+            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#06110c]/80 border border-white/[0.08] hover:border-[#A31C1B]/50 transition-all group text-left cursor-pointer"
+          >
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-[#A31C1B]/20 flex items-center justify-center text-[#fca5a5] border border-[#A31C1B]/30">
                 <User className="w-4 h-4" />
@@ -255,7 +271,10 @@ export function AuthSettingsSection() {
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-300">You are browsing as a Guest.</span>
           <SignInButton mode="modal">
-            <button className="px-3 py-1.5 rounded-xl bg-[#A31C1B] hover:bg-[#851615] text-white text-xs font-semibold shadow-sm transition-all active:scale-95">
+            <button
+              onClick={markSignInAction}
+              className="px-3 py-1.5 rounded-xl bg-[#A31C1B] hover:bg-[#851615] text-white text-xs font-semibold shadow-sm transition-all active:scale-95"
+            >
               Sign In
             </button>
           </SignInButton>

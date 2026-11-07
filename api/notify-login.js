@@ -113,7 +113,7 @@ export default async function handler(req, res) {
 
     if (botToken && chatId) {
       const messageText = [
-        `🔐 <b>NEW USER LOGIN • SAS MUSIC</b> 🔐`,
+        `🔐 <b>NEW USER SIGNED IN • SAS MUSIC</b> 🔐`,
         `──────────────────────────────`,
         `👤 <b>User:</b> ${escapeHtml(cleanUserName)}`,
         `📧 <b>Email:</b> <code>${escapeHtml(cleanUserEmail)}</code>`,

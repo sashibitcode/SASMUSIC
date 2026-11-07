@@ -20,6 +20,7 @@ import {
 import { Logo } from '../common/Logo';
 import { SignedIn, SignedOut, SignInButton, SignOutButton, useUser } from '@clerk/clerk-react';
 import { IS_CLERK_CONFIGURED } from '../../config/clerkConfig';
+import { markSignInAction } from '../auth/AuthControls';
 import { useAudio } from '../../contexts/AudioContext';
 import { showFloatingToast } from '../../utils/toast';
 
@@ -216,7 +217,10 @@ export function MobileMenuDrawer({
 
                   <SignInButton mode="modal">
                     <button
-                      onClick={onClose}
+                      onClick={() => {
+                        markSignInAction();
+                        onClose();
+                      }}
                       className="w-full min-h-[38px] mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#A31C1B] hover:bg-[#851615] text-white text-xs font-bold shadow-md transition-all active:scale-95"
                     >
                       <LogIn className="w-3.5 h-3.5" />

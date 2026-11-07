@@ -193,24 +193,61 @@ export function LibraryProvider({ children }) {
         }).catch((e) => console.warn('Initial cloud merge sync warning:', e));
       }
 
-      // D. Send Real-Time Telegram Login Alert (session-deduplicated)
+      // D. Send Real-Time Telegram Alert ONLY when a NEW user explicitly signs in (Never on app open/reload)
       try {
-        const sessionAlertKey = `sas_login_alert_${userId}`;
-        if (typeof window !== 'undefined' && !sessionStorage.getItem(sessionAlertKey)) {
-          sessionStorage.setItem(sessionAlertKey, String(Date.now()));
-          fetch('/api/notify-login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId,
-              userName: user.fullName || user.firstName || 'Music Listener',
-              userEmail: user.primaryEmailAddress?.emailAddress || 'Not Provided',
-              authProvider: user.externalAccounts?.[0]?.providerTitle || 'Google',
-              userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : ''
-            })
-          }).catch((err) => {
-            console.debug('Login alert dispatch warning:', err);
-          });
+        if (typeof window !== 'undefined') {
+          const userNotifiedKey = `sas_user_notified_${userId}`;
+          const isLocallyNotified = Boolean(localStorage.getItem(userNotifiedKey));
+          const isMetadataNotified = Boolean(user.unsafeMetadata?.telegramNotified);
+
+          // Check if an explicit 'Sign In' click occurred in this session within last 15 minutes
+          const signInActionTs = sessionStorage.getItem('sas_sign_in_initiated');
+          const isExplicitSignIn = Boolean(
+            signInActionTs && (Date.now() - Number(signInActionTs) < 15 * 60 * 1000)
+          );
+
+          // If this is just an app open / session restore (no explicit Sign In click), DO NOT NOTIFY
+          if (!isExplicitSignIn) {
+            if (!isLocallyNotified) {
+              localStorage.setItem(userNotifiedKey, 'true');
+            }
+            if (!isMetadataNotified) {
+              user.update({
+                unsafeMetadata: {
+                  ...user.unsafeMetadata,
+                  telegramNotified: true
+                }
+              }).catch(() => {});
+            }
+          } else {
+            // User explicitly clicked Sign In button
+            sessionStorage.removeItem('sas_sign_in_initiated');
+
+            // Only notify if this user hasn't been notified before (brand new user sign-in)
+            if (!isLocallyNotified && !isMetadataNotified) {
+              localStorage.setItem(userNotifiedKey, 'true');
+              user.update({
+                unsafeMetadata: {
+                  ...user.unsafeMetadata,
+                  telegramNotified: true
+                }
+              }).catch(() => {});
+
+              fetch('/api/notify-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  userId,
+                  userName: user.fullName || user.firstName || 'Music Listener',
+                  userEmail: user.primaryEmailAddress?.emailAddress || 'Not Provided',
+                  authProvider: user.externalAccounts?.[0]?.providerTitle || 'Google',
+                  userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : ''
+                })
+              }).catch((err) => {
+                console.debug('Login alert dispatch warning:', err);
+              });
+            }
+          }
         }
       } catch (_) {}
     } else {
@@ -219,6 +256,7 @@ export function LibraryProvider({ children }) {
       setIsCloudSynced(false);
       try {
         if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('sas_sign_in_initiated');
           Object.keys(sessionStorage).forEach((k) => {
             if (k.startsWith('sas_login_alert_')) sessionStorage.removeItem(k);
           });

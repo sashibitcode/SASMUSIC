@@ -20,7 +20,7 @@ export function SearchBar({
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search songs, artists, folders..."
           aria-label="Search songs, artists, and playlists"
-          className="w-full pl-10 pr-11 h-10 sm:h-11 min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm rounded-xl glass-panel text-white placeholder-slate-500 focus:outline-none focus:border-[#A31C1B] focus:ring-2 focus:ring-[#A31C1B]/30 transition-all shadow-inner"
+          className="w-full pl-10 pr-11 h-9 sm:h-10 min-h-[36px] sm:min-h-[40px] text-xs sm:text-sm rounded-xl glass-panel text-white placeholder-slate-500 focus:outline-none focus:border-[#A31C1B] focus:ring-2 focus:ring-[#A31C1B]/30 transition-all shadow-inner"
         />
         {searchQuery && (
           <button
@@ -35,7 +35,7 @@ export function SearchBar({
 
       {/* Sort selection dropdown */}
       {onSortChange && (
-        <div className="flex items-center gap-1.5 px-3 h-10 sm:h-11 min-h-[40px] sm:min-h-[44px] rounded-xl glass-panel text-slate-300 text-xs shadow-sm hover:border-[#A31C1B]/40 transition-colors self-end sm:self-auto flex-shrink-0">
+        <div className="flex items-center gap-1.5 px-3 h-9 sm:h-10 min-h-[36px] sm:min-h-[40px] rounded-xl glass-panel text-slate-300 text-xs shadow-sm hover:border-[#A31C1B]/40 transition-colors self-end sm:self-auto flex-shrink-0">
           <ArrowUpDown className="w-3.5 h-3.5 text-[#A31C1B]" />
           <span className="text-slate-400 hidden sm:inline">Sort:</span>
           <select

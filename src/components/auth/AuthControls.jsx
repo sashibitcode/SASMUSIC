@@ -33,7 +33,7 @@ export function AuthHeaderButton() {
         onClick={() => {
           showFloatingToast('Add VITE_CLERK_PUBLISHABLE_KEY in .env to enable login', 'info');
         }}
-        className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B]/80 hover:bg-[#A31C1B] text-white text-[11px] sm:text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/40"
+        className="h-7.5 sm:h-8 min-h-[30px] px-2.5 sm:px-3 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B]/80 hover:bg-[#A31C1B] text-white text-[11px] sm:text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/40"
         title="Clerk Authentication Setup"
       >
         <LogIn className="w-3.5 h-3.5" />
@@ -48,7 +48,7 @@ export function AuthHeaderButton() {
         <SignInButton mode="modal">
           <button
             onClick={markSignInAction}
-            className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B] hover:bg-[#851615] text-white text-[11px] sm:text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/50"
+            className="h-7.5 sm:h-8 min-h-[30px] px-2.5 sm:px-3 rounded-full flex items-center justify-center gap-1.5 bg-[#A31C1B] hover:bg-[#851615] text-white text-[11px] sm:text-xs font-semibold shadow-sm transition-all active:scale-95 border border-[#A31C1B]/50"
             aria-label="Sign In"
           >
             <LogIn className="w-3.5 h-3.5" />
@@ -59,12 +59,12 @@ export function AuthHeaderButton() {
 
       <SignedIn>
         {/* Profile Avatar with Popover Profile Menu (Exit icon removed from top header) */}
-        <div className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border border-white/20 hover:border-[#A31C1B]/60 transition-all bg-[#06110c] shadow-sm flex-shrink-0">
+        <div className="w-7.5 h-7.5 sm:w-8 sm:h-8 min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center border border-white/20 hover:border-[#A31C1B]/60 transition-all bg-[#06110c] shadow-sm flex-shrink-0">
           <UserButton
             afterSignOutUrl="/"
             appearance={{
               elements: {
-                avatarBox: 'w-7.5 h-7.5 rounded-full',
+                avatarBox: 'w-6.5 h-6.5 sm:w-7 sm:h-7 rounded-full',
                 userButtonPopoverCard: 'bg-[#121614] border border-[#282f2b] text-white shadow-2xl',
                 userButtonPopoverFooter: 'hidden'
               }

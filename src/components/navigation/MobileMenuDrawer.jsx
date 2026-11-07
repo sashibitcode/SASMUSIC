@@ -315,11 +315,10 @@ export function MobileMenuDrawer({
                         showFloatingToast('Sleep timer turned off', 'info');
                       }
                     }}
-                    className={`py-1.5 rounded-lg text-[10px] font-semibold transition-all active:scale-90 ${
-                      isActive
+                    className={`py-1.5 rounded-lg text-[10px] font-semibold transition-all active:scale-90 ${isActive
                         ? 'bg-[#A31C1B] text-white shadow-sm font-bold'
                         : 'bg-white/[0.05] text-slate-300 hover:bg-white/10'
-                    }`}
+                      }`}
                   >
                     {opt.label}
                   </button>

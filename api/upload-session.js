@@ -131,10 +131,15 @@ export default async function handler(req, res) {
     const cleanArtist = sanitizeFileName(artist || 'Unknown Artist');
     const formattedFileName = `${cleanTitle} - ${cleanArtist}${ext}`;
 
-    const folderId = process.env.DRIVE_FOLDER_ID || process.env.VITE_DRIVE_FOLDER_ID;
-    if (!folderId || !/^[a-zA-Z0-9_-]+$/.test(folderId)) {
+    const mainFolderId = process.env.DRIVE_FOLDER_ID || process.env.VITE_DRIVE_FOLDER_ID;
+    if (!mainFolderId || !/^[a-zA-Z0-9_-]+$/.test(mainFolderId)) {
       return res.status(500).json({ error: 'DRIVE_FOLDER_ID is invalid or not configured on the server' });
     }
+
+    // Allow uploading directly to a designated subfolder (e.g. 'chhat specail') or fall back to root
+    const folderId = (body && body.targetFolderId && /^[a-zA-Z0-9_-]+$/.test(body.targetFolderId))
+      ? body.targetFolderId
+      : mainFolderId;
 
     // 2. Get fresh Google Drive OAuth2 Access Token
     const accessToken = await getDriveAccessToken();

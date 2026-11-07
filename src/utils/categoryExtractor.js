@@ -169,10 +169,34 @@ export function isSongInCategory(song, categoryId) {
       );
 
     case 'chhath': {
-      // Strictly and exclusively match songs belonging to the Google Drive folder "chhat specail" (and variants)
       const folderName = (song.folderName || song.folder || '').toLowerCase().trim();
-      if (!folderName) return false;
-      return folderName.includes('chhat') || folderName.includes('chhath');
+      // 1. All songs belonging to the Google Drive folder "chhat specail" (and variants)
+      if (folderName && (folderName.includes('chhat') || folderName.includes('chhath'))) {
+        return true;
+      }
+
+      // 2. Newly uploaded or root-level songs with explicit Chhath tags or distinctive title keywords
+      const title = (song.title || song.name || '').toLowerCase();
+      const isChhathTitle =
+        title.includes('chhat') ||
+        title.includes('chhath') ||
+        title.includes('chhathi') ||
+        title.includes('kelwa ke paat') ||
+        title.includes('kaanch hi baans') ||
+        title.includes('ug ho suruj') ||
+        title.includes('pahile pahil') ||
+        title.includes('arghya') ||
+        title.includes('aragh') ||
+        title.includes('mahaparv') ||
+        title.includes('daura') ||
+        title.includes('thekua');
+
+      const isChhathCategory = Boolean(
+        (song.category && song.category.toLowerCase().includes('chhath')) ||
+        (song.genre && song.genre.toLowerCase().includes('chhath'))
+      );
+
+      return isChhathTitle || isChhathCategory;
     }
 
     case 'gym':

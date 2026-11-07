@@ -101,7 +101,7 @@ async function fetchFolderAudioFiles(folderId, apiKey, folderName = 'Main Drive'
 
   do {
     const params = new URLSearchParams({
-      q: `'${folderId}' in parents and mimeType contains 'audio/' and trashed = false`,
+      q: `'${folderId}' in parents and (mimeType contains 'audio/' or name contains '.mp3' or name contains '.m4a' or name contains '.wav' or name contains '.aac' or name contains '.flac') and trashed = false`,
       fields: 'nextPageToken,files(id,name,mimeType,size,modifiedTime)',
       orderBy: 'modifiedTime desc',
       pageSize: '1000',
@@ -252,13 +252,14 @@ export async function fetchDriveLibrary(folderId, apiKey) {
 
     const subfolderResults = await Promise.all(subfolderSongsPromises);
 
-    // Collect all files from main folder + all subfolders
-    const rawAllFiles = [...mainFiles];
+    // Collect all files from subfolders FIRST so specific subfolder metadata (e.g. 'chhat specail') is preserved
+    const rawAllFiles = [];
     subfolderResults.forEach((r) => {
       if (r && Array.isArray(r.files)) {
         rawAllFiles.push(...r.files);
       }
     });
+    rawAllFiles.push(...mainFiles);
 
     // Strictly deduplicate so no song ever appears multiple times
     const allSongs = deduplicateSongs(rawAllFiles);

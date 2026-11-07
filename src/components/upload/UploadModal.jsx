@@ -15,7 +15,7 @@ function formatBytes(bytes) {
 }
 
 export function UploadModal({ isOpen, onClose }) {
-  const { refreshLibrary } = useDrive();
+  const { refreshLibrary, drivePlaylists } = useDrive();
 
   // Fresh token per upload - requires password every single time
   const [token, setToken] = useState(null);
@@ -33,6 +33,7 @@ export function UploadModal({ isOpen, onClose }) {
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
+  const [selectedFolderId, setSelectedFolderId] = useState('');
   const [confirmedOriginal, setConfirmedOriginal] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -58,6 +59,7 @@ export function UploadModal({ isOpen, onClose }) {
       setFile(null);
       setTitle('');
       setArtist('');
+      setSelectedFolderId('');
       setConfirmedOriginal(false);
       setUploadProgress(0);
       setAuthError('');
@@ -171,7 +173,8 @@ export function UploadModal({ isOpen, onClose }) {
           artist: artist.trim(),
           originalFileName: file.name,
           mimeType: file.type || 'audio/mpeg',
-          fileSize: file.size
+          fileSize: file.size,
+          targetFolderId: selectedFolderId || undefined
         })
       });
 
@@ -423,6 +426,33 @@ export function UploadModal({ isOpen, onClose }) {
                     required
                     className="w-full px-3 py-2 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10"
                   />
+                </div>
+
+                {/* Category / Drive Folder Destination */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-medium text-slate-300">
+                      Category / Folder Destination
+                    </label>
+                    <span className="text-[10px] text-slate-400">Optional</span>
+                  </div>
+                  <select
+                    value={selectedFolderId}
+                    onChange={(e) => setSelectedFolderId(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10"
+                  >
+                    <option value="">🎵 Main Library (General)</option>
+                    {(drivePlaylists || []).map((pl) => {
+                      const lower = (pl.name || '').toLowerCase();
+                      const isChhath = lower.includes('chhat') || lower.includes('chhath');
+                      const emoji = isChhath ? '🌅' : lower.includes('bhojpuri') ? '🌾' : lower.includes('gym') ? '🏋️' : lower.includes('retro') ? '📻' : '📁';
+                      return (
+                        <option key={pl.id} value={pl.id}>
+                          {emoji} {pl.name} {isChhath ? '(Chhath Special)' : ''}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
 
                 {/* Filename Preview */}

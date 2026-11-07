@@ -168,36 +168,12 @@ export function isSongInCategory(song, categoryId) {
         fullText.includes('lat lag')
       );
 
-    case 'chhath':
-      return (
-        folder.includes('chhath') ||
-        folder.includes('chhat') ||
-        folder.includes('puja') ||
-        fullText.includes('chhath') ||
-        fullText.includes('chhat') ||
-        fullText.includes('chhathi') ||
-        fullText.includes('arghya') ||
-        fullText.includes('aragh') ||
-        fullText.includes('suruj') ||
-        fullText.includes('surya') ||
-        fullText.includes('sooraj') ||
-        fullText.includes('dina nath') ||
-        fullText.includes('dinanath') ||
-        fullText.includes('sharda sinha') ||
-        fullText.includes('anuradha paudwal') ||
-        fullText.includes('kelwa ke paat') ||
-        fullText.includes('kaanch hi baans') ||
-        fullText.includes('ug ho suruj') ||
-        fullText.includes('pahile pahil') ||
-        fullText.includes('bahangi') ||
-        fullText.includes('daura') ||
-        fullText.includes('soop') ||
-        fullText.includes('thekua') ||
-        fullText.includes('ghat') ||
-        fullText.includes('mahaparv') ||
-        (song.category && song.category.toLowerCase().includes('chhath')) ||
-        (song.genre && song.genre.toLowerCase().includes('chhath'))
-      );
+    case 'chhath': {
+      // Strictly and exclusively match songs belonging to the Google Drive folder "chhat specail" (and variants)
+      const folderName = (song.folderName || song.folder || '').toLowerCase().trim();
+      if (!folderName) return false;
+      return folderName.includes('chhat') || folderName.includes('chhath');
+    }
 
     case 'gym':
       return (
@@ -308,7 +284,7 @@ export function isSongInCategory(song, categoryId) {
         fullText.includes('saregama') ||
         fullText.includes('hindi') ||
         fullText.includes('bollywood') ||
-        (!isSongInCategory(song, 'bhojpuri') && (song.mimeType || '').includes('audio'))
+        (!isSongInCategory(song, 'bhojpuri') && !isSongInCategory(song, 'chhath') && (song.mimeType || '').includes('audio'))
       );
 
     default:

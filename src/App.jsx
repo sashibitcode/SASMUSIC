@@ -56,7 +56,7 @@ export function AppContent() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const { isSyncModalOpen, setIsSyncModalOpen, isInRoom } = useSyncPlay();
+  const { isSyncModalOpen, setIsSyncModalOpen, isInRoom, roomCode } = useSyncPlay();
 
   // Auto-detect ?room=123456 in URL
   useEffect(() => {
@@ -165,8 +165,8 @@ export function AppContent() {
       <DesktopSidebar
         activeTab={activeTab}
         onTabChange={handleTabChange}
-        favoritesCount={favorites.length}
-        recentsCount={recentlyPlayed.length}
+        favoritesCount={favorites?.length || 0}
+        recentsCount={recentlyPlayed?.length || 0}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenUpload={() => setIsUploadOpen(true)}
         onSelectCategory={(catId) => {
@@ -188,7 +188,7 @@ export function AppContent() {
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenMenu={() => setIsMobileMenuOpen(true)}
             onOpenFavorites={() => handleTabChange('favorites')}
-            favoritesCount={favorites.length}
+            favoritesCount={favorites?.length || 0}
           />
         </div>
 
@@ -321,7 +321,7 @@ export function AppContent() {
         onOpenSync={() => setIsSyncModalOpen(true)}
         isInRoom={isInRoom}
         roomCode={roomCode}
-        recentsCount={recentlyPlayed.length}
+        recentsCount={recentlyPlayed?.length || 0}
       />
 
       {/* Code-split Fullscreen Expandable Player Modal / Bottom Sheet & Modals */}

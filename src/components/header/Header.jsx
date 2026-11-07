@@ -1,11 +1,9 @@
 import React from 'react';
-import { Settings, Users, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Logo } from '../common/Logo';
-import { useSyncPlay } from '../../contexts/SyncPlayContext';
 import { AuthHeaderButton } from '../auth/AuthControls';
 
 export function Header({ onLogoClick, onOpenSettings, onOpenMenu, onOpenFavorites, favoritesCount = 0 }) {
-  const { isInRoom, roomCode, setIsSyncModalOpen } = useSyncPlay();
 
   const handleMenuClick = () => {
     if (onOpenMenu) {

@@ -9,6 +9,7 @@ import { SyncPlayProvider } from './contexts/SyncPlayContext';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { clerkAppearance, CLERK_PUBLISHABLE_KEY, IS_CLERK_CONFIGURED } from './config/clerkConfig';
 import { registerSW } from 'virtual:pwa-register';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Auto-register service worker for PWA offline shell & updates
 if ('serviceWorker' in navigator) {
@@ -53,6 +54,8 @@ function RootApp() {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RootApp />
+    <ErrorBoundary>
+      <RootApp />
+    </ErrorBoundary>
   </React.StrictMode>
 );

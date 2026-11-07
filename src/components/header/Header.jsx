@@ -1,10 +1,10 @@
 import React from 'react';
-import { Settings, Users } from 'lucide-react';
+import { Settings, Users, Heart } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { useSyncPlay } from '../../contexts/SyncPlayContext';
 import { AuthHeaderButton } from '../auth/AuthControls';
 
-export function Header({ onLogoClick, onOpenSettings, onOpenMenu }) {
+export function Header({ onLogoClick, onOpenSettings, onOpenMenu, onOpenFavorites, favoritesCount = 0 }) {
   const { isInRoom, roomCode, setIsSyncModalOpen } = useSyncPlay();
 
   const handleMenuClick = () => {
@@ -30,26 +30,21 @@ export function Header({ onLogoClick, onOpenSettings, onOpenMenu }) {
           />
         </div>
 
-        {/* Right Actions: Listen Together, Clerk Avatar & 3-Line Menu */}
+        {/* Right Actions: Favorites, Clerk Avatar & 3-Line Menu */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-          {/* Listen Together (With Friends) Button - shown on sm+ or when actively in room */}
+          {/* Favorites Button in Header (Heart icon with count badge) */}
           <button
-            onClick={() => setIsSyncModalOpen(true)}
-            className={`h-8 sm:h-9 px-2.5 sm:px-3 rounded-full ${isInRoom ? 'flex' : 'hidden sm:flex'} items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm select-none border flex-shrink-0 ${isInRoom
-                ? 'bg-[#A31C1B]/25 border-[#A31C1B] text-white shadow-[0_0_12px_rgba(163,28,27,0.4)]'
-                : 'glass-card hover:border-[#A31C1B]/50 text-slate-200 hover:text-white'
-              }`}
-            aria-label="Listen Together with Friends"
-            title="Listen Together with Friends"
+            onClick={onOpenFavorites}
+            className="w-8.5 h-8.5 sm:w-9 sm:h-9 min-w-[34px] min-h-[34px] flex items-center justify-center rounded-full glass-card hover:border-[#A31C1B]/50 hover:bg-white/[0.08] active:scale-95 transition-all shadow-sm group select-none relative flex-shrink-0"
+            aria-label="View Favorites"
+            title="Favorites"
           >
-            <span className="relative flex h-2 w-2">
-              {isInRoom && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />}
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${isInRoom ? 'bg-[#A31C1B]' : 'bg-emerald-400'}`} />
-            </span>
-            <Users className="w-4 h-4 text-[#fca5a5]" />
-            <span className="text-xs font-semibold whitespace-nowrap hidden sm:inline">
-              {isInRoom ? `Room #${roomCode}` : 'With Friends'}
-            </span>
+            <Heart className="w-4 h-4 text-rose-400 group-hover:scale-110 group-hover:text-rose-300 transition-all fill-rose-500/20" />
+            {favoritesCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[14px] h-[14px] px-1 bg-[#A31C1B] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-[#06110c]">
+                {favoritesCount > 99 ? '99+' : favoritesCount}
+              </span>
+            )}
           </button>
 
           {/* Clerk Auth Button / Avatar (Single circular avatar, no exit button) */}

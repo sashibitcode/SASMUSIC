@@ -187,6 +187,8 @@ export function AppContent() {
             onLogoClick={() => handleTabChange('songs')}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenMenu={() => setIsMobileMenuOpen(true)}
+            onOpenFavorites={() => handleTabChange('favorites')}
+            favoritesCount={favorites.length}
           />
         </div>
 
@@ -316,7 +318,9 @@ export function AppContent() {
       <BottomNav
         activeTab={activeTab}
         onTabChange={handleTabChange}
-        favoritesCount={favorites.length}
+        onOpenSync={() => setIsSyncModalOpen(true)}
+        isInRoom={isInRoom}
+        roomCode={roomCode}
         recentsCount={recentlyPlayed.length}
       />
 

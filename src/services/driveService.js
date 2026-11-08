@@ -221,6 +221,24 @@ export async function fetchDriveLibrary(folderId, apiKey) {
     throw err;
   }
 
+  // 1. Try resilient same-origin Edge/Serverless proxy first
+  // Bypasses mobile referrer-stripping, CORS restrictions, and caches library responses
+  try {
+    const proxyUrl = folderId ? `/api/drive?folderId=${encodeURIComponent(folderId)}` : '/api/drive';
+    const proxyRes = await fetch(proxyUrl);
+    if (proxyRes.ok) {
+      const data = await proxyRes.json();
+      if (data && Array.isArray(data.songs) && data.songs.length > 0) {
+        return data;
+      }
+    } else {
+      console.warn(`Drive Edge Proxy returned status ${proxyRes.status}, falling back to direct API.`);
+    }
+  } catch (proxyErr) {
+    console.warn('Drive Edge Proxy unavailable, falling back to direct Drive API:', proxyErr.message);
+  }
+
+  // 2. Direct client-side Google Drive API fallback
   if (!folderId || !apiKey || folderId === 'PASTE_FOLDER_ID_HERE' || apiKey === 'PASTE_API_KEY_HERE') {
     const err = new Error('Google Drive configuration missing.');
     err.code = 'NOT_CONFIGURED';

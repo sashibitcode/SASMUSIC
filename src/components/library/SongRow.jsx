@@ -143,12 +143,12 @@ export function SongRow({ song, index, playlist = null }) {
         className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Favorite Heart */}
+        {/* Favorite Heart - only show filled heart when favorited, or on hover on desktop to prevent UI clutter */}
         <button
           onClick={() => toggleFavorite(song.id)}
-          className={`w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full transition-transform active:scale-90 ${isFav
-            ? 'text-rose-500 hover:text-rose-400'
-            : 'text-slate-500 hover:text-slate-300'
+          className={`w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] items-center justify-center rounded-full transition-all active:scale-90 ${isFav
+            ? 'flex text-rose-500 hover:text-rose-400'
+            : 'hidden sm:flex opacity-0 group-hover:opacity-100 text-slate-500 hover:text-slate-300'
             }`}
           aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
         >

@@ -9,8 +9,7 @@ import {
   ChevronLeft,
   FolderPlus,
   ListMusic,
-  Cloud,
-  Heart
+  Cloud
 } from 'lucide-react';
 import { useDrive } from '../../contexts/DriveContext';
 import { useLibrary } from '../../contexts/LibraryContext';
@@ -248,11 +247,8 @@ export function PlaylistsView() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-white transition-colors flex items-center gap-1.5">
-                        <span>{folder.name}</span>
-                        {isVip && (
-                          <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 flex-shrink-0 animate-pulse" />
-                        )}
+                      <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-white transition-colors">
+                        {folder.name}
                       </h4>
                       <p className="text-[11px] mt-0.5 text-slate-400">
                         {count} {count === 1 ? 'track' : 'tracks'}

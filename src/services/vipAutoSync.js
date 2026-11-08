@@ -69,8 +69,8 @@ export async function autoSyncVipFolder(allSongs) {
     // 4. Show friendly celebratory notification
     if (newlyDownloadedCount > 0) {
       const msg = newlyDownloadedCount === 1
-        ? `✨ 1 naya gaana aapke liye offline save ho gaya! ❤️`
-        : `✨ ${newlyDownloadedCount} naye gaane aapke liye offline save ho gaye! ❤️`;
+        ? `✨ 1 naya gaana offline save ho gaya!`
+        : `✨ ${newlyDownloadedCount} naye gaane offline save ho gaye!`;
       showFloatingToast(msg, 'success');
     }
   } catch (err) {
@@ -119,7 +119,7 @@ export async function manualSyncVipFolder(allSongs, onProgress = null) {
     }
   }
 
-  showFloatingToast(`🎉 Saare ${completed} gaane offline save ho gaye! ❤️`, 'success');
+  showFloatingToast(`🎉 Saare ${completed} gaane offline ready hain!`, 'success');
   return { success: true, total: vipSongs.length, downloaded: completed };
 }
 

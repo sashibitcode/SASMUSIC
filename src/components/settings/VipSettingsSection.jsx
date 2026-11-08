@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Lock, Unlock, Download, RefreshCw, Trash2, CheckCircle2, Sparkles } from 'lucide-react';
+import { Lock, Unlock, Download, RefreshCw, Trash2, CheckCircle2, Sparkles } from 'lucide-react';
 import { isVipUnlocked, unlockVip, lockVip, getVipFolderName } from '../../utils/vipConfig';
 import { manualSyncVipFolder, getVipStatus } from '../../services/vipAutoSync';
 import { clearAudioCache } from '../../services/audioCache';
@@ -21,7 +21,7 @@ export function VipSettingsSection({ songs = [] }) {
     if (success) {
       setUnlocked(true);
       setPasscode('');
-      showFloatingToast('❤️ VIP Unlocked! Downloading your songs...', 'success');
+      showFloatingToast('Unlocked! Downloading collection in background...', 'success');
 
       // Immediately start downloading all songs automatically without needing any button!
       setIsSyncing(true);
@@ -44,7 +44,7 @@ export function VipSettingsSection({ songs = [] }) {
   const handleLock = () => {
     lockVip();
     setUnlocked(false);
-    showFloatingToast('VIP Mode locked.', 'info');
+    showFloatingToast('Private space hidden.', 'info');
   };
 
   const handleClearOffline = async () => {
@@ -58,7 +58,7 @@ export function VipSettingsSection({ songs = [] }) {
     return (
       <div className="rounded-2xl p-4 bg-[#121614]/60 border border-[#282f2b] space-y-3">
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-rose-500" />
+          <Lock className="w-4 h-4 text-slate-400" />
           <h4 className="text-xs font-semibold text-slate-300">
             Private Space
           </h4>
@@ -98,9 +98,9 @@ export function VipSettingsSection({ songs = [] }) {
     <div className="rounded-2xl p-4 bg-gradient-to-br from-[#1a1215] to-[#121614] border border-rose-500/30 space-y-3 shadow-lg shadow-rose-950/20">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
+        <Sparkles className="w-4 h-4 text-rose-400" />
         <h4 className="text-xs font-bold text-white tracking-wide">
-          For You ❤️ Collection
+          {getVipFolderName()} Collection
         </h4>
       </div>
 

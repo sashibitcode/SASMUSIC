@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Play, Shuffle, CheckCircle2, Sparkles } from 'lucide-react';
+import { Play, Shuffle, CheckCircle2, Sparkles } from 'lucide-react';
 import { useAudio } from '../../contexts/AudioContext';
 import { useDrive } from '../../contexts/DriveContext';
 import { isVipUnlocked, isVipFolder, getVipFolderName } from '../../utils/vipConfig';
@@ -37,14 +37,9 @@ export function VipHomeBanner() {
       <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         {/* Left: Title & Info */}
         <div className="space-y-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center flex-shrink-0">
-              <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
-            </span>
-            <h2 className="text-base sm:text-lg font-extrabold text-white tracking-wide">
-              {getVipFolderName()}
-            </h2>
-          </div>
+          <h2 className="text-base sm:text-lg font-extrabold text-white tracking-wide">
+            {getVipFolderName()}
+          </h2>
 
           <p className="text-xs text-rose-200/80 flex items-center gap-1.5 pl-0.5 font-medium">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />

@@ -8,14 +8,10 @@ import {
   ListPlus,
   Music2,
   Folder,
-  Disc,
-  Download,
-  Check,
-  CheckCircle2
+  Disc
 } from 'lucide-react';
 import { useAudio } from '../../contexts/AudioContext';
 import { useLibrary } from '../../contexts/LibraryContext';
-import { useDrive } from '../../contexts/DriveContext';
 import { getSongGradientStyle } from '../../utils/artGenerator';
 import { VisualizerBars } from '../player/VisualizerBars';
 import { formatFileSize } from '../../utils/formatters';
@@ -24,7 +20,6 @@ import { SongCoverArt } from '../common/SongCoverArt';
 export function SongRow({ song, index, playlist = null }) {
   const { currentSong, isPlaying, isLoadingAudio, playSong, togglePlay, prewarmSong, addToQueue, playNextInQueue } = useAudio();
   const { isFavorite, toggleFavorite, localPlaylists, addSongToPlaylist } = useLibrary();
-  const { isVipUnlocked, isSongInOffline, saveSongToOffline, removeSongFromOffline } = useDrive();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openUpward, setOpenUpward] = useState(false);
@@ -32,7 +27,6 @@ export function SongRow({ song, index, playlist = null }) {
 
   const isCurrent = currentSong && currentSong.id === song.id;
   const isFav = isFavorite(song.id);
-  const inOffline = isVipUnlocked && isSongInOffline ? isSongInOffline(song.id) : false;
 
   // Close context menu when clicking or tapping outside
   useEffect(() => {
@@ -136,16 +130,10 @@ export function SongRow({ song, index, playlist = null }) {
           </p>
           <p
             title={song.artist}
-            className={`text-[11px] sm:text-xs truncate mt-1 transition-colors flex items-center gap-1.5 ${isCurrent ? 'text-emerald-300 font-medium' : 'text-slate-400 group-hover:text-slate-300'
+            className={`text-[11px] sm:text-xs truncate mt-1 transition-colors ${isCurrent ? 'text-emerald-300 font-medium' : 'text-slate-400 group-hover:text-slate-300'
               }`}
           >
-            <span className="truncate">{song.artist}</span>
-            {inOffline && (
-              <span className="inline-flex items-center gap-0.5 text-[9.5px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.2 rounded-full flex-shrink-0">
-                <CheckCircle2 className="w-2.5 h-2.5" />
-                <span>Offline</span>
-              </span>
-            )}
+            {song.artist}
           </p>
         </div>
       </div>
@@ -237,35 +225,6 @@ export function SongRow({ song, index, playlist = null }) {
                 <Heart className={`w-4 h-4 ${isFav ? 'text-rose-500 fill-rose-500' : 'text-slate-400'}`} />
                 <span>{isFav ? 'Remove from Favorites' : 'Add to Favorites'}</span>
               </button>
-
-              {/* Send to Offline Space (Visible when VIP / Private Space is unlocked) */}
-              {isVipUnlocked && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (inOffline) {
-                      removeSongFromOffline(song.id);
-                    } else {
-                      saveSongToOffline(song);
-                    }
-                    setIsMenuOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-200 hover:bg-[#222222] hover:text-white text-left transition-colors font-medium border-t border-[#282f2b]"
-                >
-                  {inOffline ? (
-                    <>
-                      <Check className="w-4 h-4 text-emerald-400" />
-                      <span className="text-emerald-300">Remove from Offline Space</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-4 h-4 text-slate-400" />
-                      <span>Send to Offline Space</span>
-                    </>
-                  )}
-                </button>
-              )}
 
               {/* Add to Playlist section */}
               <div className="border-t border-[#282f2b] my-1 pt-1.5">

@@ -229,7 +229,7 @@ export function PlaylistsView() {
                   onClick={() => setActivePlaylist({ ...folder, isDriveFolder: true })}
                   className={`group p-3.5 rounded-2xl transition-all cursor-pointer shadow-md flex items-center justify-between border ${
                     isVip
-                      ? 'bg-[#171717] hover:bg-[#202020] border-white/20 shadow-sm'
+                      ? 'bg-gradient-to-r from-rose-950/20 via-[#171717] to-[#171717] border-rose-500/40 hover:border-rose-400 shadow-rose-950/20'
                       : 'bg-[#171717] hover:bg-[#222222] border-[#282f2b] hover:border-white/20'
                   }`}
                 >

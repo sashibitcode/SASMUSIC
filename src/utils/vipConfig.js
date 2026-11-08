@@ -8,8 +8,6 @@
 
 const STORAGE_VIP_UNLOCKED = 'sas_vip_unlocked_v1';
 const STORAGE_VIP_DOWNLOADED = 'sas_vip_downloaded_ids_v1';
-const STORAGE_VIP_CUSTOM_SONGS = 'sas_vip_custom_songs_v1';
-const STORAGE_VIP_ACTIVE_MODE = 'sas_vip_active_mode_v1';
 const VIP_PASSCODE = 'loveyou01';
 const VIP_TARGET_FOLDER_NAME = 'For You ❤️';
 
@@ -36,10 +34,8 @@ export function unlockVip(enteredCode) {
   if (clean === VIP_PASSCODE) {
     try {
       localStorage.setItem(STORAGE_VIP_UNLOCKED, 'true');
-      localStorage.setItem(STORAGE_VIP_ACTIVE_MODE, 'offline');
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('sas-vip-change', { detail: { unlocked: true } }));
-        window.dispatchEvent(new CustomEvent('sas-vip-mode-change', { detail: { mode: 'offline' } }));
       }
       return true;
     } catch (_) {}
@@ -54,9 +50,7 @@ export function lockVip() {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(STORAGE_VIP_UNLOCKED);
-    localStorage.removeItem(STORAGE_VIP_ACTIVE_MODE);
     window.dispatchEvent(new CustomEvent('sas-vip-change', { detail: { unlocked: false } }));
-    window.dispatchEvent(new CustomEvent('sas-vip-mode-change', { detail: { mode: 'online' } }));
   } catch (_) {}
 }
 
@@ -115,92 +109,4 @@ export function removeVipDownloaded(songId) {
     localStorage.setItem(STORAGE_VIP_DOWNLOADED, JSON.stringify(list));
   } catch (_) {}
 }
-
-/**
- * Gets list of custom songs user sent from online catalog to offline space
- */
-export function getCustomOfflineSongs() {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_VIP_CUSTOM_SONGS);
-    return raw ? JSON.parse(raw) : [];
-  } catch (_) {
-    return [];
-  }
-}
-
-/**
- * Adds a song object to custom offline collection and marks it downloaded
- */
-export function addSongToOffline(song) {
-  if (typeof window === 'undefined' || !song || !song.id) return false;
-  try {
-    const list = getCustomOfflineSongs();
-    const existingIndex = list.findIndex((s) => s.id === song.id);
-    if (existingIndex === -1) {
-      list.unshift(song);
-      localStorage.setItem(STORAGE_VIP_CUSTOM_SONGS, JSON.stringify(list));
-    }
-    markVipDownloaded(song.id);
-    window.dispatchEvent(new CustomEvent('sas-vip-change', { detail: { updatedSongId: song.id } }));
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-
-/**
- * Removes a custom song from offline space
- */
-export function removeSongFromOffline(songId) {
-  if (typeof window === 'undefined' || !songId) return false;
-  try {
-    let list = getCustomOfflineSongs();
-    list = list.filter((s) => s.id !== songId);
-    localStorage.setItem(STORAGE_VIP_CUSTOM_SONGS, JSON.stringify(list));
-    removeVipDownloaded(songId);
-    window.dispatchEvent(new CustomEvent('sas-vip-change', { detail: { removedSongId: songId } }));
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-
-/**
- * Checks whether a song is already part of the private offline space
- */
-export function isSongInOffline(songId, driveVipSongs = []) {
-  if (!songId) return false;
-  if (Array.isArray(driveVipSongs) && driveVipSongs.some((s) => s && s.id === songId)) {
-    return true;
-  }
-  const custom = getCustomOfflineSongs();
-  return custom.some((s) => s && s.id === songId);
-}
-
-/**
- * Gets currently active mode ('offline' | 'online')
- */
-export function getVipActiveMode() {
-  if (typeof window === 'undefined') return 'online';
-  if (!isVipUnlocked()) return 'online';
-  try {
-    return localStorage.getItem(STORAGE_VIP_ACTIVE_MODE) || 'offline';
-  } catch (_) {
-    return 'offline';
-  }
-}
-
-/**
- * Sets active mode and dispatches live update event
- */
-export function setVipActiveMode(mode) {
-  if (typeof window === 'undefined') return;
-  const target = mode === 'online' ? 'online' : 'offline';
-  try {
-    localStorage.setItem(STORAGE_VIP_ACTIVE_MODE, target);
-    window.dispatchEvent(new CustomEvent('sas-vip-mode-change', { detail: { mode: target } }));
-  } catch (_) {}
-}
-
 

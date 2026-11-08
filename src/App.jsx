@@ -10,7 +10,6 @@ import { SongList } from './components/library/SongList';
 import { CategoryHub } from './components/library/CategoryHub';
 import { RecommendedSection } from './components/library/RecommendedSection';
 import { VipHomeBanner } from './components/library/VipHomeBanner';
-import { OfflineSpaceView } from './components/library/OfflineSpaceView';
 import { CategoryBanner } from './components/library/CategoryBanner';
 import { MiniPlayer } from './components/player/MiniPlayer';
 import { ErrorState } from './components/common/ErrorState';
@@ -23,7 +22,6 @@ import { shuffleArray } from './utils/shuffle';
 import { useAudio } from './contexts/AudioContext';
 import { useSyncPlay } from './contexts/SyncPlayContext';
 import { usePwaBackHandler } from './hooks/usePwaBackHandler';
-import { Lock } from 'lucide-react';
 
 // Code-split secondary views & overlay modals for ultra-fast initial load & 90+ Lighthouse score
 const PlaylistsView = lazy(() => import('./components/library/PlaylistsView').then(m => ({ default: m.PlaylistsView })));
@@ -37,18 +35,7 @@ const SyncPlayModal = lazy(() => import('./components/syncplay/SyncPlayModal').t
 const MobileMenuDrawer = lazy(() => import('./components/navigation/MobileMenuDrawer').then(m => ({ default: m.MobileMenuDrawer })));
 
 export function AppContent() {
-  const {
-    songs,
-    drivePlaylists,
-    isLoading,
-    error,
-    refreshLibrary,
-    isVipUnlocked,
-    vipActiveMode,
-    switchVipMode,
-    lockPrivateSpace,
-    offlineSongs
-  } = useDrive();
+  const { songs, drivePlaylists, isLoading, error, refreshLibrary } = useDrive();
   const { favorites, recentlyPlayed } = useLibrary();
   const {
     currentSong,
@@ -316,103 +303,75 @@ export function AppContent() {
             />
           ) : (
             <div>
-              {/* If VIP unlocked AND user is in 'offline' space mode, render Dedicated Offline Space! */}
-              {isVipUnlocked && vipActiveMode === 'offline' && activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch ? (
-                <OfflineSpaceView />
-              ) : (
-                <>
-                  {/* Top Mode Bar when unlocked in online mode */}
-                  {isVipUnlocked && vipActiveMode === 'online' && activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                    <div className="mb-4 p-3 rounded-2xl bg-[#171717] border border-[#282f2b] flex items-center justify-between gap-3 text-xs shadow-sm">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
-                        <span className="text-slate-300 font-medium truncate">Private Space Unlocked</span>
+              {/* Category Active Banner (Shows when category or artist filter is active) */}
+              {activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value && (
+                <CategoryBanner
+                  activeFilter={activeFilter}
+                  songCount={categorizedSongs.length}
+                  onClearFilter={handleClearFilter}
+                  onPlayAll={() => {
+                    if (categorizedSongs.length > 0) {
+                      playSong(categorizedSongs[0], categorizedSongs, 0);
+                    }
+                  }}
+                  onShuffle={() => {
+                    if (categorizedSongs.length > 0) {
+                      setSortBy('shuffle');
+                      const newSeed = Date.now();
+                      setShuffleSeed(newSeed);
+                      const shuffled = shuffleArray(categorizedSongs, newSeed);
+                      playSong(shuffled[0], shuffled, 0);
+                    }
+                  }}
+                />
+              )}
+
+              {/* VIP Private Collection Top Banner (Appears at top of Home ONLY when unlocked) */}
+              {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                <VipHomeBanner />
+              )}
+
+              {/* Personalized Recommended Section (User's Regular Tracks - 4 up front + View All) */}
+              {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                <RecommendedSection songs={songs} />
+              )}
+
+              {/* Visual Category Hub (Cards Grid & Top Singers) shown on Home when not searching and no filter active */}
+              {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                <CategoryHub
+                  songs={songs}
+                  drivePlaylists={drivePlaylists}
+                  onSelectCategory={(catId) => handleSelectFilter({ type: 'category', value: catId })}
+                  onSelectArtist={(artistName) => handleSelectFilter({ type: 'artist', value: artistName })}
+                />
+              )}
+
+              {/* Song List */}
+              {(activeTab === 'songs' || activeTab === 'search') && (
+                <div>
+                  {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                    <div className="flex items-center justify-between mb-3.5 pt-6 sm:pt-7 border-t border-white/[0.08]">
+                      <div>
+                        <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
+                          All Songs
+                        </h3>
+                        <p className="text-[11px] text-slate-400">
+                          Complete library catalog
+                        </p>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <button
-                          onClick={() => switchVipMode('offline')}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-200 text-slate-900 font-bold transition-colors active:scale-95"
-                        >
-                          <span>Offline Space ({offlineSongs?.length || 0})</span>
-                        </button>
-                        <button
-                          onClick={lockPrivateSpace}
-                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
-                          title="Lock Private Space"
-                        >
-                          <Lock className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">Lock</span>
-                        </button>
-                      </div>
+                      <span className="text-xs text-slate-400 font-mono bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
+                        {songs.length} tracks
+                      </span>
                     </div>
                   )}
-
-                  {/* Category Active Banner (Shows when category or artist filter is active) */}
-                  {activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value && (
-                    <CategoryBanner
-                      activeFilter={activeFilter}
-                      songCount={categorizedSongs.length}
-                      onClearFilter={handleClearFilter}
-                      onPlayAll={() => {
-                        if (categorizedSongs.length > 0) {
-                          playSong(categorizedSongs[0], categorizedSongs, 0);
-                        }
-                      }}
-                      onShuffle={() => {
-                        if (categorizedSongs.length > 0) {
-                          setSortBy('shuffle');
-                          const newSeed = Date.now();
-                          setShuffleSeed(newSeed);
-                          const shuffled = shuffleArray(categorizedSongs, newSeed);
-                          playSong(shuffled[0], shuffled, 0);
-                        }
-                      }}
-                    />
-                  )}
-
-                  {/* Personalized Recommended Section (User's Regular Tracks - 4 up front + View All) */}
-                  {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                    <RecommendedSection songs={songs} />
-                  )}
-
-                  {/* Visual Category Hub (Cards Grid & Top Singers) shown on Home when not searching and no filter active */}
-                  {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                    <CategoryHub
-                      songs={songs}
-                      drivePlaylists={drivePlaylists}
-                      onSelectCategory={(catId) => handleSelectFilter({ type: 'category', value: catId })}
-                      onSelectArtist={(artistName) => handleSelectFilter({ type: 'artist', value: artistName })}
-                    />
-                  )}
-
-                  {/* Song List */}
-                  {(activeTab === 'songs' || activeTab === 'search') && (
-                    <div>
-                      {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                        <div className="flex items-center justify-between mb-3.5 pt-6 sm:pt-7 border-t border-white/[0.08]">
-                          <div>
-                            <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                              All Songs
-                            </h3>
-                            <p className="text-[11px] text-slate-400">
-                              Complete library catalog
-                            </p>
-                          </div>
-                          <span className="text-xs text-slate-400 font-mono bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
-                            {songs.length} tracks
-                          </span>
-                        </div>
-                      )}
-                      <SongList
-                        songs={categorizedSongs}
-                        searchQuery={debouncedSearch}
-                        sortBy={sortBy}
-                        shuffleSeed={shuffleSeed}
-                        hideActions={Boolean(activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value)}
-                      />
-                    </div>
-                  )}
-                </>
+                  <SongList
+                    songs={categorizedSongs}
+                    searchQuery={debouncedSearch}
+                    sortBy={sortBy}
+                    shuffleSeed={shuffleSeed}
+                    hideActions={Boolean(activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value)}
+                  />
+                </div>
               )}
 
               <Suspense fallback={<SongListSkeleton count={6} />}>

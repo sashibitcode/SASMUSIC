@@ -28,6 +28,29 @@ export function PlaylistsView() {
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
 
+  // 100% Privacy: Hide VIP folder if not unlocked; pin to top if unlocked
+  const visibleDrivePlaylists = React.useMemo(() => {
+    const isUnlocked = isVipUnlocked();
+    const filtered = (drivePlaylists || []).filter((folder) => {
+      if (!isUnlocked && isVipFolder(folder.name)) {
+        return false;
+      }
+      return true;
+    });
+
+    if (isUnlocked) {
+      filtered.sort((a, b) => {
+        const aVip = isVipFolder(a.name);
+        const bVip = isVipFolder(b.name);
+        if (aVip && !bVip) return -1;
+        if (!aVip && bVip) return 1;
+        return 0;
+      });
+    }
+
+    return filtered;
+  }, [drivePlaylists]);
+
   const handleCreate = (e) => {
     e.preventDefault();
     if (!newPlaylistName.trim()) return;
@@ -182,18 +205,18 @@ export function PlaylistsView() {
           <div className="flex items-center gap-2">
             <ListMusic className="w-4 h-4 text-[#A31C1B]" />
             <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-              Featured Playlists ({drivePlaylists.length})
+              Featured Playlists ({visibleDrivePlaylists.length})
             </h3>
           </div>
         </div>
 
-        {drivePlaylists.length === 0 ? (
+        {visibleDrivePlaylists.length === 0 ? (
           <div className="p-4 rounded-xl bg-[#171717] border border-[#282f2b] text-xs text-slate-400">
             No playlists found. Create folders like "Love", "Sad", or "Party" to automatically generate playlists.
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {drivePlaylists.map((folder) => {
+            {visibleDrivePlaylists.map((folder) => {
               const count = folder.songCount !== undefined
                 ? folder.songCount
                 : songs.filter((s) => s.folderId === folder.id || s.folderName === folder.name).length;

@@ -9,6 +9,7 @@ import { CategoryPills } from './components/navigation/CategoryPills';
 import { SongList } from './components/library/SongList';
 import { CategoryHub } from './components/library/CategoryHub';
 import { RecommendedSection } from './components/library/RecommendedSection';
+import { VipHomeBanner } from './components/library/VipHomeBanner';
 import { CategoryBanner } from './components/library/CategoryBanner';
 import { MiniPlayer } from './components/player/MiniPlayer';
 import { ErrorState } from './components/common/ErrorState';
@@ -323,6 +324,11 @@ export function AppContent() {
                     }
                   }}
                 />
+              )}
+
+              {/* VIP Private Collection Top Banner (Appears at top of Home ONLY when unlocked) */}
+              {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                <VipHomeBanner />
               )}
 
               {/* Personalized Recommended Section (User's Regular Tracks - 4 up front + View All) */}

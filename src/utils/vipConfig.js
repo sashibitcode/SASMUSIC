@@ -34,6 +34,9 @@ export function unlockVip(enteredCode) {
   if (clean === VIP_PASSCODE) {
     try {
       localStorage.setItem(STORAGE_VIP_UNLOCKED, 'true');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('sas-vip-change', { detail: { unlocked: true } }));
+      }
       return true;
     } catch (_) {}
   }
@@ -47,6 +50,7 @@ export function lockVip() {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(STORAGE_VIP_UNLOCKED);
+    window.dispatchEvent(new CustomEvent('sas-vip-change', { detail: { unlocked: false } }));
   } catch (_) {}
 }
 
@@ -105,3 +109,4 @@ export function removeVipDownloaded(songId) {
     localStorage.setItem(STORAGE_VIP_DOWNLOADED, JSON.stringify(list));
   } catch (_) {}
 }
+

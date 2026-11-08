@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { getActiveConfig } from '../config';
 import { fetchDriveLibrary, deduplicateSongs, DEMO_SONGS, DEMO_PLAYLISTS } from '../services/driveService';
 import { autoSyncVipFolder } from '../services/vipAutoSync';
+import { isVipUnlocked, isVipFolder } from '../utils/vipConfig';
 
 const DriveContext = createContext(null);
 
@@ -56,6 +57,27 @@ export function DriveProvider({ children }) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [error, setError] = useState(null);
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
+  const [vipUnlocked, setVipUnlocked] = useState(() => isVipUnlocked());
+
+  // Listen to live VIP unlock/lock events to instantly show/hide private collection
+  useEffect(() => {
+    const handleVipChange = (e) => {
+      setVipUnlocked(Boolean(e.detail?.unlocked ?? isVipUnlocked()));
+    };
+    window.addEventListener('sas-vip-change', handleVipChange);
+    return () => window.removeEventListener('sas-vip-change', handleVipChange);
+  }, []);
+
+  // Filter songs & playlists: 100% hide VIP tracks if not unlocked on this device
+  const visibleSongs = React.useMemo(() => {
+    if (vipUnlocked) return songs;
+    return songs.filter((s) => !isVipFolder(s.folderName));
+  }, [songs, vipUnlocked]);
+
+  const visiblePlaylists = React.useMemo(() => {
+    if (vipUnlocked) return drivePlaylists;
+    return drivePlaylists.filter((f) => !isVipFolder(f.name));
+  }, [drivePlaylists, vipUnlocked]);
 
   const syncTimerRef = useRef(null);
 
@@ -178,8 +200,10 @@ export function DriveProvider({ children }) {
   return (
     <DriveContext.Provider
       value={{
-        songs,
-        drivePlaylists,
+        songs: visibleSongs,
+        allSongs: songs,
+        drivePlaylists: visiblePlaylists,
+        isVipUnlocked: vipUnlocked,
         isLoading,
         isSyncing,
         error,

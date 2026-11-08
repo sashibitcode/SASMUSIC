@@ -144,3 +144,4 @@ export function getVipStatus(allSongs) {
     isComplete: vipSongs.length > 0 && downloadedCount >= vipSongs.length
   };
 }
+

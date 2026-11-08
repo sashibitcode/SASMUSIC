@@ -43,7 +43,7 @@ export function MiniPlayer() {
         {/* Real-time thin progress line at the very top */}
         <div className="w-full h-1 bg-[#171717] overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-[#A31C1B] via-[#e2403f] to-[#ffffff] transition-all duration-150"
+            className="h-full bg-[#A31C1B] transition-all duration-150"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

@@ -17,9 +17,9 @@ export const MUSIC_CATEGORIES = [
     icon: 'Sparkles',
     badge: 'Popular',
     desc: 'Bollywood, Melodies & Acoustic Love',
-    gradient: 'from-rose-600/85 via-red-950/60 to-[#06110c]/90',
-    borderColor: 'border-rose-500/40',
-    accentColor: '#e11d48'
+    gradient: 'from-rose-950/40 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
+    accentColor: '#A31C1B'
   },
   {
     id: 'bhojpuri',
@@ -29,8 +29,8 @@ export const MUSIC_CATEGORIES = [
     icon: 'Radio',
     badge: 'Trending',
     desc: 'Desi Tadka, Pawan Singh, Khesari & Party Hits',
-    gradient: 'from-amber-500/85 via-amber-950/60 to-[#06110c]/90',
-    borderColor: 'border-amber-500/40',
+    gradient: 'from-amber-950/35 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
     accentColor: '#f59e0b'
   },
   {
@@ -41,8 +41,8 @@ export const MUSIC_CATEGORIES = [
     icon: 'Sun',
     badge: 'Special',
     desc: 'Bhojpuri Chhath Geet, Sharda Sinha, Pawan Singh & Arghya Bhajans',
-    gradient: 'from-amber-600/90 via-orange-950/65 to-[#06110c]/90',
-    borderColor: 'border-amber-500/40',
+    gradient: 'from-orange-950/35 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
     accentColor: '#f59e0b'
   },
   {
@@ -53,8 +53,8 @@ export const MUSIC_CATEGORIES = [
     icon: 'Dumbbell',
     badge: 'Hype',
     desc: 'High BPM, Bass Boosted & Workout Power',
-    gradient: 'from-emerald-500/85 via-emerald-950/60 to-[#06110c]/90',
-    borderColor: 'border-emerald-500/40',
+    gradient: 'from-emerald-950/35 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
     accentColor: '#10b981'
   },
   {
@@ -65,8 +65,8 @@ export const MUSIC_CATEGORIES = [
     icon: 'History',
     badge: 'Classics',
     desc: 'Kishore Kumar, Lata, Mukesh & 90s Vintage',
-    gradient: 'from-purple-500/85 via-purple-950/60 to-[#06110c]/90',
-    borderColor: 'border-purple-500/40',
+    gradient: 'from-purple-950/35 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
     accentColor: '#a855f7'
   },
   {
@@ -77,8 +77,8 @@ export const MUSIC_CATEGORIES = [
     icon: 'Heart',
     badge: 'Feelings',
     desc: 'Arijit, Ishq, Dil ki Baatein & Slow Melodies',
-    gradient: 'from-pink-500/85 via-rose-950/60 to-[#06110c]/90',
-    borderColor: 'border-pink-500/40',
+    gradient: 'from-rose-950/35 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
     accentColor: '#ec4899'
   },
   {
@@ -89,8 +89,8 @@ export const MUSIC_CATEGORIES = [
     icon: 'CloudRain',
     badge: 'Emotional',
     desc: 'Dard, Tanhai, Judai & Soulful Ballads',
-    gradient: 'from-blue-500/85 via-slate-900/70 to-[#06110c]/90',
-    borderColor: 'border-blue-500/40',
+    gradient: 'from-slate-900/40 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
     accentColor: '#3b82f6'
   },
   {
@@ -101,8 +101,8 @@ export const MUSIC_CATEGORIES = [
     icon: 'Flame',
     badge: 'Banger',
     desc: 'B Praak, Jaani, Sidhu & Urban Punjabi',
-    gradient: 'from-orange-500/85 via-amber-950/60 to-[#06110c]/90',
-    borderColor: 'border-orange-500/40',
+    gradient: 'from-red-950/35 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
     accentColor: '#f97316'
   }
 ];

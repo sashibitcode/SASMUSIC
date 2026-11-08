@@ -41,14 +41,8 @@ export function RecommendedSection({ songs = [] }) {
     }
   };
 
-  const handlePlayAll = () => {
-    if (regularSongs.length > 0) {
-      playSong(regularSongs[0], regularSongs, 0);
-    }
-  };
-
   return (
-    <section className="mb-8 sm:mb-9 space-y-3.5 animate-in fade-in duration-300">
+    <section className="mb-8 sm:mb-9 space-y-3.5">
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -58,33 +52,21 @@ export function RecommendedSection({ songs = [] }) {
           </h2>
         </div>
 
-        <div className="flex items-center gap-2">
-          {/* Play All Button (Primary Action) */}
+        {/* View All / Show Less Toggle */}
+        {hasMore && (
           <button
-            onClick={handlePlayAll}
-            className="flex items-center gap-1.5 text-xs font-semibold text-white crimson-glow-btn px-3 py-1 rounded-full shadow-sm active:scale-95 transition-all"
-            title="Play All Recommended Songs"
+            onClick={() => setIsExpanded((prev) => !prev)}
+            className="flex items-center gap-1 text-xs font-semibold text-slate-300 hover:text-white transition-colors px-2.5 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] active:scale-95"
+            aria-label={isExpanded ? 'Show Less' : 'View All'}
           >
-            <Play className="w-3 h-3 fill-current" />
-            <span>Play All</span>
+            <span>{isExpanded ? 'Show Less' : 'View All'}</span>
+            {isExpanded ? (
+              <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+            ) : (
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            )}
           </button>
-
-          {/* View All / Show Less Toggle */}
-          {hasMore && (
-            <button
-              onClick={() => setIsExpanded((prev) => !prev)}
-              className="flex items-center gap-1 text-xs font-semibold text-slate-300 hover:text-white transition-colors px-2.5 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] active:scale-95"
-              aria-label={isExpanded ? 'Show Less' : 'View All'}
-            >
-              <span>{isExpanded ? 'Show Less' : 'View All'}</span>
-              {isExpanded ? (
-                <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
-              ) : (
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              )}
-            </button>
-          )}
-        </div>
+        )}
       </div>
 
       {/* Responsive Grid: 2 columns on mobile, 4 columns on large screens */}

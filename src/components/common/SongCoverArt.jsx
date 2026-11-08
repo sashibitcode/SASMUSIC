@@ -69,7 +69,7 @@ export function SongCoverArt({
           onError={() => setImageError(true)}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
-          } ${size === 'xl' && isPlaying ? 'scale-[1.01] transition-transform duration-700' : ''}`}
+          }`}
         />
       )}
 
@@ -78,7 +78,7 @@ export function SongCoverArt({
         <div className="absolute inset-0 flex items-center justify-center text-white/80 pointer-events-none">
           {size === 'xl' ? (
             <div className="flex flex-col items-center justify-center p-4 text-center">
-              <Disc className={`w-16 h-16 text-white/70 mb-2 ${isPlaying ? 'animate-[spin_6s_linear_infinite]' : ''}`} />
+              <Disc className="w-16 h-16 text-white/70 mb-2" />
               <p className="text-sm font-bold text-white truncate max-w-[200px]">{title}</p>
               <p className="text-xs text-slate-300 truncate max-w-[180px]">{artist}</p>
             </div>

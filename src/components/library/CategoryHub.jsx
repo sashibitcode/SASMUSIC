@@ -39,7 +39,7 @@ export function CategoryHub({
   const hasMore = MUSIC_CATEGORIES.length > 6;
 
   return (
-    <section className="mb-8 sm:mb-9 space-y-5 animate-in fade-in duration-200">
+    <section className="mb-8 sm:mb-9 space-y-5">
       {/* Section 1: Browse Categories Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -77,21 +77,18 @@ export function CategoryHub({
             <div
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
-              className={`group relative overflow-hidden rounded-2xl p-4 sm:p-4.5 bg-gradient-to-br ${cat.gradient} border ${cat.borderColor} hover:border-white/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg hover:shadow-2xl flex flex-col justify-between min-h-[108px] sm:min-h-[116px]`}
+              className={`group relative overflow-hidden rounded-2xl p-4 sm:p-4.5 bg-[#171717] bg-gradient-to-br ${cat.gradient} border ${cat.borderColor} hover:border-white/20 transition-colors cursor-pointer shadow-sm flex flex-col justify-between min-h-[108px] sm:min-h-[116px]`}
             >
-              {/* High-definition cover photo background with vibrant visibility */}
+              {/* Cover photo background */}
               {bgCover && (
                 <div
-                  className="absolute inset-0 bg-cover bg-center opacity-35 sm:opacity-40 group-hover:opacity-55 group-hover:scale-105 transition-all duration-500 pointer-events-none"
+                  className="absolute inset-0 bg-cover bg-center opacity-25 pointer-events-none"
                   style={{ backgroundImage: `url(${bgCover})` }}
                 />
               )}
 
-              {/* Protective bottom gradient scrim for 100% crystal-clear title & badge contrast */}
+              {/* Protective bottom gradient scrim */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#06110c]/90 via-[#06110c]/25 to-transparent pointer-events-none" />
-
-              {/* Top ambient highlight */}
-              <div className="absolute top-0 right-0 w-28 h-28 bg-white/10 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform" />
 
               {/* Card Header: Live Badge */}
               <div className="flex items-start justify-end relative z-10">
@@ -103,7 +100,7 @@ export function CategoryHub({
               {/* Card Footer: Title & Quick Play Button */}
               <div className="relative z-10 pt-2 flex items-end justify-between gap-2">
                 <div className="min-w-0 pr-1">
-                  <h3 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+                  <h3 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate">
                     {cat.label}
                   </h3>
                 </div>
@@ -112,11 +109,11 @@ export function CategoryHub({
                 {count > 0 && (
                   <button
                     onClick={(e) => handlePlayCategoryMix(e, cat.id)}
-                    className="w-8 h-8 rounded-full crimson-glow-btn text-white flex items-center justify-center flex-shrink-0 shadow-lg transition-transform active:scale-90 group/btn"
+                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white text-slate-200 hover:text-slate-900 flex items-center justify-center flex-shrink-0 transition-colors active:scale-95"
                     title={`Play ${cat.label} Mix`}
                     aria-label={`Play ${cat.label} Mix`}
                   >
-                    <Play className="w-3.5 h-3.5 fill-current ml-0.5 group-hover/btn:scale-110 transition-transform" />
+                    <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                   </button>
                 )}
               </div>
@@ -144,17 +141,17 @@ export function CategoryHub({
                 <button
                   key={artist.name}
                   onClick={() => onSelectArtist(artist.name)}
-                  className="flex flex-col items-center flex-shrink-0 w-[74px] sm:w-[82px] group focus:outline-none transition-transform active:scale-95"
+                  className="flex flex-col items-center flex-shrink-0 w-[74px] sm:w-[82px] group focus:outline-none"
                   title={`View songs by ${artist.name}`}
                 >
                   <ArtistAvatar
                     artistName={artist.name}
                     size="md"
                     showRing={true}
-                    className="group-hover:scale-105 active:scale-95 transition-transform shadow-md"
+                    className="shadow-sm"
                   />
 
-                  <span className="text-[11px] sm:text-xs font-medium text-slate-300 group-hover:text-white mt-2 max-w-[72px] sm:max-w-[80px] truncate text-center transition-colors leading-tight drop-shadow-sm">
+                  <span className="text-[11px] sm:text-xs font-medium text-slate-300 group-hover:text-white mt-2 max-w-[72px] sm:max-w-[80px] truncate text-center transition-colors leading-tight">
                     {artist.name}
                   </span>
                 </button>

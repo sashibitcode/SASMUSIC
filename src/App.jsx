@@ -369,6 +369,7 @@ export function AppContent() {
                     searchQuery={debouncedSearch}
                     sortBy={sortBy}
                     shuffleSeed={shuffleSeed}
+                    hideActions={Boolean(activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value)}
                   />
                 </div>
               )}

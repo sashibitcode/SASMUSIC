@@ -95,10 +95,10 @@ export function VipSettingsSection({ songs = [] }) {
   }
 
   return (
-    <div className="rounded-2xl p-4 bg-gradient-to-br from-[#1a1215] to-[#121614] border border-rose-500/30 space-y-3 shadow-lg shadow-rose-950/20">
+    <div className="rounded-2xl p-4 bg-[#171717] border border-[#282f2b] space-y-3 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-rose-400" />
+        <Sparkles className="w-4 h-4 text-slate-300" />
         <h4 className="text-xs font-bold text-white tracking-wide">
           {getVipFolderName()} Collection
         </h4>
@@ -140,7 +140,7 @@ export function VipSettingsSection({ songs = [] }) {
           </div>
           <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-rose-500 to-emerald-400 transition-all duration-200"
+              className="h-full bg-[#A31C1B] transition-all duration-200"
               style={{ width: `${syncProgress.percent}%` }}
             />
           </div>

@@ -46,7 +46,7 @@ export function ProgressBar({
         <div className="absolute w-full h-1.5 rounded-full bg-[#282f2b] overflow-hidden group-hover:h-2 transition-all">
           {/* Active progress fill */}
           <div
-            className="h-full bg-gradient-to-r from-[#A31C1B] to-[#e2403f] rounded-full transition-all"
+            className="h-full bg-[#A31C1B] rounded-full transition-all"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

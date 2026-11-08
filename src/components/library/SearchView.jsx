@@ -63,7 +63,7 @@ export function SearchView({
   }, [songs, searchQuery, sortBy]);
 
   return (
-    <div className="space-y-4 animate-in fade-in duration-200">
+    <div className="space-y-4">
       {/* Search Header Bar with Input and Sort */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 my-2">
         {/* Search Input Field */}

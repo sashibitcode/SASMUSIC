@@ -172,7 +172,7 @@ export function SongRow({ song, index, playlist = null }) {
             <div
               onClick={(e) => e.stopPropagation()}
               className={`absolute right-0 ${openUpward ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
-                } w-52 rounded-2xl bg-[#171717] border border-[#282f2b] shadow-[0_12px_40px_rgba(0,0,0,0.85)] py-2 z-50 text-xs backdrop-blur-xl animate-in fade-in duration-150`}
+                } w-52 rounded-2xl bg-[#171717] border border-[#282f2b] shadow-[0_12px_40px_rgba(0,0,0,0.85)] py-2 z-50 text-xs backdrop-blur-xl`}
             >
               <button
                 type="button"

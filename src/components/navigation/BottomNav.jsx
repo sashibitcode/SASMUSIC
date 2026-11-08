@@ -89,9 +89,6 @@ export function BottomNav({
                 {/* Together Live Dot indicator */}
                 {isTogether && (
                   <span className="absolute -top-0.5 -right-1 flex h-1.5 w-1.5">
-                    {isInRoom && (
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    )}
                     <span
                       className={`relative inline-flex rounded-full h-1.5 w-1.5 ${
                         isInRoom ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]' : 'bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.8)]'

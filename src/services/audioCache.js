@@ -6,6 +6,8 @@
  * and zero mobile data consumption for cached tracks.
  */
 
+import { getVipDownloadedIds } from '../utils/vipConfig';
+
 const CACHE_NAME = 'sas-audio-cache-v1';
 const MAX_CACHED_TRACKS = 30; // Max ~120-150MB of audio storage
 const STORAGE_CACHE_INDEX = 'sas_audio_cache_index';
@@ -52,16 +54,21 @@ function touchSongInIndex(songId) {
 }
 
 /**
- * Evicts oldest cached tracks if the cache exceeds MAX_CACHED_TRACKS
+ * Evicts oldest cached tracks if the cache exceeds MAX_CACHED_TRACKS.
+ * Protected VIP songs ('For You ❤️') are NEVER evicted!
  */
 async function evictOldTracks(cache) {
   try {
     let index = getCacheIndex();
-    if (index.length <= MAX_CACHED_TRACKS) return;
+    const vipIds = new Set(getVipDownloadedIds());
 
-    const toRemoveCount = index.length - MAX_CACHED_TRACKS;
-    const toRemove = index.slice(0, toRemoveCount);
-    index = index.slice(toRemoveCount);
+    // Never evict VIP songs
+    const evictableIndex = index.filter((id) => !vipIds.has(id));
+    if (evictableIndex.length <= MAX_CACHED_TRACKS) return;
+
+    const toRemoveCount = evictableIndex.length - MAX_CACHED_TRACKS;
+    const toRemove = evictableIndex.slice(0, toRemoveCount);
+    index = index.filter((id) => !toRemove.includes(id));
 
     for (const songId of toRemove) {
       const url = `/api/stream?id=${encodeURIComponent(songId)}`;
@@ -212,3 +219,4 @@ export async function clearAudioCache() {
     console.warn('[AudioCache] Failed to clear audio cache:', err);
   }
 }
+

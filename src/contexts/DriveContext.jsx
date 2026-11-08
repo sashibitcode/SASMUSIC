@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { getActiveConfig } from '../config';
 import { fetchDriveLibrary, deduplicateSongs, DEMO_SONGS, DEMO_PLAYLISTS } from '../services/driveService';
+import { autoSyncVipFolder } from '../services/vipAutoSync';
 
 const DriveContext = createContext(null);
 
@@ -99,6 +100,11 @@ export function DriveProvider({ children }) {
       } catch (cacheErr) {
         console.warn('Could not cache songs to localStorage:', cacheErr);
       }
+
+      // Background VIP Auto-Sync: automatically download new songs from 'For You ❤️'
+      setTimeout(() => {
+        autoSyncVipFolder(uniqueSongs);
+      }, 1500);
     } catch (err) {
       console.error('Failed to sync Drive library:', err);
       // Only set UI error if it's not a background sync error and no songs exist
@@ -110,6 +116,17 @@ export function DriveProvider({ children }) {
       setIsSyncing(false);
     }
   }, [useDemo, songs.length]);
+
+  // Auto-sync VIP folder whenever device connects to internet / comes online
+  useEffect(() => {
+    const handleOnline = () => {
+      if (songs.length > 0) {
+        autoSyncVipFolder(songs);
+      }
+    };
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [songs]);
 
   // Initial load
   useEffect(() => {

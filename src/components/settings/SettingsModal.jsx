@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useDrive } from '../../contexts/DriveContext';
 import { AuthSettingsSection } from '../auth/AuthControls';
+import { VipSettingsSection } from './VipSettingsSection';
 
 export function SettingsModal({ isOpen, onClose }) {
   const { songs, isLoading, refreshLibrary } = useDrive();
@@ -65,6 +66,9 @@ export function SettingsModal({ isOpen, onClose }) {
               <span>{isLoading ? 'Syncing...' : 'Sync Library'}</span>
             </button>
           </div>
+
+          {/* Section 2: Special VIP Offline Collection ("For You ❤️") */}
+          <VipSettingsSection songs={songs} />
 
           {/* Section 3: Audio Quality */}
           <div className="rounded-2xl p-4 bg-[#121614]/60 border border-[#282f2b] space-y-2">

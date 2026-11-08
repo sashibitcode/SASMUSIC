@@ -9,13 +9,15 @@ import {
   ChevronLeft,
   FolderPlus,
   ListMusic,
-  Cloud
+  Cloud,
+  Heart
 } from 'lucide-react';
 import { useDrive } from '../../contexts/DriveContext';
 import { useLibrary } from '../../contexts/LibraryContext';
 import { useAudio } from '../../contexts/AudioContext';
 import { SongRow } from './SongRow';
 import { getFolderCoverArt } from '../../services/coverArtService';
+import { isVipFolder, isVipUnlocked } from '../../utils/vipConfig';
 
 export function PlaylistsView() {
   const { drivePlaylists, songs } = useDrive();
@@ -196,12 +198,18 @@ export function PlaylistsView() {
                 ? folder.songCount
                 : songs.filter((s) => s.folderId === folder.id || s.folderName === folder.name).length;
               const coverImg = getFolderCoverArt(folder.name);
+              const isVip = isVipFolder(folder.name);
+              const vipUnlocked = isVip && isVipUnlocked();
 
               return (
                 <div
                   key={folder.id}
                   onClick={() => setActivePlaylist({ ...folder, isDriveFolder: true })}
-                  className="group p-3.5 rounded-2xl bg-[#171717] hover:bg-[#222222] border border-[#282f2b] hover:border-white/20 transition-all cursor-pointer shadow-md flex items-center justify-between"
+                  className={`group p-3.5 rounded-2xl transition-all cursor-pointer shadow-md flex items-center justify-between border ${
+                    isVip
+                      ? 'bg-gradient-to-r from-rose-950/20 via-[#171717] to-[#171717] border-rose-500/40 hover:border-rose-400 shadow-rose-950/20'
+                      : 'bg-[#171717] hover:bg-[#222222] border-[#282f2b] hover:border-white/20'
+                  }`}
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
                     <div className="w-13 h-13 w-[52px] h-[52px] rounded-xl overflow-hidden border border-white/15 text-slate-300 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative bg-[#06110c] shadow-md">
@@ -217,11 +225,14 @@ export function PlaylistsView() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-white transition-colors">
-                        {folder.name}
+                      <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-white transition-colors flex items-center gap-1.5">
+                        <span>{folder.name}</span>
+                        {isVip && (
+                          <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 flex-shrink-0 animate-pulse" />
+                        )}
                       </h4>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        {count} {count === 1 ? 'track' : 'tracks'}
+                      <p className={`text-[11px] mt-0.5 ${vipUnlocked ? 'text-rose-300 font-medium' : 'text-slate-400'}`}>
+                        {count} {count === 1 ? 'track' : 'tracks'} {vipUnlocked ? '• Auto-Sync Active' : ''}
                       </p>
                     </div>
                   </div>

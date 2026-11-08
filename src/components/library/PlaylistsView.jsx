@@ -254,8 +254,8 @@ export function PlaylistsView() {
                           <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 flex-shrink-0 animate-pulse" />
                         )}
                       </h4>
-                      <p className={`text-[11px] mt-0.5 ${vipUnlocked ? 'text-rose-300 font-medium' : 'text-slate-400'}`}>
-                        {count} {count === 1 ? 'track' : 'tracks'} {vipUnlocked ? '• Auto-Sync Active' : ''}
+                      <p className="text-[11px] mt-0.5 text-slate-400">
+                        {count} {count === 1 ? 'track' : 'tracks'}
                       </p>
                     </div>
                   </div>

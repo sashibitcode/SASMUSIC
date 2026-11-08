@@ -60,11 +60,11 @@ export function VipSettingsSection({ songs = [] }) {
         <div className="flex items-center gap-2">
           <Heart className="w-4 h-4 text-rose-500" />
           <h4 className="text-xs font-semibold text-slate-300">
-            Special Offline Mode
+            Private Space
           </h4>
         </div>
         <p className="text-[11px] text-slate-400">
-          Enter VIP passcode to enable automatic offline music sync for your special collection.
+          Enter passcode to unlock your private collection.
         </p>
 
         <form onSubmit={handleUnlock} className="flex gap-2">
@@ -75,7 +75,7 @@ export function VipSettingsSection({ songs = [] }) {
               setPasscode(e.target.value);
               setErrorMsg('');
             }}
-            placeholder="Enter VIP passcode"
+            placeholder="Enter passcode"
             className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-500/50"
           />
           <button
@@ -97,16 +97,11 @@ export function VipSettingsSection({ songs = [] }) {
   return (
     <div className="rounded-2xl p-4 bg-gradient-to-br from-[#1a1215] to-[#121614] border border-rose-500/30 space-y-3 shadow-lg shadow-rose-950/20">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
-          <h4 className="text-xs font-bold text-white tracking-wide">
-            For You ❤️ Collection
-          </h4>
-        </div>
-        <span className="text-[10px] font-mono uppercase tracking-wider text-rose-300 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-full">
-          VIP Active
-        </span>
+      <div className="flex items-center gap-2">
+        <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
+        <h4 className="text-xs font-bold text-white tracking-wide">
+          For You ❤️ Collection
+        </h4>
       </div>
 
       {/* Info status */}
@@ -173,7 +168,7 @@ export function VipSettingsSection({ songs = [] }) {
           className="text-[11px] text-slate-500 hover:text-slate-400 flex items-center gap-1 transition-colors py-1 px-2"
         >
           <Unlock className="w-3 h-3" />
-          <span>Lock VIP Mode</span>
+          <span>Hide Collection</span>
         </button>
       </div>
     </div>

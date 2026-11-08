@@ -41,17 +41,14 @@ export function VipHomeBanner() {
             <span className="w-7 h-7 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center flex-shrink-0">
               <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
             </span>
-            <h2 className="text-base sm:text-lg font-extrabold text-white tracking-wide flex items-center gap-2">
-              <span>{getVipFolderName()}</span>
-              <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-rose-300 bg-rose-500/20 border border-rose-500/30 px-2 py-0.5 rounded-full">
-                VIP Offline
-              </span>
+            <h2 className="text-base sm:text-lg font-extrabold text-white tracking-wide">
+              {getVipFolderName()}
             </h2>
           </div>
 
           <p className="text-xs text-rose-200/80 flex items-center gap-1.5 pl-0.5 font-medium">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-            <span>{vipSongs.length} tracks • Saved & ready to play without internet</span>
+            <span>{vipSongs.length} tracks • Offline ready</span>
           </p>
         </div>
 
@@ -78,3 +75,4 @@ export function VipHomeBanner() {
     </div>
   );
 }
+

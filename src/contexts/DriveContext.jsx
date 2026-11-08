@@ -1,8 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { getActiveConfig } from '../config';
 import { fetchDriveLibrary, deduplicateSongs, DEMO_SONGS, DEMO_PLAYLISTS } from '../services/driveService';
-import { autoSyncVipFolder } from '../services/vipAutoSync';
-import { isVipUnlocked, isVipFolder } from '../utils/vipConfig';
+import { autoSyncVipFolder, saveOnlineSongToOffline } from '../services/vipAutoSync';
+import {
+  isVipUnlocked,
+  isVipFolder,
+  getCustomOfflineSongs,
+  removeSongFromOffline,
+  isSongInOffline,
+  getVipActiveMode,
+  setVipActiveMode,
+  lockVip
+} from '../utils/vipConfig';
 
 const DriveContext = createContext(null);
 
@@ -58,15 +67,40 @@ export function DriveProvider({ children }) {
   const [error, setError] = useState(null);
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
   const [vipUnlocked, setVipUnlocked] = useState(() => isVipUnlocked());
+  const [vipActiveMode, setVipActiveModeState] = useState(() => getVipActiveMode());
+  const [customOfflineSongs, setCustomOfflineSongs] = useState(() => getCustomOfflineSongs());
 
   // Listen to live VIP unlock/lock events to instantly show/hide private collection
   useEffect(() => {
     const handleVipChange = (e) => {
       setVipUnlocked(Boolean(e.detail?.unlocked ?? isVipUnlocked()));
+      setCustomOfflineSongs(getCustomOfflineSongs());
+    };
+    const handleModeChange = (e) => {
+      setVipActiveModeState(e.detail?.mode || getVipActiveMode());
     };
     window.addEventListener('sas-vip-change', handleVipChange);
-    return () => window.removeEventListener('sas-vip-change', handleVipChange);
+    window.addEventListener('sas-vip-mode-change', handleModeChange);
+    return () => {
+      window.removeEventListener('sas-vip-change', handleVipChange);
+      window.removeEventListener('sas-vip-mode-change', handleModeChange);
+    };
   }, []);
+
+  // Combined offline songs: Google Drive "For You ❤️" + user custom-sent tracks
+  const offlineSongs = React.useMemo(() => {
+    if (!vipUnlocked) return [];
+    const driveVip = songs.filter((s) => isVipFolder(s.folderName));
+    const seen = new Set();
+    const combined = [];
+    for (const song of [...driveVip, ...customOfflineSongs]) {
+      if (song && song.id && !seen.has(song.id)) {
+        seen.add(song.id);
+        combined.push(song);
+      }
+    }
+    return combined;
+  }, [songs, customOfflineSongs, vipUnlocked]);
 
   // Filter songs & playlists: 100% hide VIP tracks if not unlocked on this device
   const visibleSongs = React.useMemo(() => {
@@ -142,13 +176,12 @@ export function DriveProvider({ children }) {
   // Auto-sync VIP folder whenever device connects to internet / comes online
   useEffect(() => {
     const handleOnline = () => {
-      if (songs.length > 0) {
-        autoSyncVipFolder(songs);
-      }
+      console.log('[Network] Internet connected. Triggering background Drive sync...');
+      loadLibrary(true);
     };
     window.addEventListener('online', handleOnline);
     return () => window.removeEventListener('online', handleOnline);
-  }, [songs]);
+  }, [loadLibrary]);
 
   // Initial load
   useEffect(() => {
@@ -204,6 +237,16 @@ export function DriveProvider({ children }) {
         allSongs: songs,
         drivePlaylists: visiblePlaylists,
         isVipUnlocked: vipUnlocked,
+        offlineSongs,
+        vipActiveMode,
+        switchVipMode: (mode) => {
+          setVipActiveMode(mode);
+          setVipActiveModeState(mode);
+        },
+        saveSongToOffline: (song) => saveOnlineSongToOffline(song),
+        removeSongFromOffline: (songId) => removeSongFromOffline(songId),
+        isSongInOffline: (songId) => isSongInOffline(songId, songs.filter((s) => isVipFolder(s.folderName))),
+        lockPrivateSpace: () => lockVip(),
         isLoading,
         isSyncing,
         error,

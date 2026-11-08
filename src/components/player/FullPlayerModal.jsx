@@ -11,10 +11,13 @@ import {
   Heart,
   ListMusic,
   Disc,
-  Volume2
+  Volume2,
+  Download,
+  CheckCircle2
 } from 'lucide-react';
 import { useAudio } from '../../contexts/AudioContext';
 import { useLibrary } from '../../contexts/LibraryContext';
+import { useDrive } from '../../contexts/DriveContext';
 import { getSongGradientStyle, getSongPalette } from '../../utils/artGenerator';
 import { ProgressBar } from './ProgressBar';
 import { VolumeSlider } from './VolumeSlider';
@@ -48,6 +51,7 @@ export function FullPlayerModal() {
   } = useAudio();
 
   const { isFavorite, toggleFavorite } = useLibrary();
+  const { isVipUnlocked, isSongInOffline, saveSongToOffline, removeSongFromOffline } = useDrive();
 
   // Bottom sheet swipe down gesture to close
   const sheetSwipe = useSwipeGesture({
@@ -65,6 +69,7 @@ export function FullPlayerModal() {
   if (!isFullPlayerOpen || !currentSong) return null;
 
   const isFav = isFavorite(currentSong.id);
+  const inOffline = isVipUnlocked && isSongInOffline && currentSong ? isSongInOffline(currentSong.id) : false;
   const palette = getSongPalette(currentSong.title, currentSong.artist);
 
   return (
@@ -143,13 +148,38 @@ export function FullPlayerModal() {
             </p>
           </div>
 
-          <button
-            onClick={() => toggleFavorite(currentSong.id)}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-transform active:scale-90"
-            aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
-          >
-            <Heart className={`w-6 h-6 ${isFav ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`} />
-          </button>
+          <div className="flex items-center gap-1">
+            {isVipUnlocked && (
+              <button
+                onClick={() => {
+                  if (inOffline) {
+                    removeSongFromOffline(currentSong.id);
+                  } else {
+                    saveSongToOffline(currentSong);
+                  }
+                }}
+                className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-transform active:scale-90 ${
+                  inOffline ? 'text-emerald-400' : 'text-slate-400 hover:text-white'
+                }`}
+                aria-label={inOffline ? 'In Offline Space' : 'Send to Offline Space'}
+                title={inOffline ? 'In Offline Space (Tap to remove)' : 'Send to Offline Space'}
+              >
+                {inOffline ? (
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                ) : (
+                  <Download className="w-5 h-5" />
+                )}
+              </button>
+            )}
+
+            <button
+              onClick={() => toggleFavorite(currentSong.id)}
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-transform active:scale-90"
+              aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              <Heart className={`w-6 h-6 ${isFav ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`} />
+            </button>
+          </div>
         </div>
 
         {/* Seek Bar Component */}

@@ -69,9 +69,8 @@ export function ProgressBar({
 
         {/* Custom thumb follower */}
         <div
-          className={`absolute w-3.5 h-3.5 -ml-1.5 rounded-full bg-white shadow-md shadow-[#A31C1B]/80 pointer-events-none transition-opacity ${
-            thumbAlwaysVisible ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-          }`}
+          className={`absolute w-3.5 h-3.5 -ml-1.5 rounded-full bg-white shadow-md shadow-[#A31C1B]/80 pointer-events-none transition-opacity ${thumbAlwaysVisible ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}
           style={{ left: `${progressPercent}%` }}
         />
       </div>

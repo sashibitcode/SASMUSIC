@@ -27,7 +27,7 @@ export function DesktopSidebar({
   onSelectCategory,
   onSelectFolder
 }) {
-  const { drivePlaylists } = useDrive();
+  const { drivePlaylists, isVipUnlocked, vipActiveMode, switchVipMode, offlineSongs } = useDrive();
   const { isInRoom, roomCode, setIsSyncModalOpen } = useSyncPlay();
 
   const primaryLinks = [
@@ -78,6 +78,36 @@ export function DesktopSidebar({
         <p className="px-3 pb-2 text-[10px] uppercase font-bold tracking-wider text-slate-400">
           Menu
         </p>
+
+        {/* Private Offline Space Shortcut when unlocked */}
+        {isVipUnlocked && (
+          <button
+            onClick={() => {
+              switchVipMode('offline');
+              onTabChange('songs');
+            }}
+            className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all mb-1.5 ${
+              activeTab === 'songs' && vipActiveMode === 'offline'
+                ? 'bg-white text-slate-900 font-bold shadow-md'
+                : 'text-slate-200 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/5'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-4 h-4 text-rose-400" />
+              <span className="tracking-wide">For You ❤️</span>
+            </div>
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                activeTab === 'songs' && vipActiveMode === 'offline'
+                  ? 'bg-black/30 text-white'
+                  : 'bg-black/40 text-slate-300'
+              }`}
+            >
+              {offlineSongs?.length || 0}
+            </span>
+          </button>
+        )}
+
         {primaryLinks.map((link) => {
           const Icon = link.icon;
           const isActive = activeTab === link.id;

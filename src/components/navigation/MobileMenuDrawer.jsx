@@ -22,6 +22,7 @@ import { SignedIn, SignedOut, SignInButton, SignOutButton, useUser } from '@cler
 import { IS_CLERK_CONFIGURED } from '../../config/clerkConfig';
 import { markSignInAction } from '../auth/AuthControls';
 import { useAudio } from '../../contexts/AudioContext';
+import { useDrive } from '../../contexts/DriveContext';
 import { showFloatingToast } from '../../utils/toast';
 
 const SLEEP_TIMER_OPTIONS = [
@@ -113,6 +114,7 @@ export function MobileMenuDrawer({
   onSelectCategory
 }) {
   const { isPlaying, pauseSong } = useAudio();
+  const { isVipUnlocked, switchVipMode, offlineSongs } = useDrive();
 
   // Sleep Timer local state
   const [sleepTimerMinutes, setSleepTimerMinutes] = useState(0);
@@ -256,6 +258,27 @@ export function MobileMenuDrawer({
           <p className="px-3 pb-1.5 text-[10px] uppercase font-bold tracking-wider text-slate-400">
             Quick Actions
           </p>
+
+          {/* Private Offline Space Shortcut when unlocked */}
+          {isVipUnlocked && (
+            <button
+              onClick={() => {
+                switchVipMode('offline');
+                onClose();
+              }}
+              className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 transition-colors active:scale-95 group mb-2 shadow-sm"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-rose-400" />
+                </div>
+                <span>For You ❤️ (Offline Space)</span>
+              </div>
+              <span className="text-[10px] text-slate-300 font-mono bg-black/40 px-2 py-0.5 rounded-full border border-white/10">
+                {offlineSongs?.length || 0}
+              </span>
+            </button>
+          )}
 
           {/* 1. Upload Song (Creator Studio) */}
           {onOpenUpload && (

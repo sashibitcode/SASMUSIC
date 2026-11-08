@@ -10,7 +10,9 @@ import {
   isVipFolder,
   getVipFolderName,
   getVipDownloadedIds,
-  markVipDownloaded
+  markVipDownloaded,
+  addSongToOffline,
+  getCustomOfflineSongs
 } from '../utils/vipConfig';
 import { prefetchAudioTrack, getCachedAudioUrl } from './audioCache';
 import { showFloatingToast } from '../utils/toast';
@@ -124,24 +126,58 @@ export async function manualSyncVipFolder(allSongs, onProgress = null) {
 }
 
 /**
- * Returns current status of VIP offline folder
+ * Saves a song from online library to the private offline space and immediately downloads it
+ */
+export async function saveOnlineSongToOffline(song) {
+  if (!song || !song.id) return { success: false, reason: 'Invalid song' };
+
+  // 1. Add to custom offline collection & mark ID
+  addSongToOffline(song);
+
+  // 2. Immediate audio download into CacheStorage
+  try {
+    prefetchAudioTrack(song.id).catch((err) => {
+      console.warn('[VIP Save] Background prefetch warning:', err);
+    });
+    showFloatingToast(`✨ "${song.title}" offline space me save ho gaya!`, 'success');
+    return { success: true };
+  } catch (err) {
+    console.warn('[VIP Save] Error saving track:', err);
+    return { success: false, error: err };
+  }
+}
+
+/**
+ * Returns current status of VIP offline space
  */
 export function getVipStatus(allSongs) {
   if (!isVipUnlocked()) return { isUnlocked: false };
 
-  const vipSongs = Array.isArray(allSongs)
+  const driveVip = Array.isArray(allSongs)
     ? allSongs.filter((s) => s && s.id && isVipFolder(s.folderName))
     : [];
 
+  const customVip = getCustomOfflineSongs();
+
+  // Combine & deduplicate
+  const seen = new Set();
+  const allVipSongs = [];
+  for (const s of [...driveVip, ...customVip]) {
+    if (s && s.id && !seen.has(s.id)) {
+      seen.add(s.id);
+      allVipSongs.push(s);
+    }
+  }
+
   const downloadedIds = new Set(getVipDownloadedIds());
-  const downloadedCount = vipSongs.filter((s) => downloadedIds.has(s.id)).length;
+  const downloadedCount = allVipSongs.filter((s) => downloadedIds.has(s.id)).length;
 
   return {
     isUnlocked: true,
     folderName: getVipFolderName(),
-    totalSongs: vipSongs.length,
+    totalSongs: allVipSongs.length,
     downloadedCount,
-    isComplete: vipSongs.length > 0 && downloadedCount >= vipSongs.length
+    isComplete: allVipSongs.length > 0 && downloadedCount >= allVipSongs.length
   };
 }
 

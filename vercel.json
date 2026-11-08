@@ -27,10 +27,6 @@
       "source": "/api/stream(.*)",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
-        },
-        {
           "key": "Access-Control-Allow-Origin",
           "value": "*"
         },
@@ -41,6 +37,10 @@
         {
           "key": "Access-Control-Expose-Headers",
           "value": "Content-Range, Content-Length, Accept-Ranges"
+        },
+        {
+          "key": "Accept-Ranges",
+          "value": "bytes"
         }
       ]
     },

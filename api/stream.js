@@ -71,13 +71,13 @@ export default async function handler(req) {
     responseHeaders.set('Access-Control-Expose-Headers', 'Content-Range, Content-Length, Accept-Ranges');
     responseHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
 
-    // CRITICAL: NEVER cache byte-range streaming responses in Edge CDN!
-    // Edge caches return the initial probe chunk (e.g. 0-1000) for all future seek/play requests,
-    // resulting in audio stalling after 0.03 seconds.
-    responseHeaders.set('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
-    responseHeaders.set('Pragma', 'no-cache');
-    responseHeaders.set('Expires', '0');
-    responseHeaders.set('Vary', 'Range');
+    // Cache full files on Edge/Browser, allow client-side range caching with Vary: Range
+    if (range) {
+      responseHeaders.set('Cache-Control', 'private, max-age=3600');
+      responseHeaders.set('Vary', 'Range');
+    } else {
+      responseHeaders.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+    }
 
     if (driveRes.headers.has('content-length')) {
       responseHeaders.set('Content-Length', driveRes.headers.get('content-length'));

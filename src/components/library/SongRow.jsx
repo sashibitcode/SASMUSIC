@@ -18,7 +18,7 @@ import { formatFileSize } from '../../utils/formatters';
 import { SongCoverArt } from '../common/SongCoverArt';
 
 export function SongRow({ song, index, playlist = null }) {
-  const { currentSong, isPlaying, isLoadingAudio, playSong, togglePlay, addToQueue, playNextInQueue } = useAudio();
+  const { currentSong, isPlaying, isLoadingAudio, playSong, togglePlay, prewarmSong, addToQueue, playNextInQueue } = useAudio();
   const { isFavorite, toggleFavorite, localPlaylists, addSongToPlaylist } = useLibrary();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -70,6 +70,16 @@ export function SongRow({ song, index, playlist = null }) {
   return (
     <div
       onClick={handlePlayClick}
+      onPointerDown={() => {
+        if (!isCurrent && song?.id && prewarmSong) {
+          prewarmSong(song.id);
+        }
+      }}
+      onMouseEnter={() => {
+        if (!isCurrent && song?.id && prewarmSong) {
+          prewarmSong(song.id);
+        }
+      }}
       className={`group relative flex items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer border ${isMenuOpen ? 'z-40' : 'z-0'
         } ${isCurrent
           ? 'bg-[#06110c] border-[#A31C1B]/80 shadow-[0_6px_28px_rgba(6,17,12,0.95)] ring-1 ring-[#A31C1B]/50'

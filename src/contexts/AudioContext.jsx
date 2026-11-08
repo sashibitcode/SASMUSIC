@@ -2,6 +2,11 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 import { setupMediaSession } from '../services/mediaSession';
 import { useLibrary } from './LibraryContext';
 import { showFloatingToast } from '../utils/toast';
+import {
+  getCachedAudioUrl,
+  prefetchAudioTrack,
+  prewarmStreamConnection
+} from '../services/audioCache';
 
 const AudioContext = createContext(null);
 
@@ -29,6 +34,7 @@ export function AudioProvider({ children }) {
   const { addToRecentlyPlayed } = useLibrary();
 
   const audioRef = useRef(new Audio());
+  const preloadAudioRef = useRef(new Audio());
   const retryCountRef = useRef(0);
 
   const [currentSong, setCurrentSong] = useState(null);
@@ -254,7 +260,7 @@ export function AudioProvider({ children }) {
   }, [shuffleMode]);
 
   // Play a specific queue index
-  const playQueueIndex = useCallback((index) => {
+  const playQueueIndex = useCallback(async (index) => {
     const currentQueue = stateRef.current.queue;
     if (index >= 0 && index < currentQueue.length) {
       const songToPlay = currentQueue[index];
@@ -264,7 +270,11 @@ export function AudioProvider({ children }) {
       setPlaybackError(null);
 
       const audio = audioRef.current;
-      const targetUrl = resolveFastAudioUrl(songToPlay);
+      
+      // Check local cache for instant <20ms playback
+      const cachedUrl = await getCachedAudioUrl(songToPlay.id);
+      const targetUrl = cachedUrl || resolveFastAudioUrl(songToPlay);
+
       if (audio.src !== targetUrl) {
         audio.src = targetUrl;
         audio.preload = 'auto';
@@ -278,11 +288,16 @@ export function AudioProvider({ children }) {
       addToRecentlyPlayed(songToPlay);
       localStorage.setItem(STORAGE_LAST_SONG, JSON.stringify(songToPlay));
       localStorage.setItem(STORAGE_LAST_TIME, '0');
+
+      // If not already cached, trigger background prefetch
+      if (!cachedUrl && songToPlay.id) {
+        prefetchAudioTrack(songToPlay.id);
+      }
     }
   }, [addToRecentlyPlayed]);
 
   // Main playback trigger: plays a song and optionally sets a new queue
-  const playSong = useCallback((song, newQueue = null) => {
+  const playSong = useCallback(async (song, newQueue = null) => {
     if (!song) return;
 
     let targetQueue = newQueue ? [...newQueue] : [song];
@@ -308,7 +323,11 @@ export function AudioProvider({ children }) {
     setPlaybackError(null);
 
     const audio = audioRef.current;
-    const targetUrl = resolveFastAudioUrl(song);
+    
+    // Check local cache for instant <20ms playback
+    const cachedUrl = await getCachedAudioUrl(song.id);
+    const targetUrl = cachedUrl || resolveFastAudioUrl(song);
+
     if (audio.src !== targetUrl) {
       audio.src = targetUrl;
       audio.preload = 'auto';
@@ -323,6 +342,11 @@ export function AudioProvider({ children }) {
     localStorage.setItem(STORAGE_LAST_SONG, JSON.stringify(song));
     localStorage.setItem(STORAGE_LAST_TIME, '0');
 
+    // If not already cached, trigger background prefetch
+    if (!cachedUrl && song.id) {
+      prefetchAudioTrack(song.id);
+    }
+
     if (syncActionHandlerRef.current && !isSyncActionRef.current) {
       syncActionHandlerRef.current({
         type: 'CHANGE_SONG',
@@ -334,6 +358,42 @@ export function AudioProvider({ children }) {
       });
     }
   }, [addToRecentlyPlayed]);
+
+  // Background preloading of the next song in queue for instant 0ms transition
+  useEffect(() => {
+    if (!currentSong || !isPlaying || queue.length === 0) return;
+
+    const nextIndex = queueIndex + 1;
+    let nextSong = null;
+    if (nextIndex < queue.length) {
+      nextSong = queue[nextIndex];
+    } else if (repeatMode === 'all' && queue.length > 1) {
+      nextSong = queue[0];
+    }
+
+    if (!nextSong || !nextSong.id) return;
+
+    // Start background prefetch 1.5s after playback starts
+    const timer = setTimeout(async () => {
+      // 1. Prefetch into browser CacheStorage
+      prefetchAudioTrack(nextSong.id);
+
+      // 2. Pre-buffer on secondary audio element
+      try {
+        if (preloadAudioRef.current) {
+          const cached = await getCachedAudioUrl(nextSong.id);
+          const nextUrl = cached || resolveFastAudioUrl(nextSong);
+          if (preloadAudioRef.current.src !== nextUrl) {
+            preloadAudioRef.current.src = nextUrl;
+            preloadAudioRef.current.preload = 'auto';
+            preloadAudioRef.current.load();
+          }
+        }
+      } catch (_) {}
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [currentSong?.id, isPlaying, queueIndex, queue, repeatMode]);
 
   // Play / Pause toggle
   const togglePlay = useCallback(() => {
@@ -594,7 +654,8 @@ export function AudioProvider({ children }) {
         reorderQueue,
         setSyncActionHandler,
         isSyncActionRef,
-        audioRef
+        audioRef,
+        prewarmSong: prewarmStreamConnection
       }}
     >
       {children}

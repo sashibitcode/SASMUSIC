@@ -7,7 +7,7 @@ import { VisualizerBars } from '../player/VisualizerBars';
 
 export function RecommendedSection({ songs = [] }) {
   const { getRegularSongs } = useLibrary();
-  const { currentSong, isPlaying, playSong, togglePlay } = useAudio();
+  const { currentSong, isPlaying, playSong, togglePlay, prewarmSong } = useAudio();
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Compute regular songs, supplementing with library tracks if fewer than 4 exist yet
@@ -97,6 +97,16 @@ export function RecommendedSection({ songs = [] }) {
             <div
               key={song.id}
               onClick={() => handleSongClick(song, index)}
+              onPointerDown={() => {
+                if (!isCurrent && song?.id && prewarmSong) {
+                  prewarmSong(song.id);
+                }
+              }}
+              onMouseEnter={() => {
+                if (!isCurrent && song?.id && prewarmSong) {
+                  prewarmSong(song.id);
+                }
+              }}
               className={`group flex items-center justify-between p-2 rounded-2xl transition-all duration-200 cursor-pointer shadow-sm min-h-[58px] sm:min-h-[64px] ${
                 isCurrent
                   ? 'bg-white/[0.08] border border-white/20 shadow-md'

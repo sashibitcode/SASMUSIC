@@ -48,9 +48,14 @@ export class ErrorBoundary extends React.Component {
             </div>
 
             <h2 className="text-xl font-bold mb-2 text-white">Something went wrong</h2>
-            <p className="text-xs text-slate-300 mb-6 leading-relaxed">
+            <p className="text-xs text-slate-300 mb-4 leading-relaxed">
               We encountered an unexpected interface error. Tap reload below to refresh the music player.
             </p>
+            {this.state.error && (
+              <p className="text-[11px] text-rose-300/80 font-mono mb-5 px-3 py-1.5 rounded-lg bg-black/40 border border-rose-500/20 max-w-full truncate">
+                {String(this.state.error?.message || this.state.error)}
+              </p>
+            )}
 
             <div className="flex flex-col sm:flex-row gap-3 w-full">
               <button

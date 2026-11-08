@@ -11,10 +11,10 @@ import {
   LogIn
 } from 'lucide-react';
 import { useUser, SignInButton } from '@clerk/clerk-react';
+import { IS_CLERK_CONFIGURED } from '../../config/clerkConfig';
 import { showFloatingToast } from '../../utils/toast';
 
-export function SongRequestCard({ searchQuery = '', onClearSearch }) {
-  const { user, isSignedIn } = useUser();
+function SongRequestCardContent({ searchQuery = '', onClearSearch, user, isSignedIn }) {
   const [songTitle, setSongTitle] = useState(searchQuery);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -270,4 +270,20 @@ export function SongRequestCard({ searchQuery = '', onClearSearch }) {
       )}
     </div>
   );
+}
+
+function ClerkSongRequestCard(props) {
+  const { user, isSignedIn } = useUser();
+  return <SongRequestCardContent {...props} user={user} isSignedIn={isSignedIn} />;
+}
+
+function GuestSongRequestCard(props) {
+  return <SongRequestCardContent {...props} user={null} isSignedIn={false} />;
+}
+
+export function SongRequestCard(props) {
+  if (IS_CLERK_CONFIGURED) {
+    return <ClerkSongRequestCard {...props} />;
+  }
+  return <GuestSongRequestCard {...props} />;
 }

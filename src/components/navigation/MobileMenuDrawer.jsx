@@ -32,6 +32,78 @@ const SLEEP_TIMER_OPTIONS = [
   { label: '60m', minutes: 60 }
 ];
 
+function ClerkUserHeader({ onClose }) {
+  const { user } = useUser();
+  return (
+    <>
+      <SignedIn>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full overflow-hidden border border-white/20 flex-shrink-0 bg-[#06110c] shadow-md">
+            {user?.imageUrl ? (
+              <img
+                src={user.imageUrl}
+                alt={user.fullName || 'User'}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-white font-bold text-base bg-white/10">
+                {(user?.firstName?.[0] || 'U').toUpperCase()}
+              </div>
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h3 className="text-sm font-bold text-white truncate">
+              {user?.fullName || user?.firstName || 'Music Lover'}
+            </h3>
+            <p className="text-[11px] text-slate-400 truncate mt-0.5">
+              {user?.primaryEmailAddress?.emailAddress || 'Signed In'}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-3 pt-3 border-t border-white/[0.06]">
+          <SignOutButton redirectUrl="/">
+            <button
+              onClick={onClose}
+              className="w-full min-h-[38px] flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold transition-all active:scale-95"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Log Out from Account</span>
+            </button>
+          </SignOutButton>
+        </div>
+      </SignedIn>
+
+      <SignedOut>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center text-slate-300">
+              <LogIn className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-white">Sign In to Save Favorites</h4>
+            </div>
+          </div>
+
+          <SignInButton mode="modal">
+            <button
+              onClick={() => {
+                markSignInAction();
+                onClose();
+              }}
+              className="w-full min-h-[38px] mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-xl crimson-glow-btn text-white text-xs font-bold shadow-md transition-all active:scale-95"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In with Google</span>
+            </button>
+          </SignInButton>
+        </div>
+      </SignedOut>
+    </>
+  );
+}
+
 export function MobileMenuDrawer({
   isOpen,
   onClose,
@@ -40,7 +112,6 @@ export function MobileMenuDrawer({
   onOpenUpload,
   onSelectCategory
 }) {
-  const { user } = useUser();
   const { isPlaying, pauseSong } = useAudio();
 
   // Sleep Timer local state
@@ -164,75 +235,18 @@ export function MobileMenuDrawer({
         {/* User Account / Profile Section */}
         <div className="p-4 border-b border-white/[0.08] bg-white/[0.02]">
           {IS_CLERK_CONFIGURED ? (
-            <>
-              <SignedIn>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border border-white/20 flex-shrink-0 bg-[#06110c] shadow-md">
-                    {user?.imageUrl ? (
-                      <img
-                        src={user.imageUrl}
-                        alt={user.fullName || 'User'}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white font-bold text-base bg-white/10">
-                        {(user?.firstName?.[0] || 'U').toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-bold text-white truncate">
-                      {user?.fullName || user?.firstName || 'Music Lover'}
-                    </h3>
-                    <p className="text-[11px] text-slate-400 truncate mt-0.5">
-                      {user?.primaryEmailAddress?.emailAddress || 'Signed In'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-white/[0.06]">
-                  <SignOutButton redirectUrl="/">
-                    <button
-                      onClick={onClose}
-                      className="w-full min-h-[38px] flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold transition-all active:scale-95"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      <span>Log Out from Account</span>
-                    </button>
-                  </SignOutButton>
-                </div>
-              </SignedIn>
-
-              <SignedOut>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center text-slate-300">
-                      <LogIn className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white">Sign In to Save Favorites</h4>
-                    </div>
-                  </div>
-
-                  <SignInButton mode="modal">
-                    <button
-                      onClick={() => {
-                        markSignInAction();
-                        onClose();
-                      }}
-                      className="w-full min-h-[38px] mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-xl crimson-glow-btn text-white text-xs font-bold shadow-md transition-all active:scale-95"
-                    >
-                      <LogIn className="w-3.5 h-3.5" />
-                      <span>Sign In with Google</span>
-                    </button>
-                  </SignInButton>
-                </div>
-              </SignedOut>
-            </>
+            <ClerkUserHeader onClose={onClose} />
           ) : (
-            <div className="text-xs text-slate-400">
-              <span>Guest Mode Active</span>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center text-slate-300">
+                  <LogIn className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-white">Guest Mode Active</h4>
+                  <p className="text-[11px] text-slate-400">Sign in available when Clerk is configured</p>
+                </div>
+              </div>
             </div>
           )}
         </div>

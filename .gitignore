@@ -9,8 +9,7 @@ dist-ssr/
 
 # Environment files with credentials
 .env
-.env.local
-.env.*.local
+.env.*
 *.env
 !.env.example
 
@@ -30,6 +29,3 @@ yarn-error.log*
 # Editor directories
 .vscode/
 .idea/
-
-.vercel
-.env*

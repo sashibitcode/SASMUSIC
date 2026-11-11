@@ -59,6 +59,67 @@ export function AudioProvider({ children }) {
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [playbackError, setPlaybackError] = useState(null);
 
+  // Global Sleep Timer state (Timestamp-based for rock-solid background accuracy on mobile)
+  const [sleepTimerMinutes, setSleepTimerMinutes] = useState(0);
+  const [sleepTimerRemaining, setSleepTimerRemaining] = useState(0);
+  const sleepTimerEndRef = useRef(null);
+
+  const clearSleepTimer = useCallback(() => {
+    sleepTimerEndRef.current = null;
+    setSleepTimerMinutes(0);
+    setSleepTimerRemaining(0);
+  }, []);
+
+  const setSleepTimer = useCallback((minutes) => {
+    const mins = Math.max(0, Math.floor(Number(minutes) || 0));
+    if (mins <= 0) {
+      clearSleepTimer();
+      showFloatingToast('Sleep timer turned off', 'info');
+      return;
+    }
+
+    const endTimestamp = Date.now() + mins * 60 * 1000;
+    sleepTimerEndRef.current = endTimestamp;
+    setSleepTimerMinutes(mins);
+    setSleepTimerRemaining(mins * 60);
+    showFloatingToast(`Sleep timer set to ${mins}m 🌙`, 'success');
+  }, [clearSleepTimer]);
+
+  // Reliable countdown interval based on wall-clock timestamp (works even if mobile throttles intervals)
+  useEffect(() => {
+    if (!sleepTimerEndRef.current) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const diffMs = sleepTimerEndRef.current - now;
+
+      if (diffMs <= 0) {
+        clearInterval(interval);
+        sleepTimerEndRef.current = null;
+        setSleepTimerMinutes(0);
+        setSleepTimerRemaining(0);
+
+        if (audioRef.current) {
+          audioRef.current.pause();
+        }
+        setIsPlaying(false);
+        showFloatingToast('Sleep timer ended. Music paused 🌙', 'info');
+      } else {
+        setSleepTimerRemaining(Math.ceil(diffMs / 1000));
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [sleepTimerMinutes]);
+
+  // Pause song helper
+  const pauseSong = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    setIsPlaying(false);
+  }, []);
+
   // SyncPlay Integration
   const syncActionHandlerRef = useRef(null);
   const isSyncActionRef = useRef(false);
@@ -669,6 +730,11 @@ export function AudioProvider({ children }) {
         reorderQueue,
         setSyncActionHandler,
         isSyncActionRef,
+        pauseSong,
+        sleepTimerMinutes,
+        sleepTimerRemaining,
+        setSleepTimer,
+        clearSleepTimer,
         audioRef,
         prewarmSong: prewarmStreamConnection
       }}

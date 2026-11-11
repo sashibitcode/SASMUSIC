@@ -128,9 +128,20 @@ export function PlaylistsView() {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                {playlistSongs.length} {playlistSongs.length === 1 ? 'song' : 'songs'}
-              </p>
+              {isVipFolder(activePlaylist.name) ? (
+                <div className="space-y-0.5 mt-1">
+                  <p className="text-xs text-rose-300 font-medium">
+                    Welcome to your special place. Handpicked songs chosen just for you.
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    {playlistSongs.length} {playlistSongs.length === 1 ? 'song' : 'songs'} • Offline ready
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {playlistSongs.length} {playlistSongs.length === 1 ? 'song' : 'songs'}
+                </p>
+              )}
             </div>
           </div>
 

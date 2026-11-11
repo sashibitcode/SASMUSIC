@@ -27,6 +27,7 @@ import { usePwaBackHandler } from './hooks/usePwaBackHandler';
 const PlaylistsView = lazy(() => import('./components/library/PlaylistsView').then(m => ({ default: m.PlaylistsView })));
 const FavoritesView = lazy(() => import('./components/library/FavoritesView').then(m => ({ default: m.FavoritesView })));
 const RecentsView = lazy(() => import('./components/library/RecentsView').then(m => ({ default: m.RecentsView })));
+const VipCollectionView = lazy(() => import('./components/library/VipCollectionView').then(m => ({ default: m.VipCollectionView })));
 const FullPlayerModal = lazy(() => import('./components/player/FullPlayerModal').then(m => ({ default: m.FullPlayerModal })));
 const QueueDrawer = lazy(() => import('./components/player/QueueDrawer').then(m => ({ default: m.QueueDrawer })));
 const UploadModal = lazy(() => import('./components/upload/UploadModal').then(m => ({ default: m.UploadModal })));
@@ -52,6 +53,7 @@ export function AppContent() {
 
   // Navigation, search and category filter state
   const [activeTab, setActiveTab] = useState('songs'); // 'songs' | 'search' | 'playlists' | 'favorites' | 'recents'
+  const [isVipCollectionOpen, setIsVipCollectionOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('shuffle');
   const [shuffleSeed, setShuffleSeed] = useState(() => Date.now());
@@ -158,6 +160,7 @@ export function AppContent() {
 
   // When switching to search tab, scroll to top and focus input
   const handleTabChange = (tabId) => {
+    setIsVipCollectionOpen(false);
     if (activeTab !== tabId && activeTab !== 'favorites') {
       previousTabRef.current = activeTab;
     }
@@ -170,6 +173,7 @@ export function AppContent() {
 
   // Toggle favorites: opens if not active, closes and returns to previous tab if already active
   const handleToggleFavorites = () => {
+    setIsVipCollectionOpen(false);
     if (activeTab === 'favorites') {
       const returnTab = previousTabRef.current && previousTabRef.current !== 'favorites'
         ? previousTabRef.current
@@ -183,6 +187,7 @@ export function AppContent() {
 
   // Select a category/artist/folder filter, switch to songs tab, reset sort to shuffle, and generate fresh seed
   const handleSelectFilter = (filter) => {
+    setIsVipCollectionOpen(false);
     setActiveTab('songs');
     setActiveFilter(filter);
     setSortBy('shuffle');
@@ -326,52 +331,64 @@ export function AppContent() {
                 />
               )}
 
-              {/* VIP Private Collection Top Banner (Appears at top of Home ONLY when unlocked) */}
-              {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                <VipHomeBanner />
-              )}
-
-              {/* Personalized Recommended Section (User's Regular Tracks - 4 up front + View All) */}
-              {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                <RecommendedSection songs={songs} />
-              )}
-
-              {/* Visual Category Hub (Cards Grid & Top Singers) shown on Home when not searching and no filter active */}
-              {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                <CategoryHub
-                  songs={songs}
-                  drivePlaylists={drivePlaylists}
-                  onSelectCategory={(catId) => handleSelectFilter({ type: 'category', value: catId })}
-                  onSelectArtist={(artistName) => handleSelectFilter({ type: 'artist', value: artistName })}
-                />
-              )}
-
-              {/* Song List */}
-              {(activeTab === 'songs' || activeTab === 'search') && (
-                <div>
+              {/* VIP Collection View (When user clicked 'For You' banner to enter collection) */}
+              {activeTab === 'songs' && isVipCollectionOpen && !debouncedSearch ? (
+                <Suspense fallback={<SongListSkeleton count={6} />}>
+                  <VipCollectionView onClose={() => setIsVipCollectionOpen(false)} />
+                </Suspense>
+              ) : (
+                <>
+                  {/* VIP Private Collection Top Banner (Appears at top of Home ONLY when unlocked) */}
                   {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
-                    <div className="flex items-center justify-between mb-3.5 pt-6 sm:pt-7 border-t border-white/[0.08]">
-                      <div>
-                        <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                          All Songs
-                        </h3>
-                        <p className="text-[11px] text-slate-400">
-                          Complete library catalog
-                        </p>
-                      </div>
-                      <span className="text-xs text-slate-400 font-mono bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
-                        {songs.length} tracks
-                      </span>
+                    <VipHomeBanner onOpenCollection={() => {
+                      setIsVipCollectionOpen(true);
+                      mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+                    }} />
+                  )}
+
+                  {/* Personalized Recommended Section (User's Regular Tracks - 4 up front + View All) */}
+                  {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                    <RecommendedSection songs={songs} />
+                  )}
+
+                  {/* Visual Category Hub (Cards Grid & Top Singers) shown on Home when not searching and no filter active */}
+                  {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                    <CategoryHub
+                      songs={songs}
+                      drivePlaylists={drivePlaylists}
+                      onSelectCategory={(catId) => handleSelectFilter({ type: 'category', value: catId })}
+                      onSelectArtist={(artistName) => handleSelectFilter({ type: 'artist', value: artistName })}
+                    />
+                  )}
+
+                  {/* Song List */}
+                  {(activeTab === 'songs' || activeTab === 'search') && (
+                    <div>
+                      {activeTab === 'songs' && (!activeFilter || activeFilter.type === 'all' || !activeFilter.value) && !debouncedSearch && (
+                        <div className="flex items-center justify-between mb-3.5 pt-6 sm:pt-7 border-t border-white/[0.08]">
+                          <div>
+                            <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
+                              All Songs
+                            </h3>
+                            <p className="text-[11px] text-slate-400">
+                              Complete library catalog
+                            </p>
+                          </div>
+                          <span className="text-xs text-slate-400 font-mono bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
+                            {songs.length} tracks
+                          </span>
+                        </div>
+                      )}
+                      <SongList
+                        songs={categorizedSongs}
+                        searchQuery={debouncedSearch}
+                        sortBy={sortBy}
+                        shuffleSeed={shuffleSeed}
+                        hideActions={Boolean(activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value)}
+                      />
                     </div>
                   )}
-                  <SongList
-                    songs={categorizedSongs}
-                    searchQuery={debouncedSearch}
-                    sortBy={sortBy}
-                    shuffleSeed={shuffleSeed}
-                    hideActions={Boolean(activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value)}
-                  />
-                </div>
+                </>
               )}
 
               <Suspense fallback={<SongListSkeleton count={6} />}>

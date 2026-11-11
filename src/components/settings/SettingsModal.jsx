@@ -15,6 +15,20 @@ import { VipSettingsSection } from './VipSettingsSection';
 export function SettingsModal({ isOpen, onClose }) {
   const { songs, isLoading, refreshLibrary } = useDrive();
 
+  const handleCheckUpdate = async () => {
+    try {
+      if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) {
+          await reg.update();
+        }
+      }
+      window.location.reload();
+    } catch (_) {
+      window.location.reload();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -163,7 +177,17 @@ export function SettingsModal({ isOpen, onClose }) {
 
         {/* Footer */}
         <div className="px-5 py-3 border-t border-[#282f2b] bg-[#121614]/80 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
-          <span>SAS Music • v1.0.0</span>
+          <div className="flex items-center gap-2">
+            <span>SAS Music • v1.0.1</span>
+            <button
+              onClick={handleCheckUpdate}
+              className="text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-0.5 rounded-full transition-colors active:scale-95 flex items-center gap-1"
+              title="Check for and load latest app updates"
+            >
+              <RotateCw className="w-2.5 h-2.5" />
+              <span>Update App</span>
+            </button>
+          </div>
           <a
             href="https://sashibitcode.vercel.app/"
             target="_blank"

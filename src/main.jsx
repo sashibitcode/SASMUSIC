@@ -13,15 +13,37 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Auto-register service worker for PWA offline shell & updates
 if ('serviceWorker' in navigator) {
-  registerSW({
+  const updateSW = registerSW({
     immediate: true,
     onNeedRefresh() {
-      console.log('New SAS Music content available; reloading.');
+      console.log('New SAS Music content available; applying update.');
+      // Instantly activate the new service worker and refresh the client with latest assets
+      updateSW(true);
     },
     onOfflineReady() {
       console.log('SAS Music is ready for offline playback.');
     }
   });
+
+  // Check for newly deployed updates every time the user re-opens or switches back to the app
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      navigator.serviceWorker.getRegistration().then((reg) => {
+        if (reg) {
+          reg.update().catch(() => {});
+        }
+      }).catch(() => {});
+    }
+  });
+
+  // Periodic background check every 30 minutes
+  setInterval(() => {
+    navigator.serviceWorker.getRegistration().then((reg) => {
+      if (reg) {
+        reg.update().catch(() => {});
+      }
+    }).catch(() => {});
+  }, 30 * 60 * 1000);
 }
 
 function RootApp() {

@@ -88,6 +88,16 @@ async function evictOldTracks(cache) {
 }
 
 /**
+ * Synchronously checks if an audio track is already resident in RAM memory.
+ * Returns instant blob URL with 0ms delay without breaking native execution chains.
+ */
+export function getCachedAudioUrlSync(songId) {
+  if (!songId || !objectUrlMap.has(songId)) return null;
+  touchSongInIndex(songId);
+  return objectUrlMap.get(songId);
+}
+
+/**
  * Checks if a song is already cached locally.
  * If yes, returns an instant local Blob URL (0ms latency).
  * If no, returns null.

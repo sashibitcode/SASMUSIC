@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   X, Lock, Upload, FileAudio, CheckCircle2, AlertCircle, 
-  Eye, EyeOff, RotateCw, Music, ShieldCheck, Sparkles 
+  Eye, EyeOff, RotateCw, Music, ShieldCheck, Sparkles,
+  Folder, FolderCheck, Check
 } from 'lucide-react';
 import { parseSongFileName } from '../../utils/songParser';
 import { useDrive } from '../../contexts/DriveContext';
+import { isVipFolder } from '../../utils/vipConfig';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 const ALLOWED_EXTENSIONS = ['.mp3', '.m4a', '.aac', '.wav'];
@@ -16,6 +18,11 @@ function formatBytes(bytes) {
 
 export function UploadModal({ isOpen, onClose }) {
   const { refreshLibrary, drivePlaylists } = useDrive();
+
+  // Filter out VIP / 'For You' folders strictly so private folder is NEVER shown in upload destinations
+  const availableFolders = useMemo(() => {
+    return (drivePlaylists || []).filter((pl) => pl && pl.name && !isVipFolder(pl.name));
+  }, [drivePlaylists]);
 
   // Fresh token per upload - requires password every single time
   const [token, setToken] = useState(null);
@@ -354,7 +361,66 @@ export function UploadModal({ isOpen, onClose }) {
         {/* STEP 2: FILE SELECTION & METADATA FORM */}
         {step === 'FORM' && (
           <form onSubmit={handleStartUpload} className="mt-4 space-y-3.5">
-            {/* File drop zone / picker */}
+            {/* 1. Destination Folder Selector (Prominently visible upfront) */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Folder className="w-3.5 h-3.5 text-[#A31C1B]" />
+                  <span>Choose Target Folder</span>
+                </label>
+                <span className="text-[10px] text-slate-400 font-medium">
+                  {selectedFolderId
+                    ? availableFolders.find((f) => f.id === selectedFolderId)?.name || 'Custom Folder'
+                    : 'Main Library (General)'}
+                </span>
+              </div>
+
+              {/* Selectable Folder Badges / Chips Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-36 overflow-y-auto no-scrollbar p-1.5 rounded-xl bg-[#222222]/50 border border-white/[0.06]">
+                {/* Default: Main Library */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedFolderId('')}
+                  className={`flex items-center gap-2 p-2 rounded-lg text-left text-xs font-medium transition-all ${
+                    selectedFolderId === ''
+                      ? 'bg-[#A31C1B]/20 border border-[#A31C1B] text-white ring-1 ring-[#A31C1B]/40 shadow-sm'
+                      : 'bg-[#1b1f1d] hover:bg-white/[0.06] border border-white/[0.06] text-slate-300'
+                  }`}
+                >
+                  <span className="text-sm">🎵</span>
+                  <span className="truncate flex-1">Main Library</span>
+                  {selectedFolderId === '' && <Check className="w-3 h-3 text-emerald-400 flex-shrink-0" />}
+                </button>
+
+                {/* All Drive Folders strictly excluding VIP / For You */}
+                {availableFolders.map((pl) => {
+                  const isSelected = selectedFolderId === pl.id;
+                  const lower = (pl.name || '').toLowerCase();
+                  const isChhath = lower.includes('chhat') || lower.includes('chhath');
+                  const emoji = isChhath ? '🌅' : lower.includes('bhojpuri') ? '🌾' : lower.includes('gym') ? '🏋️' : lower.includes('retro') ? '📻' : '📁';
+
+                  return (
+                    <button
+                      key={pl.id}
+                      type="button"
+                      onClick={() => setSelectedFolderId(pl.id)}
+                      className={`flex items-center gap-2 p-2 rounded-lg text-left text-xs font-medium transition-all ${
+                        isSelected
+                          ? 'bg-[#A31C1B]/20 border border-[#A31C1B] text-white ring-1 ring-[#A31C1B]/40 shadow-sm'
+                          : 'bg-[#1b1f1d] hover:bg-white/[0.06] border border-white/[0.06] text-slate-300'
+                      }`}
+                      title={pl.name}
+                    >
+                      <span className="text-sm">{emoji}</span>
+                      <span className="truncate flex-1">{pl.name}</span>
+                      {isSelected && <Check className="w-3 h-3 text-emerald-400 flex-shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 2. File drop zone / picker */}
             <div>
               <input
                 ref={fileInputRef}
@@ -367,14 +433,14 @@ export function UploadModal({ isOpen, onClose }) {
               {!file ? (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="cursor-pointer border-2 border-dashed border-white/[0.12] hover:border-white/30 rounded-2xl p-5 text-center transition-all bg-[#222222]/50 hover:bg-[#222222] group"
+                  className="cursor-pointer border-2 border-dashed border-white/[0.12] hover:border-white/30 rounded-2xl p-4 text-center transition-all bg-[#222222]/50 hover:bg-[#222222] group"
                 >
-                  <FileAudio className="w-9 h-9 mx-auto text-slate-400 group-hover:text-white transition-colors mb-2" />
+                  <FileAudio className="w-8 h-8 mx-auto text-slate-400 group-hover:text-white transition-colors mb-1.5" />
                   <p className="text-xs font-semibold text-white">Tap to select an audio file</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">MP3, M4A, AAC, WAV (Max 50 MB)</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">MP3, M4A, AAC, WAV (Max 50 MB)</p>
                 </div>
               ) : (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-[#06110c] border border-white/[0.08]">
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#06110c] border border-white/[0.08]">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <Music className="w-4 h-4 text-slate-300 flex-shrink-0" />
                     <div className="truncate">
@@ -397,7 +463,7 @@ export function UploadModal({ isOpen, onClose }) {
               )}
             </div>
 
-            {/* Editable Title & Artist */}
+            {/* 3. Editable Title & Artist */}
             {file && (
               <div className="space-y-3 animate-fadeIn">
                 <div>
@@ -428,40 +494,25 @@ export function UploadModal({ isOpen, onClose }) {
                   />
                 </div>
 
-                {/* Category / Drive Folder Destination */}
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-medium text-slate-300">
-                      Category / Folder Destination
-                    </label>
-                    <span className="text-[10px] text-slate-400">Optional</span>
+                {/* Target Destination & Filename Summary */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-[#222222]/60 border border-white/[0.04] text-[11px]">
+                    <span className="text-slate-400">Target Folder:</span>
+                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                      <FolderCheck className="w-3.5 h-3.5" />
+                      {selectedFolderId
+                        ? availableFolders.find((f) => f.id === selectedFolderId)?.name || 'Custom Folder'
+                        : 'Main Library (General)'}
+                    </span>
                   </div>
-                  <select
-                    value={selectedFolderId}
-                    onChange={(e) => setSelectedFolderId(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[#222222] border border-white/[0.08] text-white focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10"
-                  >
-                    <option value="">🎵 Main Library (General)</option>
-                    {(drivePlaylists || []).map((pl) => {
-                      const lower = (pl.name || '').toLowerCase();
-                      const isChhath = lower.includes('chhat') || lower.includes('chhath');
-                      const emoji = isChhath ? '🌅' : lower.includes('bhojpuri') ? '🌾' : lower.includes('gym') ? '🏋️' : lower.includes('retro') ? '📻' : '📁';
-                      return (
-                        <option key={pl.id} value={pl.id}>
-                          {emoji} {pl.name} {isChhath ? '(Chhath Special)' : ''}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
 
-                {/* Filename Preview */}
-                <div className="p-2.5 rounded-lg bg-[#222222]/60 border border-white/[0.04] text-[11px] text-slate-400">
-                  <span className="text-slate-500">File format: </span>
-                  <span className="text-emerald-400 font-mono">
-                    {title.trim() || 'Title'} - {artist.trim() || 'Artist'}
-                    {file.name.match(/\.[a-z0-9]+$/i)?.[0]?.toLowerCase() || '.mp3'}
-                  </span>
+                  <div className="p-2 rounded-lg bg-[#222222]/60 border border-white/[0.04] text-[11px] text-slate-400">
+                    <span className="text-slate-500">File format: </span>
+                    <span className="text-emerald-400 font-mono">
+                      {title.trim() || 'Title'} - {artist.trim() || 'Artist'}
+                      {file.name.match(/\.[a-z0-9]+$/i)?.[0]?.toLowerCase() || '.mp3'}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Mandatory legal confirmation */}

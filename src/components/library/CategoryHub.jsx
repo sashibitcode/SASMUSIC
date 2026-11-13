@@ -11,7 +11,7 @@ export function CategoryHub({
   onSelectCategory,
   onSelectArtist
 }) {
-  const { playSong, setQueue } = useAudio();
+  const { playSong, setQueue, repeatMode, setRepeatMode } = useAudio();
 
   // Compute live song counts per category
   const categoryCounts = useMemo(() => {
@@ -29,7 +29,11 @@ export function CategoryHub({
     const catSongs = songs.filter((s) => isSongInCategory(s, categoryId));
     if (catSongs.length === 0) return;
 
-    // Pick a random song or first song and queue the category
+    if (repeatMode === 'one') {
+      setRepeatMode('all');
+    }
+
+    // Pick first song and queue the whole category playlist
     const startIndex = 0;
     playSong(catSongs[startIndex], catSongs, startIndex);
   };

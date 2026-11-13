@@ -17,7 +17,7 @@ export function SongList({
   shuffleSeed = 0,
   hideActions = false
 }) {
-  const { playSong } = useAudio();
+  const { playSong, repeatMode, setRepeatMode } = useAudio();
   const { refreshLibrary } = useDrive();
 
   // Lazy windowing state for 500+ songs
@@ -122,14 +122,20 @@ export function SongList({
 
   const handlePlayAll = () => {
     if (filteredSongs.length > 0) {
-      playSong(filteredSongs[0], filteredSongs);
+      if (repeatMode === 'one') {
+        setRepeatMode('all');
+      }
+      playSong(filteredSongs[0], filteredSongs, 0);
     }
   };
 
   const handleShufflePlay = () => {
     if (filteredSongs.length > 0) {
+      if (repeatMode === 'one') {
+        setRepeatMode('all');
+      }
       const shuffled = shuffleArray(filteredSongs);
-      playSong(shuffled[0], shuffled);
+      playSong(shuffled[0], shuffled, 0);
     }
   };
 

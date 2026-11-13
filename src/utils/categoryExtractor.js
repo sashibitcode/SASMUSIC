@@ -136,6 +136,18 @@ export const KNOWN_ARTISTS = [
 ];
 
 /**
+ * Detects if a file/song is a valid audio track
+ */
+export function isAudioTrack(song) {
+  if (!song) return false;
+  const mime = (song.mimeType || '').toLowerCase();
+  if (mime.includes('audio')) return true;
+  const name = (song.name || song.title || '').toLowerCase();
+  if (/\.(mp3|m4a|wav|aac|flac|ogg|opus|webm)$/i.test(name)) return true;
+  return Boolean(song.streamUrl || song.id);
+}
+
+/**
  * Checks if a song belongs to a specific category
  */
 export function isSongInCategory(song, categoryId) {
@@ -289,9 +301,19 @@ export function isSongInCategory(song, categoryId) {
         fullText.includes('sohbat')
       );
 
-    case 'hindi':
-      // Hindi/Bollywood: Bollywood composers, modern Hindi hits, or not strictly foreign
-      return (
+    case 'hindi': {
+      // Hindi/Bollywood: Bollywood composers, modern Hindi hits, Hindi Drive folders, or non-regional tracks
+      const isBhojpuri = isSongInCategory(song, 'bhojpuri');
+      const isChhath = isSongInCategory(song, 'chhath');
+      const isPunjabi = isSongInCategory(song, 'punjabi');
+
+      if (isBhojpuri || isChhath) return false;
+
+      // Direct folder checks
+      if (folder.includes('hindi') || folder.includes('bollywood')) return true;
+
+      // Artists & labels & keywords
+      if (
         fullText.includes('arijit') ||
         fullText.includes('pritam') ||
         fullText.includes('mithoon') ||
@@ -303,13 +325,32 @@ export function isSongInCategory(song, categoryId) {
         fullText.includes('vishal-shekhar') ||
         fullText.includes('altaaf sayyed') ||
         fullText.includes('sonu nigam') ||
+        fullText.includes('shreya') ||
+        fullText.includes('neha kakkar') ||
+        fullText.includes('badshah') ||
+        fullText.includes('mohit chauhan') ||
+        fullText.includes('kishore') ||
+        fullText.includes('lata') ||
+        fullText.includes('rafi') ||
+        fullText.includes('mukesh') ||
+        fullText.includes('kumar sanu') ||
+        fullText.includes('udit narayan') ||
+        fullText.includes('alka yagnik') ||
+        fullText.includes('darshan raval') ||
+        fullText.includes('vishal mishra') ||
+        fullText.includes('kk') ||
         fullText.includes('t-series') ||
         fullText.includes('sony music') ||
         fullText.includes('saregama') ||
         fullText.includes('hindi') ||
-        fullText.includes('bollywood') ||
-        (!isSongInCategory(song, 'bhojpuri') && !isSongInCategory(song, 'chhath') && (song.mimeType || '').includes('audio'))
-      );
+        fullText.includes('bollywood')
+      ) {
+        return true;
+      }
+
+      // Any valid audio track in the main library that isn't regional Bhojpuri/Chhath or Punjabi
+      return isAudioTrack(song) && !isPunjabi;
+    }
 
     default:
       return true;

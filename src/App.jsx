@@ -45,7 +45,9 @@ export function AppContent() {
     setIsFullPlayerOpen,
     isQueueOpen,
     setIsQueueOpen,
-    playSong
+    playSong,
+    repeatMode,
+    setRepeatMode
   } = useAudio();
 
   // Keyboard shortcuts listener
@@ -316,11 +318,17 @@ export function AppContent() {
                   onClearFilter={handleClearFilter}
                   onPlayAll={() => {
                     if (categorizedSongs.length > 0) {
+                      if (repeatMode === 'one') {
+                        setRepeatMode('all');
+                      }
                       playSong(categorizedSongs[0], categorizedSongs, 0);
                     }
                   }}
                   onShuffle={() => {
                     if (categorizedSongs.length > 0) {
+                      if (repeatMode === 'one') {
+                        setRepeatMode('all');
+                      }
                       setSortBy('shuffle');
                       const newSeed = Date.now();
                       setShuffleSeed(newSeed);

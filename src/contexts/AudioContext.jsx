@@ -36,6 +36,7 @@ export function AudioProvider({ children }) {
 
   const audioRef = useRef(new Audio());
   const retryCountRef = useRef(0);
+  const playQueueIndexRef = useRef(null);
 
   const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -223,7 +224,11 @@ export function AudioProvider({ children }) {
         const { queue, queueIndex } = stateRef.current;
         if (queue && queue.length > 1 && queueIndex + 1 < queue.length) {
           showFloatingToast('Skipped unplayable track', 'info');
-          playQueueIndex(queueIndex + 1);
+          if (playQueueIndexRef.current) {
+            playQueueIndexRef.current(queueIndex + 1);
+          } else {
+            playQueueIndex(queueIndex + 1);
+          }
         } else {
           setIsPlaying(false);
           setPlaybackError(errMsg);
@@ -232,7 +237,7 @@ export function AudioProvider({ children }) {
       }
     };
 
-    // Auto-advance logic
+    // Auto-advance logic: smoothly transitions through the queue
     const onEnded = () => {
       const { repeatMode, queue, queueIndex } = stateRef.current;
 
@@ -244,13 +249,25 @@ export function AudioProvider({ children }) {
 
       if (queue && queue.length > 0) {
         const nextIndex = queueIndex + 1;
+        const triggerPlay = (idx) => {
+          if (playQueueIndexRef.current) {
+            playQueueIndexRef.current(idx);
+          } else {
+            playQueueIndex(idx);
+          }
+        };
+
         if (nextIndex < queue.length) {
-          playQueueIndex(nextIndex);
+          triggerPlay(nextIndex);
         } else if (repeatMode === 'all') {
-          playQueueIndex(0);
+          triggerPlay(0);
+        } else if (queue.length > 1) {
+          // Continuous category mix: loop to beginning only if playlist has multiple songs
+          triggerPlay(0);
         } else {
-          // Seamless continuous flow: loop to beginning so playback never unexpectedly dies
-          playQueueIndex(0);
+          // Single-track queue with repeat off: stop cleanly without infinite replay trap
+          setIsPlaying(false);
+          audio.currentTime = 0;
         }
       } else {
         setIsPlaying(false);
@@ -376,11 +393,19 @@ export function AudioProvider({ children }) {
     }
   }, [addToRecentlyPlayed]);
 
+  playQueueIndexRef.current = playQueueIndex;
+
   // Main playback trigger: plays a song and optionally sets a new queue
-  const playSong = useCallback((song, newQueue = null) => {
+  const playSong = useCallback((song, newQueue = null, startIndex = 0) => {
     if (!song) return;
 
-    let targetQueue = newQueue ? [...newQueue] : [song];
+    let targetQueue = newQueue && newQueue.length > 0 ? [...newQueue] : [song];
+    // Ensure every track in targetQueue has a stable identifier so none get dropped
+    targetQueue = targetQueue.map((s, idx) => {
+      if (!s || s.id) return s;
+      return { ...s, id: s.streamUrl || s.name || `track-${idx}` };
+    });
+
     // Strictly deduplicate targetQueue so no song appears multiple times
     const seenIds = new Set();
     targetQueue = targetQueue.filter((s) => {
@@ -392,8 +417,12 @@ export function AudioProvider({ children }) {
     let targetIndex = targetQueue.findIndex((s) => s.id === song.id);
 
     if (targetIndex === -1) {
-      targetQueue = [song, ...targetQueue];
-      targetIndex = 0;
+      if (typeof startIndex === 'number' && startIndex >= 0 && startIndex < targetQueue.length) {
+        targetIndex = startIndex;
+      } else {
+        targetQueue = [song, ...targetQueue];
+        targetIndex = 0;
+      }
     }
 
     setQueue(targetQueue);
@@ -710,6 +739,7 @@ export function AudioProvider({ children }) {
         queueIndex,
         shuffleMode,
         repeatMode,
+        setRepeatMode,
         isFullPlayerOpen,
         setIsFullPlayerOpen,
         isQueueOpen,

@@ -45,7 +45,7 @@ export function SongList({
     const unique = [];
 
     for (const song of songs) {
-      if (!song || !song.id) continue;
+      if (!song || !song.id || song.mimeType === 'application/vnd.google-apps.folder' || song.isDriveFolder) continue;
       if (seenIds.has(song.id)) continue;
 
       const norm = (song.title || song.name || '')

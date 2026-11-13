@@ -13,7 +13,8 @@ export function RecommendedSection({ songs = [] }) {
   // Compute regular songs, supplementing with library tracks if fewer than 4 exist yet
   const regularSongs = useMemo(() => {
     if (!songs || songs.length === 0) return [];
-    const userRegulars = typeof getRegularSongs === 'function' ? getRegularSongs(songs, 12) : [];
+    const cleanSongs = songs.filter((s) => s && s.id && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder);
+    const userRegulars = typeof getRegularSongs === 'function' ? getRegularSongs(cleanSongs, 12) : [];
 
     if (userRegulars.length >= 4) {
       return userRegulars;
@@ -21,7 +22,7 @@ export function RecommendedSection({ songs = [] }) {
 
     // Fill up to 12 with popular songs from the library so 4 are ALWAYS visible upfront
     const existingIds = new Set(userRegulars.map((s) => s.id));
-    const fillers = songs.filter((s) => s && s.id && !existingIds.has(s.id)).slice(0, 12 - userRegulars.length);
+    const fillers = cleanSongs.filter((s) => !existingIds.has(s.id)).slice(0, 12 - userRegulars.length);
     return [...userRegulars, ...fillers].slice(0, 12);
   }, [getRegularSongs, songs]);
 

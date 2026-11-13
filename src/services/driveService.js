@@ -101,7 +101,7 @@ async function fetchFolderAudioFiles(folderId, apiKey, folderName = 'Main Drive'
 
   do {
     const params = new URLSearchParams({
-      q: `'${folderId}' in parents and (mimeType contains 'audio/' or name contains '.mp3' or name contains '.m4a' or name contains '.wav' or name contains '.aac' or name contains '.flac') and trashed = false`,
+      q: `'${folderId}' in parents and mimeType != 'application/vnd.google-apps.folder' and (mimeType contains 'audio/' or name contains '.mp3' or name contains '.m4a' or name contains '.wav' or name contains '.aac' or name contains '.flac' or name contains '.opus') and trashed = false`,
       fields: 'nextPageToken,files(id,name,mimeType,size,modifiedTime)',
       orderBy: 'modifiedTime desc',
       pageSize: '1000',
@@ -120,7 +120,9 @@ async function fetchFolderAudioFiles(folderId, apiKey, folderName = 'Main Drive'
     }
 
     const data = await response.json();
-    const files = (data.files || []).map((file) => {
+    const files = (data.files || [])
+      .filter((file) => file.mimeType !== 'application/vnd.google-apps.folder')
+      .map((file) => {
       const { title, artist } = parseSongFileName(file.name);
       return {
         id: file.id,
@@ -182,7 +184,7 @@ export function deduplicateSongs(songs) {
   const result = [];
 
   for (const song of songs) {
-    if (!song || !song.id) continue;
+    if (!song || !song.id || song.mimeType === 'application/vnd.google-apps.folder' || song.isDriveFolder) continue;
 
     // Deduplicate by file ID
     if (seenIds.has(song.id)) continue;

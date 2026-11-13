@@ -140,14 +140,14 @@ export function AudioProvider({ children }) {
 
   useEffect(() => {
     stateRef.current = {
+      ...stateRef.current,
       currentSong,
       queue,
       queueIndex,
       repeatMode,
-      shuffleMode,
-      currentTime
+      shuffleMode
     };
-  }, [currentSong, queue, queueIndex, repeatMode, shuffleMode, currentTime]);
+  }, [currentSong, queue, queueIndex, repeatMode, shuffleMode]);
 
   // Audio element setup and event listeners
   useEffect(() => {
@@ -350,6 +350,12 @@ export function AudioProvider({ children }) {
     const currentQueue = stateRef.current.queue;
     if (index >= 0 && index < currentQueue.length) {
       const songToPlay = currentQueue[index];
+      if (!songToPlay || songToPlay.mimeType === 'application/vnd.google-apps.folder' || songToPlay.isDriveFolder) {
+        if (index + 1 < currentQueue.length) {
+          playQueueIndex(index + 1);
+        }
+        return;
+      }
       setQueueIndex(index);
       setCurrentSong(songToPlay);
       setIsLoadingAudio(true);
@@ -397,9 +403,18 @@ export function AudioProvider({ children }) {
 
   // Main playback trigger: plays a song and optionally sets a new queue
   const playSong = useCallback((song, newQueue = null, startIndex = 0) => {
-    if (!song) return;
+    if (!song || song.mimeType === 'application/vnd.google-apps.folder' || song.isDriveFolder) return;
+
+    // Release repeat 'one' trap automatically whenever a song is started
+    if (stateRef.current.repeatMode === 'one') {
+      setRepeatMode('all');
+      stateRef.current.repeatMode = 'all';
+    }
 
     let targetQueue = newQueue && newQueue.length > 0 ? [...newQueue] : [song];
+    // Strictly filter out folders and invalid items
+    targetQueue = targetQueue.filter((s) => Boolean(s && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder));
+
     // Ensure every track in targetQueue has a stable identifier so none get dropped
     targetQueue = targetQueue.map((s, idx) => {
       if (!s || s.id) return s;

@@ -140,18 +140,18 @@ export const KNOWN_ARTISTS = [
  */
 export function isAudioTrack(song) {
   if (!song) return false;
+  if (song.mimeType === 'application/vnd.google-apps.folder' || song.isDriveFolder) return false;
   const mime = (song.mimeType || '').toLowerCase();
   if (mime.includes('audio')) return true;
   const name = (song.name || song.title || '').toLowerCase();
-  if (/\.(mp3|m4a|wav|aac|flac|ogg|opus|webm)$/i.test(name)) return true;
-  return Boolean(song.streamUrl || song.id);
+  return /\.(mp3|m4a|wav|aac|flac|ogg|opus|webm)$/i.test(name);
 }
 
 /**
  * Checks if a song belongs to a specific category
  */
 export function isSongInCategory(song, categoryId) {
-  if (!song) return false;
+  if (!song || song.mimeType === 'application/vnd.google-apps.folder' || song.isDriveFolder) return false;
   const fullText = `${song.title || ''} ${song.artist || ''} ${song.name || ''} ${song.folderName || ''}`.toLowerCase();
   const folder = (song.folderName || '').toLowerCase();
 

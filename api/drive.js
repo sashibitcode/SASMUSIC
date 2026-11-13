@@ -58,7 +58,7 @@ function deduplicateSongs(songs) {
   const result = [];
 
   for (const song of songs) {
-    if (!song || !song.id) continue;
+    if (!song || !song.id || song.mimeType === 'application/vnd.google-apps.folder' || song.isDriveFolder) continue;
     if (seenIds.has(song.id)) continue;
 
     const cleanTitle = (song.title || song.name || '')
@@ -132,7 +132,7 @@ export default async function handler(req, res) {
 
     do {
       const params = {
-        q: `'${folderId}' in parents and (mimeType contains 'audio/' or name contains '.mp3' or name contains '.m4a' or name contains '.wav' or name contains '.aac' or name contains '.flac') and trashed = false`,
+        q: `'${folderId}' in parents and mimeType != 'application/vnd.google-apps.folder' and (mimeType contains 'audio/' or name contains '.mp3' or name contains '.m4a' or name contains '.wav' or name contains '.aac' or name contains '.flac' or name contains '.opus') and trashed = false`,
         fields: 'nextPageToken,files(id,name,mimeType,size,modifiedTime)',
         orderBy: 'modifiedTime desc',
         pageSize: '1000'
@@ -141,7 +141,9 @@ export default async function handler(req, res) {
       if (pageToken) params.pageToken = pageToken;
 
       const data = await fetchFromGoogleDrive(params, apiKey);
-      const files = (data.files || []).map((file) => {
+      const files = (data.files || [])
+        .filter((file) => file.mimeType !== 'application/vnd.google-apps.folder')
+        .map((file) => {
         const { title, artist } = parseSongFileName(file.name);
         return {
           id: file.id,
@@ -190,7 +192,7 @@ export default async function handler(req, res) {
 
         do {
           const params = {
-            q: `'${folder.id}' in parents and (mimeType contains 'audio/' or name contains '.mp3' or name contains '.m4a' or name contains '.wav' or name contains '.aac' or name contains '.flac') and trashed = false`,
+            q: `'${folder.id}' in parents and mimeType != 'application/vnd.google-apps.folder' and (mimeType contains 'audio/' or name contains '.mp3' or name contains '.m4a' or name contains '.wav' or name contains '.aac' or name contains '.flac' or name contains '.opus') and trashed = false`,
             fields: 'nextPageToken,files(id,name,mimeType,size,modifiedTime)',
             orderBy: 'modifiedTime desc',
             pageSize: '1000'
@@ -199,7 +201,9 @@ export default async function handler(req, res) {
           if (subPageToken) params.pageToken = subPageToken;
 
           const data = await fetchFromGoogleDrive(params, apiKey);
-          const files = (data.files || []).map((file) => {
+          const files = (data.files || [])
+            .filter((file) => file.mimeType !== 'application/vnd.google-apps.folder')
+            .map((file) => {
             const { title, artist } = parseSongFileName(file.name);
             return {
               id: file.id,

@@ -26,7 +26,7 @@ export function CategoryHub({
   // Handle direct 1-click Play Mix on a category
   const handlePlayCategoryMix = (e, categoryId) => {
     e.stopPropagation();
-    const catSongs = songs.filter((s) => isSongInCategory(s, categoryId));
+    const catSongs = songs.filter((s) => isSongInCategory(s, categoryId) && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder);
     if (catSongs.length === 0) return;
 
     if (repeatMode === 'one') {
@@ -34,8 +34,7 @@ export function CategoryHub({
     }
 
     // Pick first song and queue the whole category playlist
-    const startIndex = 0;
-    playSong(catSongs[startIndex], catSongs, startIndex);
+    playSong(catSongs[0], catSongs, 0);
   };
 
   const [isExpanded, setIsExpanded] = useState(false);

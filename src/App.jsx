@@ -317,22 +317,24 @@ export function AppContent() {
                   songCount={categorizedSongs.length}
                   onClearFilter={handleClearFilter}
                   onPlayAll={() => {
-                    if (categorizedSongs.length > 0) {
+                    const playable = categorizedSongs.filter((s) => s && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder);
+                    if (playable.length > 0) {
                       if (repeatMode === 'one') {
                         setRepeatMode('all');
                       }
-                      playSong(categorizedSongs[0], categorizedSongs, 0);
+                      playSong(playable[0], playable, 0);
                     }
                   }}
                   onShuffle={() => {
-                    if (categorizedSongs.length > 0) {
+                    const playable = categorizedSongs.filter((s) => s && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder);
+                    if (playable.length > 0) {
                       if (repeatMode === 'one') {
                         setRepeatMode('all');
                       }
                       setSortBy('shuffle');
                       const newSeed = Date.now();
                       setShuffleSeed(newSeed);
-                      const shuffled = shuffleArray(categorizedSongs, newSeed);
+                      const shuffled = shuffleArray(playable, newSeed);
                       playSong(shuffled[0], shuffled, 0);
                     }
                   }}

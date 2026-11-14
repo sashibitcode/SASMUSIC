@@ -49,67 +49,23 @@ async function generateFavicons() {
   const logoMeta = await sharp(trimmedLogoBuffer).metadata();
   console.log(`[Favicon Generator] Trimmed logo dimensions: ${logoMeta.width}x${logoMeta.height}`);
 
-  // Scale logo to fill 84% width (430px on 512px canvas)
-  const targetWidth = 430;
+  // Scale logo to fit comfortably within Android Adaptive Safe Zone (380px on 512px canvas)
+  const targetWidth = 380;
   const targetHeight = Math.round(targetWidth * (logoMeta.height / logoMeta.width));
 
   const scaledLogo = await sharp(trimmedLogoBuffer)
     .resize(targetWidth, targetHeight, { fit: 'inside' })
     .toBuffer();
 
-  // 2. SVG Luxury Dark Badge Background for PWA splash with "from SASHIBITCODE"
-  const splashBackgroundSvg = `
+  // 2. Clean, Ultra-Crisp White Background (Play Store & Chrome style)
+  const pwaBackgroundSvg = `
     <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="badgeGlow" cx="50%" cy="45%" r="60%">
-          <stop offset="0%" stop-color="#A31C1B" stop-opacity="0.45"/>
-          <stop offset="65%" stop-color="#06110c" stop-opacity="1"/>
-          <stop offset="100%" stop-color="#020805" stop-opacity="1"/>
-        </radialGradient>
-      </defs>
-      <!-- Rounded badge squircle -->
-      <rect width="512" height="512" rx="112" fill="url(#badgeGlow)"/>
-      <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="#A31C1B" stroke-width="8" stroke-opacity="0.85"/>
-      
-      <!-- Studio Brand Signature (Elevated inside safe zone) -->
-      <text x="256" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600" fill="#94a3b8" letter-spacing="4" text-anchor="middle">FROM</text>
-      <text x="256" y="422" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="800" fill="#ffffff" letter-spacing="5" text-anchor="middle">SASHIBITCODE</text>
+      <rect width="512" height="512" fill="#ffffff"/>
     </svg>
   `;
 
-  // Standard pure badge for desktop browser tabs (no text)
-  const pureBackgroundSvg = `
-    <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="badgeGlowPure" cx="50%" cy="50%" r="55%">
-          <stop offset="0%" stop-color="#A31C1B" stop-opacity="0.4"/>
-          <stop offset="65%" stop-color="#06110c" stop-opacity="1"/>
-          <stop offset="100%" stop-color="#020805" stop-opacity="1"/>
-        </radialGradient>
-      </defs>
-      <rect width="512" height="512" rx="112" fill="url(#badgeGlowPure)"/>
-      <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="#A31C1B" stroke-width="8" stroke-opacity="0.85"/>
-    </svg>
-  `;
-
-  // 3. Compose Master PWA 512x512 High-DPI PNG (with Studio Signature)
-  // Position logo centered slightly above middle (y ~ 210) to balance with bottom text
-  const logoTop = Math.round(210 - (targetHeight / 2));
-  const logoLeft = Math.round(256 - (targetWidth / 2));
-
-  const pwaMaster512 = await sharp(Buffer.from(splashBackgroundSvg))
-    .composite([
-      {
-        input: scaledLogo,
-        top: logoTop,
-        left: logoLeft
-      }
-    ])
-    .png({ compressionLevel: 9 })
-    .toBuffer();
-
-  // Pure icon for crisp tab favicons (logo centered at y=256)
-  const pureMaster512 = await sharp(Buffer.from(pureBackgroundSvg))
+  // 3. Compose Master PWA 512x512 High-DPI PNG (Clean, centered brand emblem)
+  const pwaMaster512 = await sharp(Buffer.from(pwaBackgroundSvg))
     .composite([
       {
         input: scaledLogo,
@@ -119,11 +75,14 @@ async function generateFavicons() {
     .png({ compressionLevel: 9 })
     .toBuffer();
 
+  // Pure master for browser favicons
+  const pureMaster512 = pwaMaster512;
+
   // Save Master 512x512 icons (PWA splash & home screen)
   await sharp(pwaMaster512).toFile('public/pwa-512x512.png');
   await sharp(pwaMaster512).toFile('public/maskable-icon.png');
   await sharp(pwaMaster512).toFile('public/favicon.png');
-  console.log('✓ Created: public/pwa-512x512.png, public/maskable-icon.png, public/favicon.png (with "from SASHIBITCODE")');
+  console.log('✓ Created: public/pwa-512x512.png, public/maskable-icon.png, public/favicon.png (Play Store style)');
 
   // 4. Generate 192x192 icons (Android Homescreen & High-DPI)
   const icon192 = await sharp(pwaMaster512).resize(192, 192).png({ compressionLevel: 9 }).toBuffer();

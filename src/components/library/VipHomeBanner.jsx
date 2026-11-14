@@ -6,7 +6,7 @@ import { isVipUnlocked, isVipFolder, getVipFolderName } from '../../utils/vipCon
 
 export function VipHomeBanner({ onOpenCollection }) {
   const { songs } = useDrive();
-  const { playSong } = useAudio();
+  const { playSong, playDynamicMix } = useAudio();
 
   // If not unlocked on this device, hide completely
   if (!isVipUnlocked()) return null;
@@ -18,7 +18,7 @@ export function VipHomeBanner({ onOpenCollection }) {
   const handlePlayCollection = (e) => {
     if (e) e.stopPropagation();
     if (vipSongs.length > 0) {
-      playSong(vipSongs[0], vipSongs, 0);
+      playDynamicMix(vipSongs);
     }
   };
 

@@ -14,7 +14,7 @@ import { SongRow } from './SongRow';
 
 export function VipCollectionView({ onClose }) {
   const { songs } = useDrive();
-  const { playSong } = useAudio();
+  const { playSong, playDynamicMix } = useAudio();
 
   // Filter songs belonging to the VIP / For You folder
   const vipSongs = React.useMemo(() => {
@@ -23,14 +23,13 @@ export function VipCollectionView({ onClose }) {
 
   const handlePlayAll = () => {
     if (vipSongs.length > 0) {
-      playSong(vipSongs[0], vipSongs, 0);
+      playDynamicMix(vipSongs);
     }
   };
 
   const handleShuffle = () => {
     if (vipSongs.length > 0) {
-      const shuffled = [...vipSongs].sort(() => Math.random() - 0.5);
-      playSong(shuffled[0], shuffled, 0);
+      playDynamicMix(vipSongs);
     }
   };
 

@@ -46,6 +46,7 @@ export function AppContent() {
     isQueueOpen,
     setIsQueueOpen,
     playSong,
+    playDynamicMix,
     repeatMode,
     setRepeatMode
   } = useAudio();
@@ -316,27 +317,12 @@ export function AppContent() {
                   activeFilter={activeFilter}
                   songCount={categorizedSongs.length}
                   onClearFilter={handleClearFilter}
-                  onPlayAll={() => {
-                    const playable = categorizedSongs.filter((s) => s && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder);
-                    if (playable.length > 0) {
-                      if (repeatMode === 'one') {
-                        setRepeatMode('all');
-                      }
-                      playSong(playable[0], playable, 0);
-                    }
-                  }}
+                  onPlayAll={() => playDynamicMix(categorizedSongs)}
                   onShuffle={() => {
-                    const playable = categorizedSongs.filter((s) => s && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder);
-                    if (playable.length > 0) {
-                      if (repeatMode === 'one') {
-                        setRepeatMode('all');
-                      }
-                      setSortBy('shuffle');
-                      const newSeed = Date.now();
-                      setShuffleSeed(newSeed);
-                      const shuffled = shuffleArray(playable, newSeed);
-                      playSong(shuffled[0], shuffled, 0);
-                    }
+                    setSortBy('shuffle');
+                    const newSeed = Date.now();
+                    setShuffleSeed(newSeed);
+                    playDynamicMix(categorizedSongs);
                   }}
                 />
               )}

@@ -21,7 +21,7 @@ import { isVipFolder, isVipUnlocked } from '../../utils/vipConfig';
 export function PlaylistsView() {
   const { drivePlaylists, songs } = useDrive();
   const { localPlaylists, createPlaylist, deletePlaylist, currentUser } = useLibrary();
-  const { playSong } = useAudio();
+  const { playSong, playDynamicMix } = useAudio();
 
   const [activePlaylist, setActivePlaylist] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -82,14 +82,13 @@ export function PlaylistsView() {
 
     const handlePlayAll = () => {
       if (playlistSongs.length > 0) {
-        playSong(playlistSongs[0], playlistSongs);
+        playDynamicMix(playlistSongs);
       }
     };
 
     const handleShufflePlay = () => {
       if (playlistSongs.length > 0) {
-        const shuffled = [...playlistSongs].sort(() => Math.random() - 0.5);
-        playSong(shuffled[0], shuffled);
+        playDynamicMix(playlistSongs);
       }
     };
 

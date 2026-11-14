@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 import { setupMediaSession } from '../services/mediaSession';
 import { useLibrary } from './LibraryContext';
 import { showFloatingToast } from '../utils/toast';
+import { shuffleArray } from '../utils/shuffle';
 import {
   getCachedAudioUrl,
   getCachedAudioUrlSync,
@@ -32,7 +33,7 @@ export const resolveFastAudioUrl = (song) => {
 };
 
 export function AudioProvider({ children }) {
-  const { addToRecentlyPlayed } = useLibrary();
+  const { addToRecentlyPlayed, recentlyPlayed } = useLibrary();
 
   const audioRef = useRef(new Audio());
   const retryCountRef = useRef(0);
@@ -317,12 +318,12 @@ export function AudioProvider({ children }) {
     if (typeof navigator !== 'undefined' && 'wakeLock' in navigator && isPlaying) {
       navigator.wakeLock.request('screen').then((lock) => {
         wakeLock = lock;
-      }).catch(() => {});
+      }).catch(() => { });
     }
 
     return () => {
       if (wakeLock) {
-        wakeLock.release().catch(() => {});
+        wakeLock.release().catch(() => { });
         wakeLock = null;
       }
     };
@@ -364,7 +365,7 @@ export function AudioProvider({ children }) {
       stateRef.current.currentSong = songToPlay;
 
       const audio = audioRef.current;
-      
+
       // Instant synchronous cache check (0ms latency, does not block microtask queue)
       const syncUrl = getCachedAudioUrlSync(songToPlay.id);
       const targetUrl = syncUrl || resolveFastAudioUrl(songToPlay);
@@ -390,9 +391,9 @@ export function AudioProvider({ children }) {
         getCachedAudioUrl(songToPlay.id).then((cachedUrl) => {
           if (cachedUrl && audio.paused && audio.src !== cachedUrl) {
             audio.src = cachedUrl;
-            audio.play().catch(() => {});
+            audio.play().catch(() => { });
           }
-        }).catch(() => {});
+        }).catch(() => { });
 
         prefetchAudioTrack(songToPlay.id);
       }
@@ -450,7 +451,7 @@ export function AudioProvider({ children }) {
     stateRef.current.currentSong = song;
 
     const audio = audioRef.current;
-    
+
     // Instant synchronous cache check (0ms latency)
     const syncUrl = getCachedAudioUrlSync(song.id);
     const targetUrl = syncUrl || resolveFastAudioUrl(song);
@@ -474,9 +475,9 @@ export function AudioProvider({ children }) {
       getCachedAudioUrl(song.id).then((cachedUrl) => {
         if (cachedUrl && audio.paused && audio.src !== cachedUrl) {
           audio.src = cachedUrl;
-          audio.play().catch(() => {});
+          audio.play().catch(() => { });
         }
-      }).catch(() => {});
+      }).catch(() => { });
 
       prefetchAudioTrack(song.id);
     }
@@ -492,6 +493,50 @@ export function AudioProvider({ children }) {
       });
     }
   }, [addToRecentlyPlayed]);
+
+  // Dynamic Play All: intelligently starts with a non-repeating song and queues the rest randomized
+  const playDynamicMix = useCallback((songList) => {
+    const playable = (songList || []).filter(
+      (s) => Boolean(s && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder)
+    );
+    if (playable.length === 0) return;
+
+    // Release repeat 'one' loop automatically whenever a dynamic mix is triggered
+    if (stateRef.current.repeatMode === 'one') {
+      setRepeatMode('all');
+      stateRef.current.repeatMode = 'all';
+    }
+
+    if (playable.length === 1) {
+      playSong(playable[0], playable, 0);
+      return;
+    }
+
+    // Identify recent song IDs to avoid repeating recent tracks on repeated "Play All" clicks
+    const currentId = stateRef.current.currentSong?.id;
+    const recentIds = new Set((recentlyPlayed || []).slice(0, 5).map((s) => s?.id).filter(Boolean));
+    if (currentId) recentIds.add(currentId);
+
+    // Pick a song that was not recently played
+    let pool = playable.filter((s) => !recentIds.has(s.id));
+    // Fallback: any song other than the currently active track
+    if (pool.length === 0) {
+      pool = playable.filter((s) => s.id !== currentId);
+    }
+    // Final fallback: all playable
+    if (pool.length === 0) {
+      pool = playable;
+    }
+
+    const chosenSong = pool[Math.floor(Math.random() * pool.length)];
+
+    // Shuffle the rest of the playable songs so the upcoming queue is fresh and non-repetitive
+    const remaining = playable.filter((s) => s.id !== chosenSong.id);
+    const shuffledRemaining = shuffleArray(remaining);
+    const dynamicQueue = [chosenSong, ...shuffledRemaining];
+
+    playSong(chosenSong, dynamicQueue, 0);
+  }, [playSong, recentlyPlayed]);
 
   // Background preloading of the next song in queue for instant 0ms transition
   useEffect(() => {
@@ -610,7 +655,7 @@ export function AudioProvider({ children }) {
         // Shuffle the upcoming songs in queue (keeping current song at head)
         const current = queue[queueIndex];
         const rest = queue.filter((_, idx) => idx !== queueIndex);
-        
+
         // Fisher-Yates shuffle
         for (let i = rest.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -760,6 +805,7 @@ export function AudioProvider({ children }) {
         isQueueOpen,
         setIsQueueOpen,
         playSong,
+        playDynamicMix,
         togglePlay,
         nextTrack,
         previousTrack,

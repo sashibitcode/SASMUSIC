@@ -8,7 +8,7 @@ import { SongRow } from './SongRow';
 export function FavoritesView({ onClose }) {
   const { favorites, currentUser, isCloudSynced } = useLibrary();
   const { songs } = useDrive();
-  const { playSong } = useAudio();
+  const { playSong, playDynamicMix } = useAudio();
 
   const favSongs = useMemo(() => {
     const matched = songs.filter((s) => favorites.includes(s.id));
@@ -22,14 +22,13 @@ export function FavoritesView({ onClose }) {
 
   const handlePlayAll = () => {
     if (favSongs.length > 0) {
-      playSong(favSongs[0], favSongs);
+      playDynamicMix(favSongs);
     }
   };
 
   const handleShufflePlay = () => {
     if (favSongs.length > 0) {
-      const shuffled = [...favSongs].sort(() => Math.random() - 0.5);
-      playSong(shuffled[0], shuffled);
+      playDynamicMix(favSongs);
     }
   };
 

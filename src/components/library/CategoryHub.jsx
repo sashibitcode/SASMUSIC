@@ -11,7 +11,7 @@ export function CategoryHub({
   onSelectCategory,
   onSelectArtist
 }) {
-  const { playSong, setQueue, repeatMode, setRepeatMode } = useAudio();
+  const { playSong, playDynamicMix } = useAudio();
 
   // Compute live song counts per category
   const categoryCounts = useMemo(() => {
@@ -23,18 +23,12 @@ export function CategoryHub({
     return extractTopArtists(songs).slice(0, 12);
   }, [songs]);
 
-  // Handle direct 1-click Play Mix on a category
+  // Handle direct 1-click dynamic Play Mix on a category
   const handlePlayCategoryMix = (e, categoryId) => {
     e.stopPropagation();
-    const catSongs = songs.filter((s) => isSongInCategory(s, categoryId) && s.mimeType !== 'application/vnd.google-apps.folder' && !s.isDriveFolder);
+    const catSongs = songs.filter((s) => isSongInCategory(s, categoryId));
     if (catSongs.length === 0) return;
-
-    if (repeatMode === 'one') {
-      setRepeatMode('all');
-    }
-
-    // Pick first song and queue the whole category playlist
-    playSong(catSongs[0], catSongs, 0);
+    playDynamicMix(catSongs);
   };
 
   const [isExpanded, setIsExpanded] = useState(false);

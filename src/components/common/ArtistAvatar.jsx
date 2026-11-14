@@ -41,6 +41,13 @@ export function ArtistAvatar({
   }, [artistName]);
 
   const sizeClass = SIZES[size] || SIZES.md;
+  const pixelDimension = {
+    xs: 28,
+    sm: 36,
+    md: 64,
+    lg: 80,
+    xl: 112
+  }[size] || 64;
 
   // Generate deterministic gradient hue for fallback avatar
   const hash = (artistName || 'A').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -81,6 +88,9 @@ export function ArtistAvatar({
           <img
             src={photoUrl}
             alt={artistName}
+            width={pixelDimension}
+            height={pixelDimension}
+            decoding="async"
             onLoad={() => setIsLoaded(true)}
             onError={handleImageError}
             loading="lazy"

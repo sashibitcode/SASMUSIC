@@ -243,7 +243,7 @@ export function AuthSettingsSection() {
           </span>
         </div>
         <p className="text-xs text-slate-400 leading-relaxed">
-          Add <code className="text-white bg-black/40 px-1 py-0.5 rounded font-mono">VITE_CLERK_PUBLISHABLE_KEY</code> in your <code className="text-white font-mono">.env</code> file from <a href="https://dashboard.clerk.com" target="_blank" rel="noreferrer" className="text-white underline hover:text-slate-300">clerk.com</a>.
+          Add <code className="text-white bg-black/40 px-1 py-0.5 rounded font-mono">VITE_CLERK_PUBLISHABLE_KEY</code> in your <code className="text-white font-mono">.env</code> file from <a href="https://dashboard.clerk.com" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-slate-300">clerk.com</a>.
         </p>
       </div>
     );

@@ -79,8 +79,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
     </noscript>
 
-    <!-- Critical Asset Preloading for Instant FCP & LCP -->
-    <link rel="preload" as="image" href="/sas-music-logo.webp" type="image/webp" fetchpriority="high" />
+    <!-- Critical Asset Preloading for Instant FCP & LCP (Splash Logo Only) -->
     <link rel="preload" as="image" href="/sas-music-logo-red.webp" type="image/webp" fetchpriority="high" />
 
     <!-- JSON-LD Structured Data Graph (AEO, GEO, E-E-A-T, SEO) -->
@@ -234,41 +233,42 @@
       </div>
     </div>
 
-    <!-- Splash Screen Timing & Transition Controller (with Lighthouse / PageSpeed Bot Fast-Path) -->
+    <!-- Splash Screen Ultra-Fast Dismissal Controller (Immediate LCP Paint) -->
     <script>
       (function() {
         var splash = document.getElementById('app-splash');
         if (!splash) return;
 
-        // Detect Lighthouse, PageSpeed Insights, headless performance bots or webdriver
-        var isAuditBot = /Lighthouse|PageSpeed|Chrome-Lighthouse|PTST|HeadlessChrome|bot|crawl/i.test(navigator.userAgent) ||
-                         navigator.webdriver === true ||
-                         (window.location.search && window.location.search.indexOf('lighthouse=1') !== -1);
-
-        if (isAuditBot) {
-          // Immediately dismiss splash screen so synthetic 4x CPU throttle does not artificially penalize LCP/Speed Index
-          if (splash.parentNode) splash.parentNode.removeChild(splash);
-          return;
-        }
-
         var dismissed = false;
         function dismiss() {
           if (dismissed) return;
           dismissed = true;
+          splash.style.transition = 'opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1)';
           splash.style.opacity = '0';
-          splash.style.transform = 'scale(1.05)';
+          splash.style.transform = 'scale(1.03)';
           splash.style.pointerEvents = 'none';
           setTimeout(function() {
             if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
-          }, 550);
+          }, 300);
         }
 
-        // Tap-to-dismiss: user can tap to proceed immediately if desired
-        splash.addEventListener('click', dismiss);
+        window.__dismissSplash = dismiss;
+
+        // Dismiss smoothly as soon as DOM is ready or after brief 380ms visual brand intro
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          setTimeout(dismiss, 350);
+        } else {
+          document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(dismiss, 350);
+          }, { once: true });
+        }
+
+        // Tap-to-dismiss for immediate interaction
+        splash.addEventListener('click', dismiss, { passive: true });
         splash.addEventListener('touchstart', dismiss, { passive: true });
 
-        // Guaranteed hold time of 2.5 seconds so users comfortably read the brand & see loading
-        setTimeout(dismiss, 2500);
+        // Safety fallback timeout
+        setTimeout(dismiss, 600);
       })();
     </script>
     <script type="module" src="/src/main.jsx"></script>

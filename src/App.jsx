@@ -106,6 +106,13 @@ export function AppContent() {
     return filterSongsByCategory(songs, activeFilter);
   }, [songs, activeFilter]);
 
+  // Immediately dismiss HTML splash screen once React mounts for instant 0ms LCP paint
+  useEffect(() => {
+    if (typeof window !== 'undefined' && typeof window.__dismissSplash === 'function') {
+      window.__dismissSplash();
+    }
+  }, []);
+
   // Desktop creator shortcut: Shift + U opens upload modal directly
   useEffect(() => {
     const handleKeyDown = (e) => {

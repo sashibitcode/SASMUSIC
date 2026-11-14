@@ -52,6 +52,12 @@ export function SongCoverArt({
   };
 
   const containerSize = sizeClasses[size] || sizeClasses.md;
+  const pixelDimension = {
+    sm: 44,
+    md: 48,
+    lg: 64,
+    xl: 320
+  }[size] || 48;
 
   return (
     <div
@@ -63,6 +69,8 @@ export function SongCoverArt({
         <img
           src={imageUrl}
           alt={title ? `${title} cover` : 'Album artwork'}
+          width={pixelDimension}
+          height={pixelDimension}
           loading={size === 'xl' ? 'eager' : 'lazy'}
           decoding="async"
           onLoad={() => setImageLoaded(true)}

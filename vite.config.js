@@ -14,15 +14,20 @@ export default defineConfig({
   build: {
     target: 'es2020',
     cssCodeSplit: true,
+    cssMinify: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-icons': ['lucide-react'],
-          'vendor-mqtt': ['paho-mqtt']
+        manualChunks(id) {
+          if (id.includes('@clerk')) return 'vendor-clerk';
+          if (id.includes('lucide-react')) return 'vendor-icons';
+          if (id.includes('paho-mqtt')) return 'vendor-mqtt';
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/scheduler')) return 'vendor-react';
         }
       }
     }
+  },
+  esbuild: {
+    pure: ['console.log', 'console.debug', 'console.info']
   },
   plugins: [
     {

@@ -10,7 +10,8 @@ import {
   Download,
   Settings,
   Users,
-  Upload
+  Upload,
+  Bell
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { useDrive } from '../../contexts/DriveContext';
@@ -33,6 +34,7 @@ export function DesktopSidebar({
   const primaryLinks = [
     { id: 'songs', label: 'All Songs', icon: Music },
     { id: 'search', label: 'Search', icon: Search },
+    { id: 'ringtones', label: 'Ringtones', icon: Bell, badge: 'New' },
     { id: 'playlists', label: 'Playlists', icon: Folder, count: drivePlaylists.length },
     { id: 'favorites', label: 'Favorites', icon: Heart, count: favoritesCount },
     { id: 'recents', label: 'Recently Played', icon: History, count: recentsCount }
@@ -101,6 +103,18 @@ export function DesktopSidebar({
                 <span className="tracking-wide">{link.label}</span>
               </div>
 
+              {link.badge && (
+                <span
+                  className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                    isActive
+                      ? 'bg-amber-500 text-slate-950'
+                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  }`}
+                >
+                  {link.badge}
+                </span>
+              )}
+
               {link.count !== undefined && link.count > 0 && (
                 <span
                   className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
@@ -125,6 +139,7 @@ export function DesktopSidebar({
           </p>
           <div className="space-y-1">
             {[
+              { id: 'ringtone', label: 'Phone Ringtones 🔔', emoji: '🔔' },
               { id: 'hindi', label: 'Hindi Bollywood', emoji: '🇮🇳' },
               { id: 'bhojpuri', label: 'Bhojpuri Dhamaka', emoji: '🌾' },
               { id: 'chhath', label: 'Chhath Special', emoji: '🌅' },

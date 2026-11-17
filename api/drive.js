@@ -2,12 +2,40 @@ import { setCorsHeaders } from './_utils.js';
 
 const AUDIO_EXTENSIONS = /\.(mp3|m4a|flac|wav|aac|ogg|opus|wma|alac|aiff)$/i;
 
+const KNOWN_RINGTONES = {
+  'reelaudio-11145': { title: 'Jai Jai Ram (From "Ramayana")', artist: 'A.R. Rahman, Arijit Singh & Shreya Ghoshal', tag: 'Ramayana / Bhakti' },
+  'reelaudio-32321': { title: 'Ram Ram Eeswaram (From "Shivam Bhaje")', artist: 'Saicharan Bhaskaruni & Vikas Badisa', tag: 'Shiva Mantra' },
+  'reelaudio-32905': { title: 'Shambhu Stuti (Har Har Shambhu)', artist: 'Ketan Kumar', tag: 'Mahadev Stuti' },
+  'reelaudio-42397': { title: 'Shambhu Stuti (Flute & Beat Drop)', artist: 'Ketan Kumar', tag: 'Shiv Tandav Beat' },
+  'reelaudio-46818': { title: 'Dwarika No Nath Maro', artist: 'Utpal Jivrajani', tag: 'Krishna Bhajan' },
+  'reelaudio-6150': { title: 'Hai Katha Sangram Ki (Mahabharat Theme)', artist: 'Himanshu Singh (Star Plus Mahabharat)', tag: 'Epic Mahabharat' },
+  'reelaudio-72681': { title: 'Scottish Bagpipes (Trending Reel Beat)', artist: 'Hellfish (Highlander Braveheart Beat)', tag: 'Trending Reel Beat' },
+  'reelaudio-73910': { title: 'Dil Lagana Mana Tha', artist: 'Krish Mondal, Kishore & Kunaal Vermaa', tag: 'Romantic Melody' },
+  'reelaudio-76501': { title: 'Bajrang Baan (Lofi Devotional)', artist: 'Rasraj Ji Maharaj', tag: 'Hanuman Lofi' },
+  'reelaudio-79369': { title: 'Radha Radha Naam Jaap', artist: 'Sanatan Music', tag: 'Radha Krishna Jaap' },
+  'reelaudio-82309': { title: 'Krishnaya Vasudevaya - Shri Krishna Mantra', artist: 'Siddharth Amit Bhavsar & Prateeksha', tag: 'Krishna Shloka' },
+  'reelaudio-8557': { title: 'Mere Tan Me Bhi Ram Mere Man Me Bhi Ram', artist: 'Mohit Yadav & Monika Yadav', tag: 'Shri Ram Bhajan' },
+  'reelaudio-88807': { title: 'Om Namo Bhagavate Vasudevaya', artist: 'Sanjith Hegde & Vijay Prakash', tag: 'Vishnu Mantra' },
+  'reelaudio-8890': { title: 'Sankatmochan Hanuman (Bolo Bolo Hanuman)', artist: 'Raanjha & Smokey', tag: 'Hanuman Rap / Hype' }
+};
+
 /**
  * Sanitizes and parses song title & artist from filename
  */
-function parseSongFileName(rawFileName) {
+function parseSongFileName(rawFileName, fileId = null) {
   if (!rawFileName || typeof rawFileName !== 'string') {
     return { title: 'Unknown Track', artist: 'Unknown Artist' };
+  }
+
+  // Check known ringtones
+  const baseKey = rawFileName.replace(AUDIO_EXTENSIONS, '').trim().toLowerCase();
+  if (KNOWN_RINGTONES[baseKey]) {
+    return {
+      title: KNOWN_RINGTONES[baseKey].title,
+      artist: KNOWN_RINGTONES[baseKey].artist,
+      tag: KNOWN_RINGTONES[baseKey].tag,
+      isRingtone: true
+    };
   }
 
   let cleanName = rawFileName.replace(AUDIO_EXTENSIONS, '').trim();
@@ -144,12 +172,14 @@ export default async function handler(req, res) {
       const files = (data.files || [])
         .filter((file) => file.mimeType !== 'application/vnd.google-apps.folder')
         .map((file) => {
-        const { title, artist } = parseSongFileName(file.name);
+        const { title, artist, tag, isRingtone } = parseSongFileName(file.name, file.id);
         return {
           id: file.id,
           name: file.name,
           title,
           artist,
+          tag: tag || null,
+          isRingtone: Boolean(isRingtone),
           mimeType: file.mimeType,
           size: Number(file.size || 0),
           modifiedTime: file.modifiedTime,
@@ -204,12 +234,14 @@ export default async function handler(req, res) {
           const files = (data.files || [])
             .filter((file) => file.mimeType !== 'application/vnd.google-apps.folder')
             .map((file) => {
-            const { title, artist } = parseSongFileName(file.name);
+            const { title, artist, tag, isRingtone } = parseSongFileName(file.name, file.id);
             return {
               id: file.id,
               name: file.name,
               title,
               artist,
+              tag: tag || null,
+              isRingtone: Boolean(isRingtone || (folder.name && folder.name.toLowerCase().includes('ringtone'))),
               mimeType: file.mimeType,
               size: Number(file.size || 0),
               modifiedTime: file.modifiedTime,

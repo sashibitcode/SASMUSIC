@@ -28,6 +28,7 @@ const PlaylistsView = lazy(() => import('./components/library/PlaylistsView').th
 const FavoritesView = lazy(() => import('./components/library/FavoritesView').then(m => ({ default: m.FavoritesView })));
 const RecentsView = lazy(() => import('./components/library/RecentsView').then(m => ({ default: m.RecentsView })));
 const VipCollectionView = lazy(() => import('./components/library/VipCollectionView').then(m => ({ default: m.VipCollectionView })));
+const RingtonesView = lazy(() => import('./components/library/RingtonesView').then(m => ({ default: m.RingtonesView })));
 const FullPlayerModal = lazy(() => import('./components/player/FullPlayerModal').then(m => ({ default: m.FullPlayerModal })));
 const QueueDrawer = lazy(() => import('./components/player/QueueDrawer').then(m => ({ default: m.QueueDrawer })));
 const UploadModal = lazy(() => import('./components/upload/UploadModal').then(m => ({ default: m.UploadModal })));
@@ -144,6 +145,7 @@ export function AppContent() {
       import('./components/library/PlaylistsView');
       import('./components/library/FavoritesView');
       import('./components/library/RecentsView');
+      import('./components/library/RingtonesView');
     };
 
     const onUserActive = () => {
@@ -171,6 +173,11 @@ export function AppContent() {
   // When switching to search tab, scroll to top and focus input
   const handleTabChange = (tabId) => {
     setIsVipCollectionOpen(false);
+    if (tabId === 'ringtones') {
+      setActiveFilter({ type: 'category', value: 'ringtone' });
+    } else if (activeTab === 'ringtones') {
+      setActiveFilter({ type: 'all', value: null });
+    }
     if (activeTab !== tabId && activeTab !== 'favorites') {
       previousTabRef.current = activeTab;
     }
@@ -198,6 +205,12 @@ export function AppContent() {
   // Select a category/artist/folder filter, switch to songs tab, reset sort to shuffle, and generate fresh seed
   const handleSelectFilter = (filter) => {
     setIsVipCollectionOpen(false);
+    if (filter?.type === 'category' && filter.value?.toLowerCase() === 'ringtone') {
+      setActiveTab('ringtones');
+      setActiveFilter(filter);
+      mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     setActiveTab('songs');
     setActiveFilter(filter);
     setSortBy('shuffle');
@@ -207,6 +220,7 @@ export function AppContent() {
 
   // Clear filter back to All Songs and generate fresh shuffle seed
   const handleClearFilter = () => {
+    setActiveTab('songs');
     setActiveFilter({ type: 'all', value: null });
     setSortBy('shuffle');
     setShuffleSeed(Date.now());
@@ -269,7 +283,7 @@ export function AppContent() {
         <PwaInstallPrompt />
 
         {/* Sticky Pinned Search & Categories Header (Persistent container to eliminate 0.169 CLS shift) */}
-        {(activeTab === 'songs' || activeTab === 'search') && !error && (
+        {(activeTab === 'songs' || activeTab === 'search' || activeTab === 'ringtones') && !error && (
           <div className="flex-shrink-0 z-30 px-3.5 sm:px-6 pt-1.5 pb-1 bg-[#06110c]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-sm max-w-6xl w-full mx-auto space-y-1.5 min-h-[76px]">
             <SearchBar
               inputRef={searchInputRef}
@@ -317,8 +331,8 @@ export function AppContent() {
             />
           ) : (
             <div>
-              {/* Category Active Banner (Shows when category or artist filter is active) */}
-              {activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value && (
+              {/* Category Active Banner (Shows when category or artist filter is active, but not on ringtones since RingtonesView has its own dedicated banner) */}
+              {activeTab !== 'ringtones' && activeFilter?.type && activeFilter.type !== 'all' && activeFilter.value && (
                 <CategoryBanner
                   activeFilter={activeFilter}
                   songCount={categorizedSongs.length}
@@ -394,6 +408,7 @@ export function AppContent() {
               )}
 
               <Suspense fallback={<SongListSkeleton count={6} />}>
+                {activeTab === 'ringtones' && <RingtonesView onClose={() => handleTabChange('songs')} />}
                 {activeTab === 'playlists' && <PlaylistsView />}
                 {activeTab === 'favorites' && <FavoritesView onClose={handleToggleFavorites} />}
                 {activeTab === 'recents' && <RecentsView />}

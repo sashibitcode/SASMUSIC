@@ -8,7 +8,21 @@
  * 4. Top Artists & Singers with live track counts
  */
 
+import { isRingtoneSong } from './ringtoneRegistry.js';
+
 export const MUSIC_CATEGORIES = [
+  {
+    id: 'ringtone',
+    label: 'Phone Ringtones',
+    shortLabel: 'Ringtones',
+    emoji: '🔔',
+    icon: 'Bell',
+    badge: 'Trending',
+    desc: 'Trending Caller Tunes, Bhakti Mantras & Reel Beats',
+    gradient: 'from-amber-950/40 via-[#171717] to-[#06110c]',
+    borderColor: 'border-white/10',
+    accentColor: '#f59e0b'
+  },
   {
     id: 'hindi',
     label: 'Hindi & Bollywood',
@@ -156,6 +170,15 @@ export function isSongInCategory(song, categoryId) {
   const folder = (song.folderName || '').toLowerCase();
 
   switch (categoryId) {
+    case 'ringtone': {
+      const folderName = (song.folderName || song.folder || '').toLowerCase().trim();
+      if (folderName.includes('ringtone')) return true;
+      if (song.isRingtone) return true;
+      const title = (song.title || song.name || '').toLowerCase();
+      if (title.includes('ringtone')) return true;
+      return isRingtoneSong(song);
+    }
+
     case 'bhojpuri':
       return (
         folder.includes('bhojpuri') ||

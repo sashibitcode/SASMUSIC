@@ -9,13 +9,26 @@
  * 5. Fallback when no separator: title = full cleaned filename, artist = "Unknown Artist"
  */
 
+import { getRingtoneMetadata } from './ringtoneRegistry.js';
+
 const AUDIO_EXTENSIONS = /\.(mp3|m4a|flac|wav|aac|ogg|opus|wma|alac|aiff)$/i;
 
-export function parseSongFileName(rawFileName) {
+export function parseSongFileName(rawFileName, fileId = null) {
   if (!rawFileName || typeof rawFileName !== 'string') {
     return {
       title: 'Unknown Track',
       artist: 'Unknown Artist'
+    };
+  }
+
+  // Check if this is a known ringtone from the Ringtone collection
+  const ringtoneMeta = getRingtoneMetadata(rawFileName, fileId);
+  if (ringtoneMeta) {
+    return {
+      title: ringtoneMeta.title,
+      artist: ringtoneMeta.artist,
+      tag: ringtoneMeta.tag,
+      isRingtone: true
     };
   }
 

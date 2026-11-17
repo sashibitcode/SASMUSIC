@@ -3,6 +3,7 @@ import { getActiveConfig } from '../config';
 import { fetchDriveLibrary, deduplicateSongs, DEMO_SONGS, DEMO_PLAYLISTS } from '../services/driveService';
 import { autoSyncVipFolder } from '../services/vipAutoSync';
 import { isVipUnlocked, isVipFolder } from '../utils/vipConfig';
+import { getRingtoneMetadata } from '../utils/ringtoneRegistry';
 
 const DriveContext = createContext(null);
 
@@ -14,8 +15,13 @@ function migrateFastStreamUrls(songList) {
   return songList.map((s) => {
     if (!s || !s.id) return s;
     if (s.isDemo) return s;
+    const ringtoneMeta = getRingtoneMetadata(s.name, s.id);
     return {
       ...s,
+      title: ringtoneMeta?.title || s.title,
+      artist: ringtoneMeta?.artist || s.artist,
+      tag: ringtoneMeta?.tag || s.tag || null,
+      isRingtone: Boolean(ringtoneMeta || s.isRingtone || (s.folderName && s.folderName.toLowerCase().includes('ringtone'))),
       streamUrl: `/api/stream?id=${encodeURIComponent(s.id)}`,
       fallbackStreamUrl: `https://drive.google.com/uc?export=download&id=${encodeURIComponent(s.id)}`
     };
@@ -109,7 +115,7 @@ export function DriveProvider({ children }) {
 
     try {
       const data = await fetchDriveLibrary(currentConfig.folderId, currentConfig.apiKey);
-      const uniqueSongs = deduplicateSongs(data.songs);
+      const uniqueSongs = deduplicateSongs(migrateFastStreamUrls(data.songs));
       setSongs(uniqueSongs);
       setDrivePlaylists(data.playlists);
       setLastSyncedAt(new Date());

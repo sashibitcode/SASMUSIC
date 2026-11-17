@@ -29,3 +29,4 @@ yarn-error.log*
 # Editor directories
 .vscode/
 .idea/
+push-to-github.bat

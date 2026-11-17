@@ -123,12 +123,14 @@ async function fetchFolderAudioFiles(folderId, apiKey, folderName = 'Main Drive'
     const files = (data.files || [])
       .filter((file) => file.mimeType !== 'application/vnd.google-apps.folder')
       .map((file) => {
-      const { title, artist } = parseSongFileName(file.name);
+      const { title, artist, tag, isRingtone } = parseSongFileName(file.name, file.id);
       return {
         id: file.id,
         name: file.name,
         title,
         artist,
+        tag: tag || null,
+        isRingtone: Boolean(isRingtone || (folderName && folderName.toLowerCase().includes('ringtone'))),
         mimeType: file.mimeType,
         size: Number(file.size || 0),
         modifiedTime: file.modifiedTime,

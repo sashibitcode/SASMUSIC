@@ -329,8 +329,9 @@ export function isSongInCategory(song, categoryId) {
       const isBhojpuri = isSongInCategory(song, 'bhojpuri');
       const isChhath = isSongInCategory(song, 'chhath');
       const isPunjabi = isSongInCategory(song, 'punjabi');
+      const isRingtone = isSongInCategory(song, 'ringtone');
 
-      if (isBhojpuri || isChhath) return false;
+      if (isBhojpuri || isChhath || isRingtone) return false;
 
       // Direct folder checks
       if (folder.includes('hindi') || folder.includes('bollywood')) return true;

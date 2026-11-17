@@ -7,6 +7,152 @@ import { showFloatingToast } from './toast.js';
 
 export const RINGTONE_FOLDER_ID = '1wx-FnZS44ARfl3T_11QBzQdeAZqixMdw';
 
+/**
+ * 10 Curated High-Quality Bundled Ringtones (served locally via high-speed CDN)
+ */
+export const CURATED_BUNDLED_RINGTONES = [
+  {
+    id: 'rt-krishna-bansuri',
+    name: 'Krishna_Bansuri_Dhun.mp3',
+    title: 'Krishna Bansuri Dhun',
+    artist: 'Divine Flute',
+    duration: 28,
+    size: 673388,
+    streamUrl: '/ringtones/Krishna_Bansuri_Dhun.mp3',
+    fallbackStreamUrl: '/ringtones/Krishna_Bansuri_Dhun.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-mahadev-damru',
+    name: 'Mahadev_Damru_and_Shankh.mp3',
+    title: 'Mahadev Damru & Shankh',
+    artist: 'Spiritual Vibrations',
+    duration: 25,
+    size: 601388,
+    streamUrl: '/ringtones/Mahadev_Damru_and_Shankh.mp3',
+    fallbackStreamUrl: '/ringtones/Mahadev_Damru_and_Shankh.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-siya-ram-acoustic',
+    name: 'Siya_Ram_Acoustic_Tone.mp3',
+    title: 'Siya Ram Acoustic Tone',
+    artist: 'Acoustic Devotion',
+    duration: 28,
+    size: 673388,
+    streamUrl: '/ringtones/Siya_Ram_Acoustic_Tone.mp3',
+    fallbackStreamUrl: '/ringtones/Siya_Ram_Acoustic_Tone.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-radhe-flute',
+    name: 'Radhe_Radhe_Flute_Melody.mp3',
+    title: 'Radhe Radhe Flute Melody',
+    artist: 'Vrindavan Melodies',
+    duration: 25,
+    size: 601388,
+    streamUrl: '/ringtones/Radhe_Radhe_Flute_Melody.mp3',
+    fallbackStreamUrl: '/ringtones/Radhe_Radhe_Flute_Melody.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-hanuman-beat',
+    name: 'Hanuman_Chalisa_Beat.mp3',
+    title: 'Hanuman Chalisa Beat',
+    artist: 'Bhakti Vibes',
+    duration: 26,
+    size: 625580,
+    streamUrl: '/ringtones/Hanuman_Chalisa_Beat.mp3',
+    fallbackStreamUrl: '/ringtones/Hanuman_Chalisa_Beat.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-lofi-reel',
+    name: 'Aesthetic_Lo-Fi_Reel_Beat.mp3',
+    title: 'Aesthetic Lo-Fi Reel Beat',
+    artist: 'Lo-Fi Beats',
+    duration: 24,
+    size: 577196,
+    streamUrl: '/ringtones/Aesthetic_Lo-Fi_Reel_Beat.mp3',
+    fallbackStreamUrl: '/ringtones/Aesthetic_Lo-Fi_Reel_Beat.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-epic-cinematic',
+    name: 'Epic_Cinematic_Theme.mp3',
+    title: 'Epic Cinematic Theme',
+    artist: 'Cinema Orchestra',
+    duration: 28,
+    size: 661868,
+    streamUrl: '/ringtones/Epic_Cinematic_Theme.mp3',
+    fallbackStreamUrl: '/ringtones/Epic_Cinematic_Theme.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-piano-violin',
+    name: 'Soulful_Piano_and_Violin.mp3',
+    title: 'Soulful Piano & Violin',
+    artist: 'Symphony Strings',
+    duration: 26,
+    size: 625580,
+    streamUrl: '/ringtones/Soulful_Piano_and_Violin.mp3',
+    fallbackStreamUrl: '/ringtones/Soulful_Piano_and_Violin.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-retro-90s',
+    name: 'Retro_Nostalgia_90s_Tone.mp3',
+    title: 'Retro Nostalgia 90s Tone',
+    artist: 'Golden Classics',
+    duration: 28,
+    size: 673388,
+    streamUrl: '/ringtones/Retro_Nostalgia_90s_Tone.mp3',
+    fallbackStreamUrl: '/ringtones/Retro_Nostalgia_90s_Tone.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  },
+  {
+    id: 'rt-morning-flute',
+    name: 'Morning_Sunrise_Flute.mp3',
+    title: 'Morning Sunrise Flute',
+    artist: 'Sunrise Acoustics',
+    duration: 25,
+    size: 601388,
+    streamUrl: '/ringtones/Morning_Sunrise_Flute.mp3',
+    fallbackStreamUrl: '/ringtones/Morning_Sunrise_Flute.mp3',
+    folderName: 'Ringtone ',
+    folderId: RINGTONE_FOLDER_ID,
+    isRingtone: true,
+    isBundled: true
+  }
+];
+
 export const RINGTONES_MASTER_CATALOG = [
   {
     fileId: '1tPpST8HYOcYiAk1qq9j_XWYpfZLU9jsg',
@@ -112,12 +258,17 @@ export const RINGTONES_MASTER_CATALOG = [
 const byFileId = new Map();
 const byFileName = new Map();
 
-RINGTONES_MASTER_CATALOG.forEach((item) => {
+[...RINGTONES_MASTER_CATALOG, ...CURATED_BUNDLED_RINGTONES].forEach((item) => {
   if (item.fileId) byFileId.set(item.fileId, item);
+  if (item.id) byFileId.set(item.id, item);
   if (item.fileName) {
     byFileName.set(item.fileName.toLowerCase(), item);
-    // Also without extension
     const base = item.fileName.replace(/\.mp3$/i, '').toLowerCase();
+    byFileName.set(base, item);
+  }
+  if (item.name) {
+    byFileName.set(item.name.toLowerCase(), item);
+    const base = item.name.replace(/\.mp3$/i, '').toLowerCase();
     byFileName.set(base, item);
   }
 });
@@ -127,12 +278,13 @@ RINGTONES_MASTER_CATALOG.forEach((item) => {
  */
 export function isRingtoneSong(song) {
   if (!song) return false;
+  if (song.isRingtone || song.isBundled) return true;
   if (song.folderId === RINGTONE_FOLDER_ID) return true;
   const folder = (song.folderName || '').trim().toLowerCase();
   if (folder.includes('ringtone')) return true;
-  if (song.id && byFileId.has(song.id)) return true;
+  if (song.id && (byFileId.has(song.id) || song.id.startsWith('rt-'))) return true;
   if (song.name && byFileName.has(song.name.toLowerCase())) return true;
-  return Boolean(song.isRingtone);
+  return false;
 }
 
 /**

@@ -16,7 +16,17 @@ const KNOWN_RINGTONES = {
   'reelaudio-82309': { title: 'Krishnaya Vasudevaya', artist: 'Siddharth Amit Bhavsar' },
   'reelaudio-8557': { title: 'Mere Tan Me Bhi Ram', artist: 'Mohit Yadav & Monika Yadav' },
   'reelaudio-88807': { title: 'Om Namo Bhagavate Vasudevaya', artist: 'Sanjith Hegde' },
-  'reelaudio-8890': { title: 'Sankatmochan Hanuman', artist: 'Raanjha & Smokey' }
+  'reelaudio-8890': { title: 'Sankatmochan Hanuman', artist: 'Raanjha & Smokey' },
+  'krishna_bansuri_dhun': { title: 'Krishna Bansuri Dhun', artist: 'Divine Flute' },
+  'mahadev_damru_and_shankh': { title: 'Mahadev Damru & Shankh', artist: 'Spiritual Vibrations' },
+  'siya_ram_acoustic_tone': { title: 'Siya Ram Acoustic Tone', artist: 'Acoustic Devotion' },
+  'radhe_radhe_flute_melody': { title: 'Radhe Radhe Flute Melody', artist: 'Vrindavan Melodies' },
+  'hanuman_chalisa_beat': { title: 'Hanuman Chalisa Beat', artist: 'Bhakti Vibes' },
+  'aesthetic_lo-fi_reel_beat': { title: 'Aesthetic Lo-Fi Reel Beat', artist: 'Lo-Fi Beats' },
+  'epic_cinematic_theme': { title: 'Epic Cinematic Theme', artist: 'Cinema Orchestra' },
+  'soulful_piano_and_violin': { title: 'Soulful Piano & Violin', artist: 'Symphony Strings' },
+  'retro_nostalgia_90s_tone': { title: 'Retro Nostalgia 90s Tone', artist: 'Golden Classics' },
+  'morning_sunrise_flute': { title: 'Morning Sunrise Flute', artist: 'Sunrise Acoustics' }
 };
 
 /**

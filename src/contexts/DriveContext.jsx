@@ -3,18 +3,52 @@ import { getActiveConfig } from '../config';
 import { fetchDriveLibrary, deduplicateSongs, DEMO_SONGS, DEMO_PLAYLISTS } from '../services/driveService';
 import { autoSyncVipFolder } from '../services/vipAutoSync';
 import { isVipUnlocked, isVipFolder } from '../utils/vipConfig';
-import { getRingtoneMetadata } from '../utils/ringtoneRegistry';
+import { getRingtoneMetadata, CURATED_BUNDLED_RINGTONES } from '../utils/ringtoneRegistry';
 
 const DriveContext = createContext(null);
 
 const STORAGE_CACHED_SONGS = 'sas_cached_songs_v4';
 const STORAGE_CACHED_PLAYLISTS = 'sas_cached_playlists_v4';
 
+function mergeBundledRingtones(songList = []) {
+  const existingIds = new Set(songList.map((s) => s.id));
+  const existingNames = new Set(songList.map((s) => (s.name || '').toLowerCase()));
+  const missing = CURATED_BUNDLED_RINGTONES.filter(
+    (b) => !existingIds.has(b.id) && !existingNames.has(b.name.toLowerCase())
+  );
+  return [...songList, ...missing];
+}
+
+function ensureRingtonePlaylist(playlists = [], allSongs = []) {
+  const ringtoneSongs = allSongs.filter((s) => s.folderName?.toLowerCase().includes('ringtone') || s.isRingtone || s.isBundled);
+  const exists = playlists.some((p) => (p.name || '').toLowerCase().includes('ringtone'));
+  if (exists) {
+    return playlists.map((p) => {
+      if ((p.name || '').toLowerCase().includes('ringtone')) {
+        return {
+          ...p,
+          songCount: Math.max(p.songCount || 0, ringtoneSongs.length)
+        };
+      }
+      return p;
+    });
+  }
+  return [
+    ...playlists,
+    {
+      id: 'ringtone-folder',
+      name: 'Ringtone ',
+      songCount: ringtoneSongs.length,
+      isDriveFolder: true
+    }
+  ];
+}
+
 function migrateFastStreamUrls(songList) {
   if (!Array.isArray(songList)) return [];
   return songList.map((s) => {
     if (!s || !s.id) return s;
-    if (s.isDemo) return s;
+    if (s.isDemo || s.isBundled) return s;
     const ringtoneMeta = getRingtoneMetadata(s.name, s.id);
     return {
       ...s,
@@ -36,18 +70,20 @@ export function DriveProvider({ children }) {
   const [songs, setSongs] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_CACHED_SONGS) || localStorage.getItem('sas_cached_songs_v3') || localStorage.getItem('sas_cached_songs_v2');
-      return saved ? deduplicateSongs(migrateFastStreamUrls(JSON.parse(saved))) : [];
+      const loaded = saved ? deduplicateSongs(migrateFastStreamUrls(JSON.parse(saved))) : [];
+      return mergeBundledRingtones(loaded);
     } catch (_) {
-      return [];
+      return mergeBundledRingtones([]);
     }
   });
 
   const [drivePlaylists, setDrivePlaylists] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_CACHED_PLAYLISTS) || localStorage.getItem('sas_cached_playlists_v3') || localStorage.getItem('sas_cached_playlists_v2');
-      return saved ? JSON.parse(saved) : [];
+      const loaded = saved ? JSON.parse(saved) : [];
+      return ensureRingtonePlaylist(loaded, mergeBundledRingtones([]));
     } catch (_) {
-      return [];
+      return ensureRingtonePlaylist([], mergeBundledRingtones([]));
     }
   });
 
@@ -97,8 +133,9 @@ export function DriveProvider({ children }) {
       if (!isBackground && songs.length === 0) setIsLoading(true);
       setError(null);
       setTimeout(() => {
-        setSongs(DEMO_SONGS);
-        setDrivePlaylists(DEMO_PLAYLISTS);
+        const demoSongsWithRingtones = mergeBundledRingtones(DEMO_SONGS);
+        setSongs(demoSongsWithRingtones);
+        setDrivePlaylists(ensureRingtonePlaylist(DEMO_PLAYLISTS, demoSongsWithRingtones));
         setLastSyncedAt(new Date());
         setIsLoading(false);
         setIsSyncing(false);
@@ -115,16 +152,17 @@ export function DriveProvider({ children }) {
 
     try {
       const data = await fetchDriveLibrary(currentConfig.folderId, currentConfig.apiKey);
-      const uniqueSongs = deduplicateSongs(migrateFastStreamUrls(data.songs));
+      const uniqueSongs = mergeBundledRingtones(deduplicateSongs(migrateFastStreamUrls(data.songs)));
+      const playlistsWithRingtones = ensureRingtonePlaylist(data.playlists || [], uniqueSongs);
       setSongs(uniqueSongs);
-      setDrivePlaylists(data.playlists);
+      setDrivePlaylists(playlistsWithRingtones);
       setLastSyncedAt(new Date());
       setError(null);
 
       // Persist to cache
       try {
         localStorage.setItem(STORAGE_CACHED_SONGS, JSON.stringify(uniqueSongs));
-        localStorage.setItem(STORAGE_CACHED_PLAYLISTS, JSON.stringify(data.playlists));
+        localStorage.setItem(STORAGE_CACHED_PLAYLISTS, JSON.stringify(playlistsWithRingtones));
       } catch (cacheErr) {
         console.warn('Could not cache songs to localStorage:', cacheErr);
       }

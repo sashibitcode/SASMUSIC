@@ -146,23 +146,6 @@ export function SongRow({ song, index, playlist = null }) {
         className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Ringtone Download Button */}
-        {isRingtone && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              downloadRingtoneAudio(song);
-            }}
-            className="w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 transition-colors active:scale-90"
-            title="Download Ringtone MP3"
-            aria-label={`Download ${song.title} Ringtone`}
-          >
-            <Download className="w-4 h-4" />
-          </button>
-        )}
-
         {/* Favorite Heart - only show filled heart when favorited, or on hover on desktop to prevent UI clutter */}
         <button
           onClick={() => toggleFavorite(song.id)}

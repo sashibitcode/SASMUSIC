@@ -34,7 +34,6 @@ export function DesktopSidebar({
   const primaryLinks = [
     { id: 'songs', label: 'All Songs', icon: Music },
     { id: 'search', label: 'Search', icon: Search },
-    { id: 'ringtones', label: 'Ringtones', icon: Bell, badge: 'New' },
     { id: 'playlists', label: 'Playlists', icon: Folder, count: drivePlaylists.length },
     { id: 'favorites', label: 'Favorites', icon: Heart, count: favoritesCount },
     { id: 'recents', label: 'Recently Played', icon: History, count: recentsCount }
@@ -139,7 +138,7 @@ export function DesktopSidebar({
           </p>
           <div className="space-y-1">
             {[
-              { id: 'ringtone', label: 'Phone Ringtones 🔔', emoji: '🔔' },
+              { id: 'ringtone', label: 'Ringtones', emoji: '🔔' },
               { id: 'hindi', label: 'Hindi Bollywood', emoji: '🇮🇳' },
               { id: 'bhojpuri', label: 'Bhojpuri Dhamaka', emoji: '🌾' },
               { id: 'chhath', label: 'Chhath Special', emoji: '🌅' },

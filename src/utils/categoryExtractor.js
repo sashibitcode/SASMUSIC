@@ -13,13 +13,13 @@ import { isRingtoneSong } from './ringtoneRegistry.js';
 export const MUSIC_CATEGORIES = [
   {
     id: 'ringtone',
-    label: 'Phone Ringtones',
+    label: 'Ringtones',
     shortLabel: 'Ringtones',
     emoji: '🔔',
     icon: 'Bell',
-    badge: 'Trending',
-    desc: 'Trending Caller Tunes, Bhakti Mantras & Reel Beats',
-    gradient: 'from-amber-950/40 via-[#171717] to-[#06110c]',
+    badge: 'New',
+    desc: 'Caller Tunes & Ringtone Beats',
+    gradient: 'from-amber-950/35 via-[#171717] to-[#06110c]',
     borderColor: 'border-white/10',
     accentColor: '#f59e0b'
   },

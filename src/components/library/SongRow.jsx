@@ -8,7 +8,8 @@ import {
   ListPlus,
   Music2,
   Folder,
-  Disc
+  Disc,
+  Download
 } from 'lucide-react';
 import { useAudio } from '../../contexts/AudioContext';
 import { useLibrary } from '../../contexts/LibraryContext';
@@ -16,6 +17,7 @@ import { getSongGradientStyle } from '../../utils/artGenerator';
 import { VisualizerBars } from '../player/VisualizerBars';
 import { formatFileSize } from '../../utils/formatters';
 import { SongCoverArt } from '../common/SongCoverArt';
+import { downloadRingtoneAudio, isRingtoneSong } from '../../utils/ringtoneRegistry';
 
 export function SongRow({ song, index, playlist = null }) {
   const { currentSong, isPlaying, isLoadingAudio, playSong, togglePlay, prewarmSong, addToQueue, playNextInQueue } = useAudio();
@@ -27,6 +29,7 @@ export function SongRow({ song, index, playlist = null }) {
 
   const isCurrent = currentSong && currentSong.id === song.id;
   const isFav = isFavorite(song.id);
+  const isRingtone = isRingtoneSong(song);
 
   // Close context menu when clicking or tapping outside
   useEffect(() => {
@@ -143,6 +146,23 @@ export function SongRow({ song, index, playlist = null }) {
         className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Ringtone Download Button */}
+        {isRingtone && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              downloadRingtoneAudio(song);
+            }}
+            className="w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 transition-colors active:scale-90"
+            title="Download Ringtone MP3"
+            aria-label={`Download ${song.title} Ringtone`}
+          >
+            <Download className="w-4 h-4" />
+          </button>
+        )}
+
         {/* Favorite Heart - only show filled heart when favorited, or on hover on desktop to prevent UI clutter */}
         <button
           onClick={() => toggleFavorite(song.id)}
@@ -186,6 +206,21 @@ export function SongRow({ song, index, playlist = null }) {
                 <Play className="w-4 h-4 text-white fill-white" />
                 <span>Play Now</span>
               </button>
+
+              {isRingtone && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    downloadRingtoneAudio(song);
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-amber-300 hover:bg-[#222222] hover:text-amber-200 text-left transition-colors font-medium border-b border-white/[0.06]"
+                >
+                  <Download className="w-4 h-4 text-amber-400" />
+                  <span>Download Ringtone</span>
+                </button>
+              )}
 
               <button
                 type="button"

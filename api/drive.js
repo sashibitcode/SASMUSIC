@@ -3,20 +3,20 @@ import { setCorsHeaders } from './_utils.js';
 const AUDIO_EXTENSIONS = /\.(mp3|m4a|flac|wav|aac|ogg|opus|wma|alac|aiff)$/i;
 
 const KNOWN_RINGTONES = {
-  'reelaudio-11145': { title: 'Jai Jai Ram (From "Ramayana")', artist: 'A.R. Rahman, Arijit Singh & Shreya Ghoshal', tag: 'Ramayana / Bhakti' },
-  'reelaudio-32321': { title: 'Ram Ram Eeswaram (From "Shivam Bhaje")', artist: 'Saicharan Bhaskaruni & Vikas Badisa', tag: 'Shiva Mantra' },
-  'reelaudio-32905': { title: 'Shambhu Stuti (Har Har Shambhu)', artist: 'Ketan Kumar', tag: 'Mahadev Stuti' },
-  'reelaudio-42397': { title: 'Shambhu Stuti (Flute & Beat Drop)', artist: 'Ketan Kumar', tag: 'Shiv Tandav Beat' },
-  'reelaudio-46818': { title: 'Dwarika No Nath Maro', artist: 'Utpal Jivrajani', tag: 'Krishna Bhajan' },
-  'reelaudio-6150': { title: 'Hai Katha Sangram Ki (Mahabharat Theme)', artist: 'Himanshu Singh (Star Plus Mahabharat)', tag: 'Epic Mahabharat' },
-  'reelaudio-72681': { title: 'Scottish Bagpipes (Trending Reel Beat)', artist: 'Hellfish (Highlander Braveheart Beat)', tag: 'Trending Reel Beat' },
-  'reelaudio-73910': { title: 'Dil Lagana Mana Tha', artist: 'Krish Mondal, Kishore & Kunaal Vermaa', tag: 'Romantic Melody' },
-  'reelaudio-76501': { title: 'Bajrang Baan (Lofi Devotional)', artist: 'Rasraj Ji Maharaj', tag: 'Hanuman Lofi' },
-  'reelaudio-79369': { title: 'Radha Radha Naam Jaap', artist: 'Sanatan Music', tag: 'Radha Krishna Jaap' },
-  'reelaudio-82309': { title: 'Krishnaya Vasudevaya - Shri Krishna Mantra', artist: 'Siddharth Amit Bhavsar & Prateeksha', tag: 'Krishna Shloka' },
-  'reelaudio-8557': { title: 'Mere Tan Me Bhi Ram Mere Man Me Bhi Ram', artist: 'Mohit Yadav & Monika Yadav', tag: 'Shri Ram Bhajan' },
-  'reelaudio-88807': { title: 'Om Namo Bhagavate Vasudevaya', artist: 'Sanjith Hegde & Vijay Prakash', tag: 'Vishnu Mantra' },
-  'reelaudio-8890': { title: 'Sankatmochan Hanuman (Bolo Bolo Hanuman)', artist: 'Raanjha & Smokey', tag: 'Hanuman Rap / Hype' }
+  'reelaudio-11145': { title: 'Jai Jai Ram', artist: 'A.R. Rahman & Arijit Singh' },
+  'reelaudio-32321': { title: 'Ram Ram Eeswaram', artist: 'Saicharan Bhaskaruni' },
+  'reelaudio-32905': { title: 'Shambhu Stuti', artist: 'Ketan Kumar' },
+  'reelaudio-42397': { title: 'Shambhu Stuti (Shiv Tandav)', artist: 'Ketan Kumar' },
+  'reelaudio-46818': { title: 'Dwarika No Nath Maro', artist: 'Utpal Jivrajani' },
+  'reelaudio-6150': { title: 'Hai Katha Sangram Ki', artist: 'Himanshu Singh' },
+  'reelaudio-72681': { title: 'Scottish Bagpipes', artist: 'Hellfish' },
+  'reelaudio-73910': { title: 'Dil Lagana Mana Tha', artist: 'Krish Mondal' },
+  'reelaudio-76501': { title: 'Bajrang Baan (Lofi)', artist: 'Rasraj Ji Maharaj' },
+  'reelaudio-79369': { title: 'Radha Radha Naam Jaap', artist: 'Sanatan Music' },
+  'reelaudio-82309': { title: 'Krishnaya Vasudevaya', artist: 'Siddharth Amit Bhavsar' },
+  'reelaudio-8557': { title: 'Mere Tan Me Bhi Ram', artist: 'Mohit Yadav & Monika Yadav' },
+  'reelaudio-88807': { title: 'Om Namo Bhagavate Vasudevaya', artist: 'Sanjith Hegde' },
+  'reelaudio-8890': { title: 'Sankatmochan Hanuman', artist: 'Raanjha & Smokey' }
 };
 
 /**

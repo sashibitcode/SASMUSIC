@@ -245,21 +245,21 @@ export function MobileMenuDrawer({
             Quick Actions
           </p>
 
-          {/* 0. Phone Ringtones */}
+          {/* 0. Ringtones */}
           <button
             onClick={() => {
               onClose();
               onSelectCategory?.('ringtone');
             }}
-            className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group border border-amber-500/25 bg-amber-500/10 shadow-sm"
+            className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors active:scale-95 group border border-white/10 bg-white/[0.03] shadow-sm"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/35 text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform">
                 <Bell className="w-4 h-4 text-amber-400" />
               </div>
-              <span className="font-bold text-white">Phone Ringtones</span>
+              <span className="font-bold text-white">Ringtones</span>
             </div>
-            <span className="text-[10px] text-amber-300 font-bold bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/40">14 Tracks</span>
+            <span className="text-[10px] text-amber-300 font-bold bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-500/30">14 Tracks</span>
           </button>
 
           {/* 1. Upload Song (Creator Studio) */}

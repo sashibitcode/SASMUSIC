@@ -11,128 +11,100 @@ export const RINGTONES_MASTER_CATALOG = [
   {
     fileId: '1tPpST8HYOcYiAk1qq9j_XWYpfZLU9jsg',
     fileName: 'ReelAudio-11145.mp3',
-    title: 'Jai Jai Ram (From "Ramayana")',
-    artist: 'A.R. Rahman, Arijit Singh & Shreya Ghoshal',
-    tag: 'Ramayana / Bhakti',
-    duration: 30,
-    genre: 'Devotional'
+    title: 'Jai Jai Ram',
+    artist: 'A.R. Rahman & Arijit Singh',
+    duration: 30
   },
   {
     fileId: '14h27GDCmZsGw_PjMMr2X8JrwzLV7eyah',
     fileName: 'ReelAudio-32321.mp3',
-    title: 'Ram Ram Eeswaram (From "Shivam Bhaje")',
-    artist: 'Saicharan Bhaskaruni & Vikas Badisa',
-    tag: 'Shiva Mantra',
-    duration: 14,
-    genre: 'Devotional'
+    title: 'Ram Ram Eeswaram',
+    artist: 'Saicharan Bhaskaruni',
+    duration: 14
   },
   {
     fileId: '1lVIMXEmtaE3QXjtzosgt96NCp3eqdrrF',
     fileName: 'ReelAudio-32905.mp3',
-    title: 'Shambhu Stuti (Har Har Shambhu)',
+    title: 'Shambhu Stuti',
     artist: 'Ketan Kumar',
-    tag: 'Mahadev Stuti',
-    duration: 16,
-    genre: 'Devotional'
+    duration: 16
   },
   {
     fileId: '1hh7HeBXsnqRpbiGylwcsKyGgpSgDnoyo',
     fileName: 'ReelAudio-42397.mp3',
-    title: 'Shambhu Stuti (Flute & Beat Drop)',
+    title: 'Shambhu Stuti (Shiv Tandav)',
     artist: 'Ketan Kumar',
-    tag: 'Shiv Tandav Beat',
-    duration: 20,
-    genre: 'Devotional'
+    duration: 20
   },
   {
     fileId: '1dBlr8Ji2slfxYcl1Kle_riqU99p6WeQs',
     fileName: 'ReelAudio-46818.mp3',
     title: 'Dwarika No Nath Maro',
     artist: 'Utpal Jivrajani',
-    tag: 'Krishna Bhajan',
-    duration: 31,
-    genre: 'Devotional'
+    duration: 31
   },
   {
     fileId: '1HNMIZ-X4TwRjV_IJZ9S6P-PUZGmFg8yk',
     fileName: 'ReelAudio-6150.mp3',
-    title: 'Hai Katha Sangram Ki (Mahabharat Theme)',
-    artist: 'Himanshu Singh (Star Plus Mahabharat)',
-    tag: 'Epic Mahabharat',
-    duration: 103,
-    genre: 'Devotional'
+    title: 'Hai Katha Sangram Ki',
+    artist: 'Himanshu Singh',
+    duration: 103
   },
   {
     fileId: '1zfcQAkSMYrL_dhvN1EzdYJZL37m4L1Pb',
     fileName: 'ReelAudio-72681.mp3',
-    title: 'Scottish Bagpipes (Trending Reel Beat)',
-    artist: 'Hellfish (Highlander Braveheart Beat)',
-    tag: 'Trending Reel Beat',
-    duration: 46,
-    genre: 'Instrumental'
+    title: 'Scottish Bagpipes',
+    artist: 'Hellfish',
+    duration: 46
   },
   {
     fileId: '1wfUziFgMvWM1mlYBlp2V5pUAmfyjL41E',
     fileName: 'ReelAudio-73910.mp3',
     title: 'Dil Lagana Mana Tha',
-    artist: 'Krish Mondal, Kishore & Kunaal Vermaa',
-    tag: 'Romantic Melody',
-    duration: 19,
-    genre: 'Romantic'
+    artist: 'Krish Mondal',
+    duration: 19
   },
   {
     fileId: '15Zwit6zc8U3aqNLlUZaY2l_JSCQePLba',
     fileName: 'ReelAudio-76501.mp3',
-    title: 'Bajrang Baan (Lofi Devotional)',
+    title: 'Bajrang Baan (Lofi)',
     artist: 'Rasraj Ji Maharaj',
-    tag: 'Hanuman Lofi',
-    duration: 13,
-    genre: 'Devotional'
+    duration: 13
   },
   {
     fileId: '1_4lqit7O49bjv9lD3wopQTwWlxnPtL5I',
     fileName: 'ReelAudio-79369.mp3',
     title: 'Radha Radha Naam Jaap',
     artist: 'Sanatan Music',
-    tag: 'Radha Krishna Jaap',
-    duration: 30,
-    genre: 'Devotional'
+    duration: 30
   },
   {
     fileId: '1BCI_TCYHFKxYx41ckUs6ew1HjnlivNXt',
     fileName: 'ReelAudio-82309.mp3',
-    title: 'Krishnaya Vasudevaya - Shri Krishna Mantra',
-    artist: 'Siddharth Amit Bhavsar & Prateeksha',
-    tag: 'Krishna Shloka',
-    duration: 13,
-    genre: 'Devotional'
+    title: 'Krishnaya Vasudevaya',
+    artist: 'Siddharth Amit Bhavsar',
+    duration: 13
   },
   {
     fileId: '15K5XI1etrl3EwOBa_sjivAYyjzHYFBDM',
     fileName: 'ReelAudio-8557.mp3',
-    title: 'Mere Tan Me Bhi Ram Mere Man Me Bhi Ram',
+    title: 'Mere Tan Me Bhi Ram',
     artist: 'Mohit Yadav & Monika Yadav',
-    tag: 'Shri Ram Bhajan',
-    duration: 31,
-    genre: 'Devotional'
+    duration: 31
   },
   {
     fileId: '1SzhRryGOPsKaofVOj8Sin2CGI-TJzY7e',
     fileName: 'ReelAudio-88807.mp3',
     title: 'Om Namo Bhagavate Vasudevaya',
-    artist: 'Sanjith Hegde & Vijay Prakash',
-    tag: 'Vishnu Mantra',
-    duration: 30,
-    genre: 'Devotional'
+    artist: 'Sanjith Hegde',
+    duration: 30
   },
   {
     fileId: '1deJlBBcWdkB882BtXIg6etN795EJFdis',
     fileName: 'ReelAudio-8890.mp3',
-    title: 'Sankatmochan Hanuman (Bolo Bolo Hanuman)',
+    title: 'Sankatmochan Hanuman',
     artist: 'Raanjha & Smokey',
-    tag: 'Hanuman Rap / Hype',
-    duration: 62,
-    genre: 'Devotional'
+    duration: 62
   }
 ];
 
